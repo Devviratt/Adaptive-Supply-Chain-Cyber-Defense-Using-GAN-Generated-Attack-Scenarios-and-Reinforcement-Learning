@@ -40,13 +40,21 @@ env/
 data/raw/*.csv
 data/raw/*.zip
 data/raw/*.gz
+data/raw/*.parquet
 data/interim/*.csv
 data/interim/*.pkl
+data/interim/*.parquet
 data/processed/*.csv
 data/processed/*.pkl
 data/processed/*.npz
+data/processed/*.parquet
+data/processed/*.joblib
+data/processed/*.json
+data/processed/*.md
+data/processed/*.png
 data/generated/*.csv
 data/generated/*.pkl
+data/generated/*.parquet
 
 # ============================================================
 # ML Artifacts (large model files)

@@ -76,20 +76,37 @@ make format         # Auto-format code
 
 ## Dataset Setup
 
-The CIC-IDS2017 dataset must be downloaded separately:
+The pipeline supports both development mode (generating a realistic sample) and full dataset mode:
 
+### Development Mode (Quickstart without 6GB download)
 ```bash
-make download-data
-# Or:
+# Generate a 50,000-row realistic development sample matching CIC-IDS2017 schema
+python scripts/download_dataset.py --generate-dev-sample --rows 50000
+```
+
+### Full Dataset Mode
+```bash
+# Display download instructions and verify existing raw CSVs in data/raw/
 python scripts/download_dataset.py
 ```
 
-For development with a smaller sample:
+## Data Preprocessing Pipeline
+
 ```bash
-python scripts/download_dataset.py --sample 50000
+# 1. Inspect raw CSV files and schema
+python scripts/preprocess.py --inspect
+
+# 2. Run preprocessing, stratified splitting, and feature selection
+python scripts/preprocess.py
+
+# Or run with development downsampling:
+python scripts/preprocess.py --sample 50000
+
+# 3. Validate processed datasets and artifacts
+python scripts/preprocess.py --validate
 ```
 
-## ML Pipeline
+## ML Pipeline (Phases 3 - 9)
 
 ```bash
 make preprocess         # Step 1: Preprocess data
