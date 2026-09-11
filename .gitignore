@@ -1,0 +1,102 @@
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ============================================================
+# IDE
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ============================================================
+# Environment / Secrets
+# ============================================================
+.env
+*.pem
+*.key
+
+# ============================================================
+# Data (large files - keep structure, not content)
+# ============================================================
+data/raw/*.csv
+data/raw/*.zip
+data/raw/*.gz
+data/interim/*.csv
+data/interim/*.pkl
+data/processed/*.csv
+data/processed/*.pkl
+data/processed/*.npz
+data/generated/*.csv
+data/generated/*.pkl
+
+# ============================================================
+# ML Artifacts (large model files)
+# ============================================================
+artifacts/models/*.pt
+artifacts/models/*.pth
+artifacts/models/*.pkl
+artifacts/models/*.zip
+experiments/runs/
+mlruns/
+
+# ============================================================
+# Node / Frontend
+# ============================================================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ============================================================
+# Testing / Coverage
+# ============================================================
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ============================================================
+# Docker
+# ============================================================
+*.log
+
+# ============================================================
+# Jupyter
+# ============================================================
+.ipynb_checkpoints/
+
+# ============================================================
+# SQLite databases
+# ============================================================
+*.db
+*.sqlite3
+
+# Keep directory structure
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!data/generated/.gitkeep
+!artifacts/models/.gitkeep
+!artifacts/reports/.gitkeep
+!artifacts/figures/.gitkeep
+!experiments/runs/.gitkeep
+!experiments/results/.gitkeep

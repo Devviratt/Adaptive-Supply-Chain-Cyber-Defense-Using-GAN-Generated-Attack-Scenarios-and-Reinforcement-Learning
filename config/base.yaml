@@ -1,0 +1,31 @@
+# ============================================================
+# ASCCD Base Configuration
+# ============================================================
+# Global settings shared across all modules.
+
+project:
+  name: "ASCCD"
+  version: "0.1.0"
+  description: "Adaptive Supply Chain Cyber Defense Using GAN-Generated Attack Scenarios and Reinforcement Learning"
+
+# Random seed for reproducibility
+random_seed: 42
+
+# Device configuration
+device: "cpu"  # "cpu" or "cuda"
+
+# Data paths (relative to project root)
+paths:
+  data_raw: "data/raw"
+  data_interim: "data/interim"
+  data_processed: "data/processed"
+  data_generated: "data/generated"
+  artifacts_models: "artifacts/models"
+  artifacts_reports: "artifacts/reports"
+  artifacts_figures: "artifacts/figures"
+  experiments: "experiments"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "console"  # "json" or "console"

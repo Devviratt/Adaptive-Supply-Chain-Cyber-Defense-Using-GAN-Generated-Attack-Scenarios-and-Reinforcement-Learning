@@ -1,0 +1,93 @@
+# ============================================================
+# ASCCD DQN Configuration
+# ============================================================
+
+dqn:
+  # Algorithm
+  algorithm: "DQN"
+  policy: "MlpPolicy"
+  
+  # Hyperparameters
+  learning_rate: 1.0e-4
+  buffer_size: 100000
+  learning_starts: 1000
+  batch_size: 64
+  tau: 1.0           # Target network update coefficient
+  gamma: 0.99        # Discount factor
+  train_freq: 4
+  gradient_steps: 1
+  target_update_interval: 1000
+  exploration_fraction: 0.2
+  exploration_initial_eps: 1.0
+  exploration_final_eps: 0.05
+  
+  # Network architecture
+  net_arch: [256, 256]
+  
+  # Training
+  total_timesteps: 100000
+  seed: 42
+  
+  # Checkpointing
+  checkpoint_dir: "artifacts/models/dqn"
+  save_freq: 10000
+  
+  # Evaluation during training
+  eval_freq: 5000
+  n_eval_episodes: 10
+  
+  # Logging
+  tensorboard_log: "experiments/runs/dqn"
+  verbose: 1
+
+  # Development mode
+  dev_mode:
+    enabled: true
+    total_timesteps: 10000
+    buffer_size: 10000
+    eval_freq: 2000
+
+# ============================================================
+# Reward Function Configuration
+# ============================================================
+# 
+# Reward = w_mitigation * mitigation_bonus
+#        + w_containment * containment_reward
+#        + w_availability * availability_reward
+#        - w_impact * attack_impact_penalty
+#        - w_cost * action_cost_penalty
+#        - w_delay * response_delay_penalty
+#        - w_unnecessary * unnecessary_action_penalty
+#
+# Design rationale:
+#   - Mitigation is the primary objective, so it has the highest weight.
+#   - Availability matters because service continuity is critical.
+#   - Action costs reflect real operational expenses.
+#   - Delay penalty discourages passive monitoring during active attacks.
+#   - Unnecessary action penalty prevents over-aggressive responses.
+
+reward:
+  weights:
+    mitigation: 1.0
+    containment: 0.3
+    availability: 0.4
+    impact: -0.5
+    cost: -0.2
+    delay: -0.1
+    unnecessary: -0.3
+
+  # Bonus/penalty magnitudes
+  values:
+    mitigation_success: 10.0
+    containment_per_stage: 2.0
+    availability_bonus: 1.0
+    impact_per_stage: -3.0
+    step_penalty: -0.1        # Small penalty per step to encourage speed
+    
+  # Action costs
+  action_costs:
+    monitor: 0.01
+    isolate: 0.15
+    block: 0.25
+    rebuild: 0.35
+    recover: 0.20

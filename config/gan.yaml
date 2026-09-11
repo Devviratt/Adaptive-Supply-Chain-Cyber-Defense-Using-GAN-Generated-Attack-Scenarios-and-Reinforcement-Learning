@@ -1,0 +1,45 @@
+# ============================================================
+# ASCCD CTGAN Configuration
+# ============================================================
+
+ctgan:
+  # Training hyperparameters
+  epochs: 300
+  batch_size: 500
+  generator_dim: [256, 256]
+  discriminator_dim: [256, 256]
+  generator_lr: 2.0e-4
+  discriminator_lr: 2.0e-4
+  discriminator_steps: 1
+  log_frequency: true
+  verbose: true
+  
+  # Random seed
+  seed: 42
+
+  # Checkpointing
+  checkpoint_dir: "artifacts/models/ctgan"
+  save_every_n_epochs: 50
+
+  # Generation
+  generation:
+    num_samples: 10000
+    # Per-class generation (if supported)
+    per_class_samples: null  # Set to dict for class-specific counts
+
+  # Validation thresholds
+  validation:
+    # Maximum acceptable KL divergence per feature
+    max_kl_divergence: 0.5
+    # Minimum acceptable correlation similarity
+    min_correlation_similarity: 0.7
+    # Maximum duplicate ratio in synthetic data
+    max_duplicate_ratio: 0.05
+    # Feature range compliance threshold
+    range_compliance_threshold: 0.95
+
+  # Development mode
+  dev_mode:
+    enabled: true
+    epochs: 50
+    num_samples: 2000

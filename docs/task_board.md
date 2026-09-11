@@ -1,0 +1,204 @@
+# Task Board
+
+**Last Updated:** 2026-09-11
+
+---
+
+## ✅ DONE
+
+### FOUNDATION-001
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Initialize repository, folder structure, pyproject.toml, Makefile, Docker
+- **Dependencies:** None
+- **Acceptance:** Git repo initialized, directory structure in place, pyproject.toml valid
+
+### FOUNDATION-002
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Implement configuration system (YAML + .env + Pydantic settings)
+- **Dependencies:** FOUNDATION-001
+- **Acceptance:** Config loader works, settings load from .env, YAML configs parse correctly
+
+### FOUNDATION-003
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Implement structured logging with structlog
+- **Dependencies:** FOUNDATION-002
+- **Acceptance:** Logger produces structured output, supports JSON and console formats
+
+### FOUNDATION-004
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Implement database foundation (SQLAlchemy models, engine, session)
+- **Dependencies:** FOUNDATION-002
+- **Acceptance:** All 6 tables created, models have proper relationships, timestamps work
+
+### FOUNDATION-005
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Create FastAPI application with health endpoints
+- **Dependencies:** FOUNDATION-003, FOUNDATION-004
+- **Acceptance:** /api/health returns 200, /api/health/ready checks DB, CORS configured
+
+### FOUNDATION-006
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Create React + TypeScript + Vite frontend scaffold
+- **Dependencies:** FOUNDATION-001
+- **Acceptance:** `npm run dev` starts, basic app renders, proxy to backend works
+
+### FOUNDATION-007
+- **Owner:** Anandavarthan
+- **Priority:** High
+- **Description:** Create CI/CD with GitHub Actions
+- **Dependencies:** FOUNDATION-005
+- **Acceptance:** CI runs on push, installs deps, runs lint, runs tests
+
+### DOC-001
+- **Owner:** All
+- **Priority:** High
+- **Description:** Create documentation skeleton (all docs files)
+- **Dependencies:** FOUNDATION-001
+- **Acceptance:** All required docs files exist with initial content
+
+---
+
+## 📋 TODO
+
+### DATA-001
+- **Owner:** Deekshay
+- **Priority:** Critical
+- **Description:** Implement CIC-IDS2017 dataset download script
+- **Dependencies:** FOUNDATION-002
+- **Acceptance:** Script downloads dataset, handles errors, supports --sample flag
+
+### DATA-002
+- **Owner:** Deekshay
+- **Priority:** Critical
+- **Description:** Implement data preprocessing pipeline
+- **Dependencies:** DATA-001
+- **Acceptance:** Cleans, encodes, scales, selects features, produces train/val/test splits, artifacts saved
+
+### DATA-003
+- **Owner:** Deekshay
+- **Priority:** High
+- **Description:** Add data validation checks
+- **Dependencies:** DATA-002
+- **Acceptance:** Validates schema, checks for leakage, reports data quality metrics
+
+### GAN-001
+- **Owner:** Deekshay
+- **Priority:** Critical
+- **Description:** Implement CTGAN training pipeline
+- **Dependencies:** DATA-002
+- **Acceptance:** CTGAN trains on processed data, checkpoints saved, config externalized
+
+### GAN-002
+- **Owner:** Deekshay
+- **Priority:** Critical
+- **Description:** Implement synthetic data generation
+- **Dependencies:** GAN-001
+- **Acceptance:** Generates N samples, class-specific generation, saves outputs
+
+### GAN-003
+- **Owner:** Deekshay
+- **Priority:** Critical
+- **Description:** Implement synthetic data validation
+- **Dependencies:** GAN-002
+- **Acceptance:** Distribution comparison, correlation check, diversity check, visual report
+
+### SCENARIO-001
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Implement scenario mapper (attack → supply-chain scenario)
+- **Dependencies:** DATA-002
+- **Acceptance:** Maps attack records to structured scenarios, documented mapping logic
+
+### ENV-001
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Implement supply-chain Gymnasium environment
+- **Dependencies:** SCENARIO-001
+- **Acceptance:** Env registered, reset/step work, state/action/reward valid, tests pass
+
+### BASELINE-001
+- **Owner:** Dev Virat
+- **Priority:** High
+- **Description:** Implement rule-based baseline policy
+- **Dependencies:** ENV-001
+- **Acceptance:** Configurable rules, runs on environment, produces evaluation metrics
+
+### RL-001
+- **Owner:** Dev Virat
+- **Priority:** Critical
+- **Description:** Implement DQN agent with Stable-Baselines3
+- **Dependencies:** ENV-001
+- **Acceptance:** DQN trains, checkpoints save, evaluation callback works, reproducible
+
+### RL-002
+- **Owner:** Dev Virat
+- **Priority:** Low
+- **Description:** Implement PPO comparison agent (optional)
+- **Dependencies:** RL-001
+- **Acceptance:** PPO trains on same env, comparable evaluation
+
+### EVAL-001
+- **Owner:** Dev Virat
+- **Priority:** Critical
+- **Description:** Implement evaluation engine
+- **Dependencies:** BASELINE-001, RL-001
+- **Acceptance:** Computes all required metrics, stores results, generates reports
+
+### EVAL-002
+- **Owner:** Dev Virat
+- **Priority:** Critical
+- **Description:** Run controlled experiments A/B/C
+- **Dependencies:** EVAL-001, GAN-003
+- **Acceptance:** All experiments executed, results stored, comparison generated
+
+### API-001
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Implement full backend API (scenarios, simulation, RL, experiments, evaluation)
+- **Dependencies:** ENV-001, RL-001, EVAL-001
+- **Acceptance:** All endpoints functional, Pydantic validation, error handling
+
+### UI-001
+- **Owner:** Anandavarthan
+- **Priority:** Critical
+- **Description:** Build premium React dashboard (all 10 pages)
+- **Dependencies:** API-001
+- **Acceptance:** All pages render, connected to backend, responsive, dark theme
+
+### TEST-001
+- **Owner:** All
+- **Priority:** High
+- **Description:** Complete test suite (unit + integration + smoke)
+- **Dependencies:** All modules
+- **Acceptance:** >80% critical path coverage, CI green
+
+---
+
+## 🚫 BLOCKED
+
+(none)
+
+---
+
+## Task ID Reference
+
+| Prefix | Module |
+|--------|--------|
+| FOUNDATION | Repository, architecture, setup |
+| DATA | Dataset, preprocessing |
+| GAN | CTGAN, synthetic generation |
+| SCENARIO | Scenario mapping |
+| ENV | Supply-chain environment |
+| RL | DQN, PPO agents |
+| BASELINE | Rule-based baseline |
+| EVAL | Evaluation, experiments |
+| API | Backend API |
+| UI | Frontend dashboard |
+| TEST | Testing |
+| DOC | Documentation |

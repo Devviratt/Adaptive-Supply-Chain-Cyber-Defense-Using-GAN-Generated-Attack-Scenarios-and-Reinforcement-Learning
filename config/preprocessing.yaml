@@ -1,0 +1,63 @@
+# ============================================================
+# ASCCD Data Preprocessing Configuration
+# ============================================================
+
+preprocessing:
+  # CIC-IDS2017 dataset
+  dataset: "CIC-IDS2017"
+  
+  # Features to drop (known problematic columns)
+  drop_columns:
+    - "Flow ID"
+    - "Source IP"
+    - "Source Port"
+    - "Destination IP"
+    - "Destination Port"
+    - "Timestamp"
+
+  # Missing value strategy
+  missing_values:
+    strategy: "drop"  # "drop", "mean", "median", "zero"
+    threshold: 0.5    # Drop columns with >50% missing
+
+  # Inf value handling
+  inf_handling: "replace_with_nan"  # then apply missing strategy
+
+  # Scaling
+  scaler: "standard"  # "standard", "minmax", "robust"
+
+  # Feature selection
+  feature_selection:
+    variance_threshold: 0.01
+    correlation_threshold: 0.95  # Drop one of highly correlated pair
+
+  # Label mapping — normalize CIC-IDS2017 labels
+  label_column: "Label"
+  label_mapping:
+    "BENIGN": "benign"
+    "DoS Hulk": "dos"
+    "DoS GoldenEye": "dos"
+    "DoS slowloris": "dos"
+    "DoS Slowhttptest": "dos"
+    "DDoS": "ddos"
+    "PortScan": "portscan"
+    "FTP-Patator": "brute_force"
+    "SSH-Patator": "brute_force"
+    "Web Attack – Brute Force": "web_attack"
+    "Web Attack – XSS": "web_attack"
+    "Web Attack – Sql Injection": "web_attack"
+    "Bot": "botnet"
+    "Infiltration": "infiltration"
+    "Heartbleed": "heartbleed"
+
+  # Train/val/test split ratios
+  split:
+    train: 0.70
+    validation: 0.15
+    test: 0.15
+    stratify: true
+
+  # Development mode — use subset
+  dev_mode:
+    enabled: true
+    sample_size: 50000

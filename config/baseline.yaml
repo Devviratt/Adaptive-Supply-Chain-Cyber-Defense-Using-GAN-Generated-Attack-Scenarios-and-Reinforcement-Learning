@@ -1,0 +1,38 @@
+# ============================================================
+# ASCCD Rule-Based Baseline Configuration
+# ============================================================
+
+baseline:
+  name: "rule_based"
+  description: "Deterministic rule-based defense policy for comparison with RL agents."
+
+  # Decision rules — evaluated in order, first match wins
+  rules:
+    - condition: "recovery_needed"
+      description: "Service is down and needs recovery"
+      check: "availability < 0.3 and integrity > 0.5"
+      action: "recover"
+
+    - condition: "integrity_compromised"
+      description: "System integrity is compromised"
+      check: "integrity < 0.4"
+      action: "rebuild"
+
+    - condition: "high_risk"
+      description: "High attack severity or propagation risk"
+      check: "max_stage_risk > 0.6 or severity == 'critical'"
+      action: "block"
+
+    - condition: "medium_risk"
+      description: "Moderate risk detected"
+      check: "max_stage_risk > 0.3 or severity == 'high'"
+      action: "isolate"
+
+    - condition: "low_risk"
+      description: "Low or no significant risk"
+      check: "default"
+      action: "monitor"
+
+  # Evaluation
+  seed: 42
+  n_eval_episodes: 100

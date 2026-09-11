@@ -1,0 +1,43 @@
+# ============================================================
+# ASCCD - Docker Compose
+# ============================================================
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      target: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+      - ./data:/app/data
+      - ./artifacts:/app/artifacts
+      - ./experiments:/app/experiments
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite:///./asccd.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    restart: unless-stopped

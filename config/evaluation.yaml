@@ -1,0 +1,64 @@
+# ============================================================
+# ASCCD Evaluation Configuration
+# ============================================================
+
+evaluation:
+  # Experiment conditions
+  experiments:
+    - id: "A"
+      name: "Rule-Based Baseline"
+      model_type: "rule_based"
+      dataset: "real"
+      description: "Deterministic rule-based defense policy"
+
+    - id: "B"
+      name: "DQN without GAN"
+      model_type: "dqn"
+      dataset: "real"
+      description: "DQN trained on original attack scenarios only"
+
+    - id: "C"
+      name: "DQN with GAN"
+      model_type: "dqn_gan"
+      dataset: "real+synthetic"
+      description: "DQN trained on original + validated GAN-generated scenarios"
+
+    - id: "D"
+      name: "PPO Comparison"
+      model_type: "ppo"
+      dataset: "real+synthetic"
+      description: "PPO comparison (optional)"
+      optional: true
+
+  # Evaluation settings
+  n_eval_episodes: 100
+  seeds: [42, 123, 456, 789, 1024]
+  use_held_out_scenarios: true
+
+  # Metrics to compute
+  metrics:
+    security:
+      - "mitigation_success_rate"
+      - "containment_rate"
+      - "attack_impact_score"
+    availability:
+      - "service_availability"
+      - "total_downtime_steps"
+    decision_quality:
+      - "unnecessary_intervention_rate"
+      - "avg_response_steps"
+      - "action_distribution"
+    rl:
+      - "cumulative_reward"
+      - "mean_episode_reward"
+      - "reward_variance"
+    robustness:
+      - "performance_by_attack_class"
+      - "performance_across_seeds"
+
+  # Report generation
+  reports:
+    output_dir: "artifacts/reports"
+    figures_dir: "artifacts/figures"
+    formats: ["json", "csv"]
+    generate_plots: true

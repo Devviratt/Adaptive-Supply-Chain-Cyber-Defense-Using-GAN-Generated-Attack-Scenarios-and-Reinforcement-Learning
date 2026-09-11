@@ -1,0 +1,50 @@
+# ============================================================
+# ASCCD Supply-Chain Environment Configuration
+# ============================================================
+
+environment:
+  # Supply chain stages
+  stages:
+    - name: "supplier"
+      initial_health: 1.0
+      criticality: 0.8
+    - name: "build"
+      initial_health: 1.0
+      criticality: 0.9
+    - name: "registry"
+      initial_health: 1.0
+      criticality: 0.85
+    - name: "deployment"
+      initial_health: 1.0
+      criticality: 1.0
+
+  # Episode configuration
+  max_steps: 50
+  
+  # State thresholds
+  thresholds:
+    suspicious: 0.3    # Risk above this = suspicious
+    compromised: 0.6   # Risk above this = compromised
+    critical: 0.8      # Risk above this = critical
+
+  # Propagation model
+  propagation:
+    # How much attack spreads to adjacent stages per step
+    base_rate: 0.1
+    # Multiplier based on severity
+    severity_multiplier:
+      low: 0.5
+      medium: 1.0
+      high: 1.5
+      critical: 2.0
+
+  # Recovery rates per action
+  recovery_rates:
+    monitor: 0.0
+    isolate: 0.1
+    block: 0.2
+    rebuild: 0.5
+    recover: 0.4
+
+  # Random seed
+  seed: 42
