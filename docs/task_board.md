@@ -62,30 +62,33 @@
 - **Dependencies:** FOUNDATION-001
 - **Acceptance:** All required docs files exist with initial content
 
----
-
-## 📋 TODO
-
 ### DATA-001
 - **Owner:** Deekshay
 - **Priority:** Critical
-- **Description:** Implement CIC-IDS2017 dataset download script
+- **Description:** Implement CIC-IDS2017 dataset download and ingestion script
 - **Dependencies:** FOUNDATION-002
-- **Acceptance:** Script downloads dataset, handles errors, supports --sample flag
+- **Acceptance:** Download guide, sample flag, synthetic dev generator, verified in tests
+- **Status:** Verified (scripts/download_dataset.py, tests/unit/test_data_loader.py)
 
 ### DATA-002
 - **Owner:** Deekshay
 - **Priority:** Critical
 - **Description:** Implement data preprocessing pipeline
 - **Dependencies:** DATA-001
-- **Acceptance:** Cleans, encodes, scales, selects features, produces train/val/test splits, artifacts saved
+- **Acceptance:** Cleans, encodes, scales, selects features, produces train/val/test splits, saves artifacts
+- **Status:** Verified (src/data/preprocessor.py, src/data/splitter.py, scripts/preprocess.py)
 
 ### DATA-003
 - **Owner:** Deekshay
 - **Priority:** High
 - **Description:** Add data validation checks
 - **Dependencies:** DATA-002
-- **Acceptance:** Validates schema, checks for leakage, reports data quality metrics
+- **Acceptance:** Validates schema, checks for leakage, reports data quality metrics (11/11 checks pass)
+- **Status:** Verified (src/data/validator.py, tests/unit/test_validator.py)
+
+---
+
+## 📋 TODO
 
 ### GAN-001
 - **Owner:** Deekshay

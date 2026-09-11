@@ -161,6 +161,22 @@ make run-frontend
 
 The API will be available at `http://localhost:8000` and the dashboard at `http://localhost:5173`.
 
+### Dataset Ingestion & Preprocessing (Phase 2)
+
+```bash
+# Generate a development sample (quick offline development without 6GB download)
+python scripts/download_dataset.py --generate-dev-sample --rows 50000
+
+# Inspect raw CSV files
+python scripts/preprocess.py --inspect
+
+# Run complete preprocessing pipeline (cleaning, encoding, feature selection, splitting)
+python scripts/preprocess.py
+
+# Validate processed datasets and artifacts
+python scripts/preprocess.py --validate
+```
+
 ### Running Tests
 
 ```bash
