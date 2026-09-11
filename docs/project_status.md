@@ -56,10 +56,10 @@
 - [x] Stratified 2-stage train/validation/test splitter (`src/data/splitter.py`)
 - [x] Feature selection via variance and correlation thresholds fitted on training data only
 - [x] Multi-attack label normalization handling Windows-1252 / latin-1 byte quirks
-- [x] Automated validator with 11 integrity and isolation checks (`src/data/validator.py`)
+- [x] Automated validator with 13 integrity, isolation, and feature metadata consistency checks (`src/data/validator.py`)
 - [x] Production CLI for inspect, preprocess, and validate (`scripts/preprocess.py`)
-- [x] Unit and integration tests (53 tests total, all passing)
-- [x] Complete pipeline documentation (`docs/data_pipeline.md`)
+- [x] Unit and integration tests (55 tests total, all passing)
+- [x] Complete pipeline documentation and feature arithmetic verification (`docs/data_pipeline.md`)
 
 ## In Progress
 
@@ -90,8 +90,8 @@ source .venv/bin/activate && pytest tests/ -v --tb=short && ruff check src/ test
 ## Latest Verified Result
 
 ```
-53 passed in 1.30s
+55 passed in 1.35s
 Ruff: All checks passed!
 Black: All 45 files unchanged!
-DataValidator: 11/11 validation checks passed!
+DataValidator: 13/13 validation checks passed!
 ```

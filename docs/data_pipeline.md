@@ -101,10 +101,18 @@ Raw CSVs (data/raw/)
 ## 4. Pipeline Stages & Leakage Prevention
 
 ### 4.1 Step 1: Identifier & Metadata Removal
-The raw dataset includes flow identifiers and network location metadata:
+Configuration in `config/preprocessing.yaml` specifies candidate identifier columns to drop if present:
 - `Flow ID`, `Source IP`, `Source Port`, `Destination IP`, `Destination Port`, `Timestamp`
 
-These are strictly identifiers that cause memorization and target leakage in machine learning models. The preprocessor drops them prior to feature selection.
+These are strictly identifiers that cause memorization and target leakage in machine learning models. The preprocessor drops any matching columns prior to feature selection.
+
+**Feature Count Arithmetic Verification:**
+- **Raw Development Dataset:** 73 total columns (72 flow/numerical columns + 1 `Label` column).
+- **Identifiers Present in Raw Development Dataset:** 1 column (`Destination Port`). The other 5 candidate identifier columns (`Flow ID`, `Source IP`, `Source Port`, `Destination IP`, `Timestamp`) are not present in flow-only benchmark files.
+- **Post-Identifier Feature Count:** $72 \text{ raw features} - 1 \text{ dropped identifier} = 71 \text{ features}$.
+- **Post-Variance / Post-Correlation Feature Count:** $71 - 0 - 0 = 71 \text{ features}$.
+- **Final Partition Dimensions:** `train.csv` (3,437 × 72), `val.csv` (736 × 72), `test.csv` (737 × 72) — each containing 71 scaled numerical features plus 1 `Label` column.
+- **Artifact Consistency:** `scaler.n_features_in_ == 71`, `feature_list.json == 71`, `preprocessing_report.json == 71`.
 
 ### 4.2 Step 2: Anomaly Cleaning & Label Normalization
 1. **Deduplication:** Repeated packets and duplicated flow records are removed.

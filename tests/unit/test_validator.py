@@ -42,8 +42,13 @@ def valid_dataset_dir(tmp_path: Path) -> Path:
     val_df.to_csv(data_dir / "val.csv", index=False)
     test_df.to_csv(data_dir / "test.csv", index=False)
 
-    # Mock artifacts
-    (data_dir / "scaler.joblib").write_bytes(b"mock_scaler")
+    # Real fitted scaler and mock encoder
+    import joblib
+    from sklearn.preprocessing import StandardScaler
+
+    scaler = StandardScaler()
+    scaler.fit(train_df[["feat_1", "feat_2", "feat_3"]])
+    joblib.dump(scaler, data_dir / "scaler.joblib")
     (data_dir / "label_encoder.joblib").write_bytes(b"mock_encoder")
     with open(data_dir / "feature_list.json", "w") as f:
         json.dump({"features_after_selection": ["feat_1", "feat_2", "feat_3"]}, f)
@@ -139,3 +144,34 @@ def test_validation_report_export(tmp_path: Path, valid_dataset_dir: Path):
     md_content = Path(saved_files["markdown"]).read_text()
     assert "ASCCD Data Validation Report" in md_content
     assert "PASSED" in md_content
+
+
+def test_validator_fails_on_feature_count_metadata_mismatch(
+    valid_dataset_dir: Path,
+):
+    """Regression test: Validator must fail when feature_list.json count differs from split data."""
+    # Write feature_list with only 2 features, while data has 3
+    with open(valid_dataset_dir / "feature_list.json", "w") as f:
+        json.dump({"features_after_selection": ["feat_1", "feat_2"]}, f)
+
+    validator = DataValidator(valid_dataset_dir)
+    report = validator.validate()
+
+    assert report.is_valid is False
+    assert any("feature_metadata_consistency" in err for err in report.errors)
+
+
+def test_validator_fails_on_scaler_dimension_mismatch(valid_dataset_dir: Path):
+    """Regression test: Validator must fail when scaler n_features_in_ differs from split data."""
+    import joblib
+    from sklearn.preprocessing import StandardScaler
+
+    bad_scaler = StandardScaler()
+    bad_scaler.fit([[1.0, 2.0]])  # Only 2 features, while data has 3
+    joblib.dump(bad_scaler, valid_dataset_dir / "scaler.joblib")
+
+    validator = DataValidator(valid_dataset_dir)
+    report = validator.validate()
+
+    assert report.is_valid is False
+    assert any("scaler_dimension_consistency" in err for err in report.errors)

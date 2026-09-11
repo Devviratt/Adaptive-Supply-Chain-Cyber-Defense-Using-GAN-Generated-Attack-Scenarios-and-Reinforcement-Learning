@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+import joblib
 import numpy as np
 import pandas as pd
 
@@ -571,18 +572,52 @@ class DataValidator:
                 {"artifacts": expected_artifacts},
             )
 
+        # Inspect feature list consistency if available
         feature_file = self.data_dir / "feature_list.json"
         if feature_file.is_file():
             try:
                 with open(feature_file) as f:
                     meta = json.load(f)
                 saved_features = meta.get("features_after_selection", [])
-                if saved_features and set(saved_features) != set(feature_cols):
-                    report.add_warning(
-                        f"Feature count mismatch between feature_list.json ({len(saved_features)}) and split files ({len(feature_cols)})."
+                if saved_features:
+                    features_match = (set(saved_features) == set(feature_cols)) and (
+                        len(saved_features) == len(feature_cols)
+                    )
+                    report.add_check(
+                        "feature_metadata_consistency",
+                        features_match,
+                        f"Feature list ({len(saved_features)}) matches split feature count ({len(feature_cols)}).",
+                        {
+                            "feature_list_count": len(saved_features),
+                            "split_features_count": len(feature_cols),
+                        },
                     )
             except Exception as e:
-                report.add_warning(f"Could not parse feature_list.json: {e}")
+                report.add_check(
+                    "feature_metadata_consistency",
+                    False,
+                    f"Could not parse feature_list.json: {e}",
+                )
+
+        # Inspect scaler feature dimension consistency if available
+        scaler_file = self.data_dir / "scaler.joblib"
+        if scaler_file.is_file():
+            try:
+                scaler_obj = joblib.load(scaler_file)
+                n_scaler = getattr(scaler_obj, "n_features_in_", None)
+                if n_scaler is not None:
+                    scaler_match = n_scaler == len(feature_cols)
+                    report.add_check(
+                        "scaler_dimension_consistency",
+                        scaler_match,
+                        f"Scaler dimension ({n_scaler}) matches split features count ({len(feature_cols)}).",
+                        {
+                            "scaler_features": n_scaler,
+                            "split_features": len(feature_cols),
+                        },
+                    )
+            except Exception as e:
+                logger.warning("scaler_load_skipped_in_validation", error=str(e))
 
 
 def validate_processed_data(
