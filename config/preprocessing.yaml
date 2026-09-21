@@ -5,8 +5,19 @@
 preprocessing:
   # CIC-IDS2017 dataset
   dataset: "CIC-IDS2017"
-  
-  # Features to drop (known problematic columns)
+
+  # Input / Output paths (relative to project root)
+  input_dir: "data/raw"
+  output_dir: "data/processed"
+
+  # Random seed for reproducibility
+  random_seed: 42
+
+  # ============================================================
+  # Columns to drop — identifiers and metadata not useful as features.
+  # These contain network identifiers (IPs, ports, flow IDs) and timestamps
+  # that would cause overfitting and are not generalizable features.
+  # ============================================================
   drop_columns:
     - "Flow ID"
     - "Source IP"
@@ -15,49 +26,110 @@ preprocessing:
     - "Destination Port"
     - "Timestamp"
 
-  # Missing value strategy
+  # ============================================================
+  # Missing value handling
+  # ============================================================
   missing_values:
-    strategy: "drop"  # "drop", "mean", "median", "zero"
-    threshold: 0.5    # Drop columns with >50% missing
+    # Strategy for remaining NaN after inf-replacement:
+    #   "drop_rows"  — remove rows containing NaN
+    #   "median"     — fill with column median (from training set only)
+    #   "mean"       — fill with column mean (from training set only)
+    #   "zero"       — fill with 0
+    strategy: "drop_rows"
+    # Drop columns where >50% of values are NaN (before row-level handling)
+    column_threshold: 0.5
 
-  # Inf value handling
-  inf_handling: "replace_with_nan"  # then apply missing strategy
+  # ============================================================
+  # Infinity handling — replace ±Inf before missing-value strategy
+  # ============================================================
+  inf_handling: "replace_with_nan"  # replaced, then missing_values strategy applies
 
+  # ============================================================
   # Scaling
-  scaler: "standard"  # "standard", "minmax", "robust"
+  # ============================================================
+  scaler: "standard"  # "standard" | "minmax" | "robust"
 
+  # ============================================================
   # Feature selection
+  # ============================================================
   feature_selection:
+    # Remove features with variance below this threshold
     variance_threshold: 0.01
-    correlation_threshold: 0.95  # Drop one of highly correlated pair
+    # Remove one feature from each pair with correlation above this
+    correlation_threshold: 0.95
 
-  # Label mapping — normalize CIC-IDS2017 labels
-  label_column: "Label"
+  # ============================================================
+  # Label column and normalization mapping
+  #
+  # CIC-IDS2017 labels include specific attack tool names.
+  # We normalize these into canonical high-level categories.
+  # Any label NOT listed here is mapped to "unknown".
+  # ============================================================
+  label_column: " Label"   # NOTE: CIC-IDS2017 has a leading space in the column name
+  label_column_alt: "Label"  # Some cleaned versions use this
+
   label_mapping:
+    # Benign traffic
     "BENIGN": "benign"
+    # Denial of Service
     "DoS Hulk": "dos"
     "DoS GoldenEye": "dos"
     "DoS slowloris": "dos"
     "DoS Slowhttptest": "dos"
+    # Distributed Denial of Service
     "DDoS": "ddos"
+    # Port Scanning
     "PortScan": "portscan"
+    # Brute Force attacks
     "FTP-Patator": "brute_force"
     "SSH-Patator": "brute_force"
+    # Web-based attacks
+    "Web Attack \u2013 Brute Force": "web_attack"
+    "Web Attack \u2013 XSS": "web_attack"
+    "Web Attack \u2013 Sql Injection": "web_attack"
     "Web Attack – Brute Force": "web_attack"
     "Web Attack – XSS": "web_attack"
     "Web Attack – Sql Injection": "web_attack"
+    "Web Attack - Brute Force": "web_attack"
+    "Web Attack - XSS": "web_attack"
+    "Web Attack - Sql Injection": "web_attack"
+    # Botnet
     "Bot": "botnet"
+    # Infiltration
     "Infiltration": "infiltration"
+    # Heartbleed
     "Heartbleed": "heartbleed"
 
-  # Train/val/test split ratios
+  # Canonical label list (for validation)
+  valid_labels:
+    - "benign"
+    - "dos"
+    - "ddos"
+    - "portscan"
+    - "brute_force"
+    - "web_attack"
+    - "botnet"
+    - "infiltration"
+    - "heartbleed"
+    - "unknown"
+
+  # ============================================================
+  # Train / Validation / Test split
+  # ============================================================
   split:
     train: 0.70
     validation: 0.15
     test: 0.15
     stratify: true
 
-  # Development mode — use subset
+  # ============================================================
+  # Development mode — use a random subset for faster iteration
+  # ============================================================
   dev_mode:
     enabled: true
     sample_size: 50000
+
+  # ============================================================
+  # Output format
+  # ============================================================
+  output_format: "parquet"  # "parquet" | "csv"

@@ -78,10 +78,15 @@ def load_yaml_config(config_name: str) -> dict[str, Any]:
     Raises:
         FileNotFoundError: If the config file does not exist.
     """
-    if not config_name.endswith(".yaml"):
-        config_name = f"{config_name}.yaml"
+    if isinstance(config_name, Path):
+        config_path = config_name
+    else:
+        name_str = str(config_name)
+        if not (name_str.endswith(".yaml") or name_str.endswith(".yml")):
+            name_str = f"{name_str}.yaml"
+        target_path = Path(name_str)
+        config_path = target_path if target_path.is_absolute() else CONFIG_DIR / target_path
 
-    config_path = CONFIG_DIR / config_name
     if not config_path.exists():
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
