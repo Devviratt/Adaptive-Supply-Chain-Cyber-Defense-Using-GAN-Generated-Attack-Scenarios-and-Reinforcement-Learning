@@ -11,8 +11,8 @@
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_ORG/asccd.git
-cd asccd
+git clone https://github.com/Devviratt/Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning.git
+cd "Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning"
 
 # 2. Create and activate Python virtual environment
 python3 -m venv .venv

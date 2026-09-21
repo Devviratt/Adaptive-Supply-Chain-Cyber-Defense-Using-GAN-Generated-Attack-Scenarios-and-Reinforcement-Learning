@@ -1,6 +1,6 @@
 # Adaptive Supply Chain Cyber Defense Using GAN-Generated Attack Scenarios and Reinforcement Learning
 
-[![CI](https://github.com/YOUR_ORG/asccd/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_ORG/asccd/actions/workflows/ci.yml)
+[![CI](https://github.com/Devviratt/Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning/actions/workflows/ci.yml/badge.svg)](https://github.com/Devviratt/Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -132,8 +132,8 @@ Metrics include mitigation success rate, service availability, cumulative reward
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_ORG/asccd.git
-cd asccd
+git clone https://github.com/Devviratt/Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning.git
+cd "Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning"
 
 # Create virtual environment
 python3 -m venv .venv
