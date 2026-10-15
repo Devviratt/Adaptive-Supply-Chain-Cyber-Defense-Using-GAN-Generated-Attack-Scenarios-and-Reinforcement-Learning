@@ -83,12 +83,8 @@
 - **Priority:** High
 - **Description:** Add data validation checks
 - **Dependencies:** DATA-002
-- **Acceptance:** Validates schema, checks for leakage, reports data quality metrics (11/11 checks pass)
+- **Acceptance:** Validates schema, checks for leakage, reports data quality metrics (13/13 checks pass)
 - **Status:** Verified (src/data/validator.py, tests/unit/test_validator.py)
-
----
-
-## 📋 TODO
 
 ### GAN-001
 - **Owner:** Deekshay
@@ -96,6 +92,7 @@
 - **Description:** Implement CTGAN training pipeline
 - **Dependencies:** DATA-002
 - **Acceptance:** CTGAN trains on processed data, checkpoints saved, config externalized
+- **Status:** Verified (src/gan/trainer.py, scripts/train_gan.py, tests/unit/test_ctgan_trainer.py)
 
 ### GAN-002
 - **Owner:** Deekshay
@@ -103,6 +100,7 @@
 - **Description:** Implement synthetic data generation
 - **Dependencies:** GAN-001
 - **Acceptance:** Generates N samples, class-specific generation, saves outputs
+- **Status:** Verified (src/gan/generator.py, scripts/generate_synthetic.py, tests/unit/test_synthetic_generator.py)
 
 ### GAN-003
 - **Owner:** Deekshay
@@ -110,6 +108,11 @@
 - **Description:** Implement synthetic data validation
 - **Dependencies:** GAN-002
 - **Acceptance:** Distribution comparison, correlation check, diversity check, visual report
+- **Status:** Verified (src/gan/validator.py, src/gan/evaluation.py, scripts/evaluate_synthetic_utility.py, tests/unit/test_gan_validator.py)
+
+---
+
+## 📋 TODO
 
 ### SCENARIO-001
 - **Owner:** Anandavarthan

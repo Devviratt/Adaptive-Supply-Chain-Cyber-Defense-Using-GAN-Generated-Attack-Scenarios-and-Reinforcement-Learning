@@ -104,6 +104,9 @@ train-gan: ## Train CTGAN model
 generate-synthetic: ## Generate synthetic data
 	$(PYTHON) scripts/generate_synthetic.py
 
+evaluate-utility: ## Run downstream ML utility evaluation
+	$(PYTHON) scripts/evaluate_synthetic_utility.py
+
 train-dqn: ## Train DQN agent
 	$(PYTHON) scripts/train_dqn.py
 
