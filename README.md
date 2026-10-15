@@ -177,6 +177,19 @@ python scripts/preprocess.py
 python scripts/preprocess.py --validate
 ```
 
+### CTGAN Attack Generation & Validation (Phase 3)
+
+```bash
+# Train CTGAN on processed training features
+python scripts/train_gan.py --epochs 25 --batch-size 200
+
+# Generate 2,000 synthetic attack samples and validate quality
+python scripts/generate_synthetic.py --num-samples 2000 --validate
+
+# Evaluate downstream ML utility on untouched test data
+python scripts/evaluate_synthetic_utility.py
+```
+
 ### Running Tests
 
 ```bash

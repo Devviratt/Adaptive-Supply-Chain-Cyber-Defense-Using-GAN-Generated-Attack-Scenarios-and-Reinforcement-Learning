@@ -55,10 +55,15 @@ data/processed/*.png
 data/generated/*.csv
 data/generated/*.pkl
 data/generated/*.parquet
+data/generated/*.json
 
 # ============================================================
 # ML Artifacts (large model files)
 # ============================================================
+artifacts/models/**/*.pt
+artifacts/models/**/*.pth
+artifacts/models/**/*.pkl
+artifacts/models/**/*.zip
 artifacts/models/*.pt
 artifacts/models/*.pth
 artifacts/models/*.pkl
