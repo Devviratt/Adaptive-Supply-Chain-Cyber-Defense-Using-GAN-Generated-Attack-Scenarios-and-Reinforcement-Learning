@@ -1,0 +1,128 @@
+{
+  "test_sample_count": 737,
+  "test_class_distribution": {
+    "benign": 592,
+    "dos": 79,
+    "portscan": 27,
+    "ddos": 23,
+    "brute_force": 13,
+    "botnet": 2,
+    "web_attack": 1
+  },
+  "model_a_real_only": {
+    "accuracy": 0.787,
+    "macro_f1": 0.1372,
+    "weighted_f1": 0.716,
+    "per_class_f1": {
+      "benign": 0.8807,
+      "botnet": 0.0,
+      "brute_force": 0.0,
+      "ddos": 0.0,
+      "dos": 0.08,
+      "portscan": 0.0,
+      "web_attack": 0.0
+    },
+    "per_class_precision": {
+      "benign": 0.8045,
+      "botnet": 0.0,
+      "brute_force": 0.0,
+      "ddos": 0.0,
+      "dos": 0.1905,
+      "portscan": 0.0,
+      "web_attack": 0.0
+    },
+    "per_class_recall": {
+      "benign": 0.973,
+      "botnet": 0.0,
+      "brute_force": 0.0,
+      "ddos": 0.0,
+      "dos": 0.0506,
+      "portscan": 0.0,
+      "web_attack": 0.0
+    },
+    "per_class_support": {
+      "benign": 592,
+      "botnet": 2,
+      "brute_force": 13,
+      "ddos": 23,
+      "dos": 79,
+      "portscan": 27,
+      "web_attack": 1
+    },
+    "training_sample_count": 3437,
+    "training_class_distribution": {
+      "benign": 2763,
+      "dos": 368,
+      "portscan": 122,
+      "ddos": 104,
+      "brute_force": 60,
+      "botnet": 12,
+      "web_attack": 8
+    }
+  },
+  "model_b_augmented": {
+    "accuracy": 0.8019,
+    "macro_f1": 0.1272,
+    "weighted_f1": 0.7149,
+    "per_class_f1": {
+      "benign": 0.8901,
+      "botnet": 0.0,
+      "brute_force": 0.0,
+      "ddos": 0.0,
+      "dos": 0.0,
+      "portscan": 0.0,
+      "web_attack": 0.0
+    },
+    "per_class_precision": {
+      "benign": 0.803,
+      "botnet": 0.0,
+      "brute_force": 0.0,
+      "ddos": 0.0,
+      "dos": 0.0,
+      "portscan": 0.0,
+      "web_attack": 0.0
+    },
+    "per_class_recall": {
+      "benign": 0.9983,
+      "botnet": 0.0,
+      "brute_force": 0.0,
+      "ddos": 0.0,
+      "dos": 0.0,
+      "portscan": 0.0,
+      "web_attack": 0.0
+    },
+    "per_class_support": {
+      "benign": 592,
+      "botnet": 2,
+      "brute_force": 13,
+      "ddos": 23,
+      "dos": 79,
+      "portscan": 27,
+      "web_attack": 1
+    },
+    "training_sample_count": 5437,
+    "training_class_distribution": {
+      "benign": 3274,
+      "dos": 747,
+      "portscan": 414,
+      "ddos": 374,
+      "brute_force": 302,
+      "botnet": 180,
+      "web_attack": 146
+    }
+  },
+  "macro_f1_delta": -0.01,
+  "weighted_f1_delta": -0.0011,
+  "accuracy_delta": 0.0149,
+  "minority_class_f1_improvements": {
+    "benign": 0.0094,
+    "botnet": 0.0,
+    "brute_force": 0.0,
+    "ddos": 0.0,
+    "dos": -0.08,
+    "portscan": 0.0,
+    "web_attack": 0.0
+  },
+  "augmentation_utility_positive": true,
+  "evaluation_seed": 42
+}
