@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink, useLocation } from 'react-router-dom'
+import { Routes, Route, NavLink } from 'react-router-dom'
 import Overview from './pages/Overview'
 import ProjectStatus from './pages/ProjectStatus'
 
@@ -57,8 +57,6 @@ function Placeholder({ title }: { title: string }) {
 }
 
 export default function App() {
-  const location = useLocation()
-
   return (
     <div className="app-layout">
       {/* Sidebar Navigation */}
