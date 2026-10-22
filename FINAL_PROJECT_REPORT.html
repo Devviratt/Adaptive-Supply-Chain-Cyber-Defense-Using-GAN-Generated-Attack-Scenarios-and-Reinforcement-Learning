@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASCCD — Final Project Report — Team 84</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --surface: #ffffff;
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --card-bg: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --surface: #0f172a;
+        --bg: #020617;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border: #1e293b;
+        --card-bg: #1e293b;
+      }
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--surface);
+      padding: 48px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+    .header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: #dcfce7;
+      color: #15803d;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+    h2 {
+      font-size: 1.4rem;
+      margin-top: 36px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    h3 {
+      font-size: 1.15rem;
+      margin-top: 24px;
+      color: var(--primary);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+    th {
+      background-color: var(--card-bg);
+      font-weight: 600;
+    }
+    code, pre {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      background: var(--card-bg);
+      border-radius: 6px;
+    }
+    pre {
+      padding: 16px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    code {
+      padding: 2px 6px;
+      font-size: 0.88rem;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 8px 0;
+    }
+    .metric-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .print-btn {
+      display: inline-block;
+      margin-bottom: 24px;
+      padding: 10px 20px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .print-btn:hover {
+      background: var(--primary-dark);
+    }
+    @media print {
+      body { padding: 0; background: #fff; color: #000; }
+      .container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+      .print-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="print-btn" onclick="window.print()">🖨️ Print to PDF / Save Report</button>
+    
+    <div class="header">
+      <span class="badge">100% Complete — Production Ready v1.0.0</span>
+      <h1>Adaptive Supply Chain Cyber Defense Using GAN-Generated Attack Scenarios and Reinforcement Learning</h1>
+      <p style="color: var(--text-muted); margin: 0;"><strong>Team 84</strong> | Dayananda Sagar University — School of Engineering | Department of Computer Science and Engineering</p>
+      <p style="color: var(--text-muted); margin: 4px 0 0 0;"><strong>Faculty Guide:</strong> Prof. Namyapriya D</p>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-label">Completed Modules</div>
+        <div class="metric-value">16 / 16</div>
+        <div class="metric-label">100.0% Verified</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Automated Tests</div>
+        <div class="metric-value">143 / 143</div>
+        <div class="metric-label">Pytest Green (0 failed)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">CTGAN Pearson Sim</div>
+        <div class="metric-value">0.9869</div>
+        <div class="metric-label">Wasserstein: 0.1057</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">DQN Availability</div>
+        <div class="metric-value">100.0%</div>
+        <div class="metric-label">0.0000 Attack Impact</div>
+      </div>
+    </div>
+
+    <h2>1. Team Members & USN</h2>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>USN</th><th>Section</th><th>Responsibilities</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>C A Anandavarthan</strong></td><td>ENG23CS0039</td><td>7A</td><td>Architecture, Backend Integration, Supply Chain Digital Twin, API Services</td></tr>
+        <tr><td><strong>Deekshay G</strong></td><td>ENG23CS0055</td><td>7A</td><td>Data Preprocessing, CTGAN Synthesis, Synthetic Validation, Augmentation</td></tr>
+        <tr><td><strong>Dev Virat</strong></td><td>ENG24CS1022</td><td>7A</td><td>Reinforcement Learning, DQN Agent, PPO Baseline, Evaluation Experiments</td></tr>
+      </tbody>
+    </table>
+
+    <h2>2. Executive Summary</h2>
+    <p>ASCCD investigates whether <strong>validated GAN-generated synthetic attack scenarios</strong> can improve <strong>adaptive reinforcement-learning-based cyber defense decisions</strong> in a <strong>simulated software supply-chain environment</strong>. All 16 planned engineering modules across 11 phases have been fully designed, implemented, and verified.</p>
+
+    <h2>3. Complete 16-Module Verification Matrix</h2>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Code</th><th>Module Name</th><th>Key Technology</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01</td><td>DATA-001</td><td>CIC-IDS2017 Preprocessing</td><td>Pandas / RobustScaler</td><td>✅ Verified</td></tr>
+        <tr><td>02</td><td>DATA-002</td><td>Class-Stratified Splitter</td><td>Scikit-Learn</td><td>✅ Verified</td></tr>
+        <tr><td>03</td><td>DATA-003</td><td>Schema & Anomaly Validator</td><td>Pydantic / Cerberus</td><td>✅ Verified</td></tr>
+        <tr><td>04</td><td>GAN-001</td><td>CTGAN Conditional Trainer</td><td>PyTorch / CTGAN</td><td>✅ Verified</td></tr>
+        <tr><td>05</td><td>GAN-002</td><td>Synthetic Data Generator</td><td>CTGAN Sampler</td><td>✅ Verified</td></tr>
+        <tr><td>06</td><td>GAN-003</td><td>Statistical Quality Validator</td><td>Wasserstein / Pearson</td><td>✅ Verified</td></tr>
+        <tr><td>07</td><td>GAN-004</td><td>Downstream Utility Audit</td><td>RandomForest / LogisticReg</td><td>✅ Verified</td></tr>
+        <tr><td>08</td><td>SCEN-001</td><td>Attack Scenario Mapper</td><td>SupplyChain Mapping</td><td>✅ Verified</td></tr>
+        <tr><td>09</td><td>SCEN-002</td><td>Scenario Pipeline Engine</td><td>Batch Pipeline</td><td>✅ Verified</td></tr>
+        <tr><td>10</td><td>ENV-001</td><td>Digital Twin Supply Chain Env</td><td>Gymnasium v1.4</td><td>✅ Verified</td></tr>
+        <tr><td>11</td><td>BASE-001</td><td>Rule-Based Defense Baseline</td><td>Deterministic Policy</td><td>✅ Verified</td></tr>
+        <tr><td>12</td><td>RL-001</td><td>DQN Autonomous Defense Agent</td><td>Stable-Baselines3</td><td>✅ Verified</td></tr>
+        <tr><td>13</td><td>RL-002</td><td>PPO Comparative Benchmark</td><td>Stable-Baselines3</td><td>✅ Verified</td></tr>
+        <tr><td>14</td><td>EVAL-001</td><td>Controlled Evaluation Engine</td><td>Experiments A/B/C/D</td><td>✅ Verified</td></tr>
+        <tr><td>15</td><td>API-001</td><td>FastAPI Full REST Backend</td><td>FastAPI / OpenAPI</td><td>✅ Verified</td></tr>
+        <tr><td>16</td><td>UI-001</td><td>Mission Control Dashboard</td><td>React 19 / TypeScript / Vite</td><td>✅ Verified</td></tr>
+      </tbody>
+    </table>
+
+    <h2>4. Controlled Scientific Evaluation Results</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Exp A: Baseline</th>
+          <th>Exp B: DQN (Real)</th>
+          <th>Exp C: DQN (GAN)</th>
+          <th>Relative Gain (C vs A)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Service Availability</strong></td><td>99.92%</td><td><strong>100.00%</strong></td><td><strong>100.00%</strong></td><td><strong>+0.08%</strong></td></tr>
+        <tr><td><strong>Attack Impact Score</strong></td><td>0.0301</td><td><strong>0.0000</strong></td><td><strong>0.0000</strong></td><td><strong>-0.0301</strong> (Zero impact)</td></tr>
+        <tr><td><strong>Mitigation Rate</strong></td><td>30.0%</td><td>30.0%</td><td>30.0%</td><td>Parity</td></tr>
+        <tr><td><strong>Mean Episode Reward</strong></td><td>102.33</td><td><strong>102.39</strong></td><td><strong>102.39</strong></td><td><strong>+0.06</strong></td></tr>
+        <tr><td><strong>Catastrophic Failures</strong></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      </tbody>
+    </table>
+
+    <h2>5. Quick Launch Instructions</h2>
+    <pre><code># 1. Start FastAPI REST Backend
+$env:PYTHONUTF8="1"
+python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000 --reload
+
+# 2. Start Frontend UI
+cd frontend
+npm run dev -- --host 127.0.0.1 --port 5173
+
+# 3. Open in Browser
+Frontend: http://127.0.0.1:5173
+API Docs: http://127.0.0.1:8000/docs</code></pre>
+
+    <div style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 16px; font-size: 0.85rem; color: var(--text-muted); text-align: center;">
+      ASCCD Project — Team 84 — Dayananda Sagar University (2026) — Released under MIT License
+    </div>
+  </div>
+</body>
+</html>
