@@ -13,7 +13,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.api.routers import health, project
+from src.api.routers import (
+    defense,
+    experiments,
+    health,
+    project,
+    scenarios,
+    simulation,
+)
 from src.common.config import get_settings
 from src.common.database import create_db_engine, init_db
 from src.common.logging import get_logger, setup_logging
@@ -87,6 +94,10 @@ def create_app() -> FastAPI:
     # Register routers
     app.include_router(health.router, prefix="/api", tags=["Health"])
     app.include_router(project.router, prefix="/api/project", tags=["Project"])
+    app.include_router(scenarios.router, prefix="/api/scenarios", tags=["Scenarios"])
+    app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
+    app.include_router(defense.router, prefix="/api/defense", tags=["Defense"])
+    app.include_router(experiments.router, prefix="/api/experiments", tags=["Experiments"])
 
     return app
 

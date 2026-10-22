@@ -110,16 +110,13 @@
 - **Acceptance:** Distribution comparison, correlation check, diversity check, visual report
 - **Status:** Verified (src/gan/validator.py, src/gan/evaluation.py, scripts/evaluate_synthetic_utility.py, tests/unit/test_gan_validator.py)
 
----
-
-## 📋 TODO
-
 ### SCENARIO-001
-- **Owner:** Anandavarthan
+- **Owner:** Anandavarthan / Deekshay
 - **Priority:** Critical
 - **Description:** Implement scenario mapper (attack → supply-chain scenario)
 - **Dependencies:** DATA-002
 - **Acceptance:** Maps attack records to structured scenarios, documented mapping logic
+- **Status:** Verified (src/scenarios/models.py, src/scenarios/mapper.py, config/scenario.yaml, scripts/run_scenario_mapping.py, tests/unit/test_scenario_mapper.py, tests/integration/test_scenario_pipeline.py)
 
 ### ENV-001
 - **Owner:** Anandavarthan
@@ -127,6 +124,7 @@
 - **Description:** Implement supply-chain Gymnasium environment
 - **Dependencies:** SCENARIO-001
 - **Acceptance:** Env registered, reset/step work, state/action/reward valid, tests pass
+- **Status:** Verified (src/environment/models.py, src/environment/supply_chain_env.py, config/environment.yaml, scripts/run_simulation.py, tests/unit/test_supply_chain_env.py, tests/integration/test_env_pipeline.py)
 
 ### BASELINE-001
 - **Owner:** Dev Virat
@@ -134,6 +132,7 @@
 - **Description:** Implement rule-based baseline policy
 - **Dependencies:** ENV-001
 - **Acceptance:** Configurable rules, runs on environment, produces evaluation metrics
+- **Status:** Verified (src/baselines/models.py, src/baselines/rule_based.py, config/baseline.yaml, scripts/run_baseline.py, tests/unit/test_rule_based_baseline.py)
 
 ### RL-001
 - **Owner:** Dev Virat
@@ -141,13 +140,15 @@
 - **Description:** Implement DQN agent with Stable-Baselines3
 - **Dependencies:** ENV-001
 - **Acceptance:** DQN trains, checkpoints save, evaluation callback works, reproducible
+- **Status:** Verified (src/rl/dqn_agent.py, config/dqn.yaml, scripts/train_dqn.py, tests/unit/test_dqn_agent.py, tests/integration/test_rl_pipeline.py)
 
 ### RL-002
 - **Owner:** Dev Virat
 - **Priority:** Low
-- **Description:** Implement PPO comparison agent (optional)
+- **Description:** Implement PPO comparison agent
 - **Dependencies:** RL-001
 - **Acceptance:** PPO trains on same env, comparable evaluation
+- **Status:** Verified (src/rl/ppo_agent.py, config/ppo.yaml, tests/unit/test_ppo_agent.py)
 
 ### EVAL-001
 - **Owner:** Dev Virat
@@ -155,13 +156,15 @@
 - **Description:** Implement evaluation engine
 - **Dependencies:** BASELINE-001, RL-001
 - **Acceptance:** Computes all required metrics, stores results, generates reports
+- **Status:** Verified (src/evaluation/engine.py, src/evaluation/models.py, config/evaluation.yaml, tests/unit/test_evaluation_engine.py)
 
 ### EVAL-002
 - **Owner:** Dev Virat
 - **Priority:** Critical
-- **Description:** Run controlled experiments A/B/C
+- **Description:** Run controlled experiments A/B/C/D
 - **Dependencies:** EVAL-001, GAN-003
 - **Acceptance:** All experiments executed, results stored, comparison generated
+- **Status:** Verified (scripts/run_experiments.py, artifacts/reports/experiments_summary.json, artifacts/reports/experiments_comparison.csv, tests/integration/test_evaluation_pipeline.py)
 
 ### API-001
 - **Owner:** Anandavarthan
@@ -169,6 +172,7 @@
 - **Description:** Implement full backend API (scenarios, simulation, RL, experiments, evaluation)
 - **Dependencies:** ENV-001, RL-001, EVAL-001
 - **Acceptance:** All endpoints functional, Pydantic validation, error handling
+- **Status:** Verified (src/api/routers/scenarios.py, src/api/routers/simulation.py, src/api/routers/defense.py, src/api/routers/experiments.py, tests/unit/test_api.py)
 
 ### UI-001
 - **Owner:** Anandavarthan
@@ -176,6 +180,7 @@
 - **Description:** Build premium React dashboard (all 10 pages)
 - **Dependencies:** API-001
 - **Acceptance:** All pages render, connected to backend, responsive, dark theme
+- **Status:** Verified (frontend/src/pages/ [all 10 pages], frontend/src/App.tsx, frontend/src/api/client.ts, tsc -b && vite build succeeds)
 
 ### TEST-001
 - **Owner:** All
@@ -183,6 +188,13 @@
 - **Description:** Complete test suite (unit + integration + smoke)
 - **Dependencies:** All modules
 - **Acceptance:** >80% critical path coverage, CI green
+- **Status:** Verified (143 passed, 0 failed in pytest)
+
+---
+
+## 📋 TODO
+
+(All 16 roadmap tasks completed!)
 
 ---
 

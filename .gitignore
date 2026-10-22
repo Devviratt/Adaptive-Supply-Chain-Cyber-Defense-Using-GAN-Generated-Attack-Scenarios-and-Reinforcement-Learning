@@ -113,3 +113,7 @@ htmlcov/
 !artifacts/figures/.gitkeep
 !experiments/runs/.gitkeep
 !experiments/results/.gitkeep
+artifacts/reports/*.json
+artifacts/reports/*.csv
+artifacts/figures/*.png
+Minor_project_code/

@@ -1,0 +1,113 @@
+# ============================================================
+# ASCCD Attack Scenario Mapping Configuration
+# ============================================================
+# Defines semantic mapping from CIC-IDS2017 / CTGAN network
+# flow features to software supply-chain impact semantics.
+
+scenario_mapping:
+  # Base mapping rules per attack category
+  categories:
+    web_attack:
+      affected_stage: "supplier"
+      severity: "high"
+      propagation_risk: 0.75
+      availability_impact: 0.20
+      integrity_impact: 0.85
+      confidentiality_impact: 0.70
+      base_duration_steps: 15
+      description: "Web vulnerabilities targeting source repositories or dependency registry portals."
+
+    brute_force:
+      affected_stage: "build"
+      severity: "medium"
+      propagation_risk: 0.60
+      availability_impact: 0.25
+      integrity_impact: 0.75
+      confidentiality_impact: 0.80
+      base_duration_steps: 10
+      description: "Credential stuffing or SSH brute force on build agents or distribution servers."
+
+    botnet:
+      affected_stage: "build"
+      severity: "high"
+      propagation_risk: 0.80
+      availability_impact: 0.40
+      integrity_impact: 0.70
+      confidentiality_impact: 0.65
+      base_duration_steps: 20
+      description: "Compromised CI/CD build nodes hijacked for lateral movement or illicit tasks."
+
+    dos:
+      affected_stage: "deployment"
+      severity: "high"
+      propagation_risk: 0.20
+      availability_impact: 0.90
+      integrity_impact: 0.10
+      confidentiality_impact: 0.05
+      base_duration_steps: 25
+      description: "Volumetric denial of service targeting production services or registry endpoints."
+
+    ddos:
+      affected_stage: "deployment"
+      severity: "critical"
+      propagation_risk: 0.25
+      availability_impact: 0.95
+      integrity_impact: 0.10
+      confidentiality_impact: 0.05
+      base_duration_steps: 30
+      description: "Distributed denial of service causing broad production system unavailability."
+
+    portscan:
+      affected_stage: "deployment"
+      severity: "low"
+      propagation_risk: 0.15
+      availability_impact: 0.10
+      integrity_impact: 0.05
+      confidentiality_impact: 0.30
+      base_duration_steps: 5
+      description: "Reconnaissance scan probing service topology and port vulnerabilities."
+
+    infiltration:
+      affected_stage: "supplier"
+      severity: "critical"
+      propagation_risk: 0.85
+      availability_impact: 0.30
+      integrity_impact: 0.90
+      confidentiality_impact: 0.90
+      base_duration_steps: 35
+      description: "Targeted stealth intrusion directly compromising developer workstation or upstream codebase."
+
+    benign:
+      affected_stage: "deployment"
+      severity: "low"
+      propagation_risk: 0.00
+      availability_impact: 0.00
+      integrity_impact: 0.00
+      confidentiality_impact: 0.00
+      base_duration_steps: 1
+      description: "Normal, authorized operational traffic with zero malicious consequence."
+
+    default:
+      affected_stage: "deployment"
+      severity: "medium"
+      propagation_risk: 0.30
+      availability_impact: 0.30
+      integrity_impact: 0.30
+      confidentiality_impact: 0.30
+      base_duration_steps: 10
+      description: "Fallback scenario profile for unrecognized network flow labels."
+
+  # Feature modulation settings
+  modulation:
+    enabled: true
+    # Feature names used for continuous modulation
+    duration_feature: "Flow Duration"
+    bytes_rate_feature: "Flow Bytes/s"
+    packets_rate_feature: "Flow Packets/s"
+    syn_flag_feature: "SYN Flag Count"
+    rst_flag_feature: "RST Flag Count"
+    
+    # Scale bounds
+    min_duration_steps: 1
+    max_duration_steps: 50
+    severity_upgrade_threshold: 0.85  # Modulation factor threshold to upgrade severity

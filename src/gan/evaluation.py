@@ -255,7 +255,7 @@ class DownstreamUtilityEvaluator:
             json.dump(report.to_dict(), f, indent=2, default=str)
 
         md_content = self._render_markdown_report(report)
-        with open(md_path, "w") as f:
+        with open(md_path, "w", encoding="utf-8") as f:
             f.write(md_content)
 
         logger.info("utility_reports_exported", json=str(json_path), md=str(md_path))

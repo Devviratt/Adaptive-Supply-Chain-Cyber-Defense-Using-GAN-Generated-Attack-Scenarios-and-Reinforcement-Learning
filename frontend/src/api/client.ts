@@ -1,13 +1,14 @@
 /**
  * ASCCD API Client
  *
- * Centralized API communication layer for the frontend.
- * All API calls go through this module.
+ * Centralized API communication layer for the frontend dashboard.
+ * Connects React UI to FastAPI backend endpoints for Scenarios, Simulation,
+ * Defense, Experiments, and Project status.
  */
 
 const API_BASE = '/api'
 
-interface ApiResponse<T> {
+export interface ApiResponse<T> {
   data: T | null
   error: string | null
 }
@@ -64,7 +65,7 @@ export async function getReadiness() {
 }
 
 // ============================================================
-// Project
+// Project & Team
 // ============================================================
 
 export interface ModuleStatus {
@@ -108,4 +109,208 @@ export async function getProjectStatus() {
 
 export async function getTeamInfo() {
   return apiFetch<TeamResponse>('/project/team')
+}
+
+// ============================================================
+// Attack Scenarios
+// ============================================================
+
+export interface ScenarioItem {
+  scenario_id: string
+  name?: string
+  attack_category: string
+  affected_stage: string
+  severity: string
+  propagation_risk: float
+  availability_impact: float
+  integrity_impact: float
+  confidentiality_impact: float
+  source: string
+  duration_steps: number
+  description: string
+}
+
+type float = number
+
+export interface ScenarioListResponse {
+  total: number
+  scenarios: ScenarioItem[]
+}
+
+export async function getScenarios(params?: {
+  category?: string
+  source?: string
+  limit?: number
+  offset?: number
+}) {
+  const query = new URLSearchParams()
+  if (params?.category) query.set('category', params.category)
+  if (params?.source) query.set('source', params.source)
+  if (params?.limit) query.set('limit', String(params.limit))
+  if (params?.offset) query.set('offset', String(params.offset))
+
+  const qs = query.toString() ? `?${query.toString()}` : ''
+  return apiFetch<ScenarioListResponse>(`/scenarios${qs}`)
+}
+
+export async function mapFlowRecord(features: Record<string, any>, label: string = 'DDoS') {
+  return apiFetch<ScenarioItem>('/scenarios/map', {
+    method: 'POST',
+    body: JSON.stringify({ features, label, source: 'ui_mapper' }),
+  })
+}
+
+// ============================================================
+// Supply Chain Simulation
+// ============================================================
+
+export interface StageStatus {
+  name: string
+  health: number
+  risk: number
+  criticality: number
+  is_compromised: boolean
+  is_isolated: boolean
+  is_blocked: boolean
+}
+
+export interface SimulationStepResponse {
+  observation: number[]
+  reward: number
+  terminated: boolean
+  truncated: boolean
+  stages: Record<string, StageStatus>
+  action_taken: string
+  step_info: Record<string, any>
+}
+
+export interface StageTopologyResponse {
+  stages: string[]
+  dependencies: { from: string; to: string }[]
+  actions: { id: number; name: string; cost: number; description: string }[]
+}
+
+export async function getStageTopology() {
+  return apiFetch<StageTopologyResponse>('/simulation/stages')
+}
+
+export async function resetSimulation(seed?: number, scenario_id?: string) {
+  return apiFetch<SimulationStepResponse>('/simulation/reset', {
+    method: 'POST',
+    body: JSON.stringify({ seed, scenario_id }),
+  })
+}
+
+export async function stepSimulation(action: number) {
+  return apiFetch<SimulationStepResponse>('/simulation/step', {
+    method: 'POST',
+    body: JSON.stringify({ action }),
+  })
+}
+
+// ============================================================
+// Defense Policies & Models
+// ============================================================
+
+export interface PredictResponse {
+  action: number
+  action_name: string
+  model_type: string
+  timestamp: string
+}
+
+export interface ModelInfo {
+  name: string
+  algorithm: string
+  path: string
+  size_bytes: number
+  modified_at: string
+}
+
+export async function predictDefenseAction(
+  observation: number[],
+  modelType: string = 'dqn',
+  deterministic: boolean = true
+) {
+  return apiFetch<PredictResponse>('/defense/predict', {
+    method: 'POST',
+    body: JSON.stringify({
+      observation,
+      model_type: modelType,
+      deterministic,
+    }),
+  })
+}
+
+export async function getDefenseModels() {
+  return apiFetch<ModelInfo[]>('/defense/models')
+}
+
+// ============================================================
+// Controlled Experiments & Evaluation
+// ============================================================
+
+export interface ExperimentItem {
+  id: number
+  experiment_id: string
+  model_type: string
+  status: string
+  started_at?: string
+  completed_at?: string
+  metrics: Record<string, number>
+}
+
+export interface ExperimentSummaryReport {
+  timestamp: string
+  experiments: Record<
+    string,
+    {
+      experiment_id: string
+      name: string
+      model_type: string
+      dataset: string
+      n_episodes: number
+      security: {
+        mitigation_success_rate: number
+        containment_rate: number
+        attack_impact_score: number
+        catastrophic_failures: number
+      }
+      availability: {
+        service_availability: number
+        total_downtime_steps: number
+      }
+      decision_quality: {
+        unnecessary_intervention_rate: number
+        avg_response_steps: number
+        action_distribution: Record<string, number>
+      }
+      rl: {
+        mean_reward: number
+        std_reward: number
+        reward_variance: number
+      }
+      performance_by_attack_class: Record<string, any>
+    }
+  >
+  relative_gains: Record<string, Record<string, number>>
+}
+
+export async function getExperiments() {
+  return apiFetch<ExperimentItem[]>('/experiments')
+}
+
+export async function getExperimentsSummary() {
+  return apiFetch<ExperimentSummaryReport>('/experiments/summary')
+}
+
+export async function runExperiments(
+  experiments: string[] = ['A', 'B', 'C'],
+  episodes: number = 10,
+  devMode: boolean = true
+) {
+  return apiFetch<ExperimentSummaryReport>('/experiments/run', {
+    method: 'POST',
+    body: JSON.stringify({ experiments, episodes, dev_mode: devMode }),
+  })
 }

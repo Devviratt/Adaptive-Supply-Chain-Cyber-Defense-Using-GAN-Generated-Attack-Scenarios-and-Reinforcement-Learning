@@ -8,6 +8,7 @@ Uses SQLite for local development; schema is PostgreSQL-compatible.
 from __future__ import annotations
 
 from collections.abc import Generator
+from contextlib import contextmanager
 from datetime import UTC, datetime
 
 from sqlalchemy import create_engine, event
@@ -83,6 +84,7 @@ def create_session_factory(engine=None) -> sessionmaker:
     return sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 
+@contextmanager
 def get_db_session() -> Generator[Session, None, None]:
     """Dependency that provides a database session.
 
