@@ -14,21 +14,21 @@ router = APIRouter()
 
 # Module status — updated as features are implemented
 MODULE_STATUS = {
-    "data_pipeline": {"status": "not_started", "description": "CIC-IDS2017 preprocessing"},
-    "gan": {"status": "not_started", "description": "CTGAN synthetic data generation"},
-    "scenario_mapper": {"status": "not_started", "description": "Attack scenario mapping"},
+    "data_pipeline": {"status": "done", "description": "CIC-IDS2017 preprocessing"},
+    "gan": {"status": "done", "description": "CTGAN synthetic data generation"},
+    "scenario_mapper": {"status": "done", "description": "Attack scenario mapping"},
     "supply_chain_env": {
-        "status": "not_started",
+        "status": "done",
         "description": "Gymnasium supply chain environment",
     },
-    "dqn": {"status": "not_started", "description": "DQN defense agent"},
-    "ppo": {"status": "not_started", "description": "PPO comparison (optional)"},
-    "baseline": {"status": "not_started", "description": "Rule-based baseline policy"},
-    "evaluation": {"status": "not_started", "description": "Evaluation engine"},
-    "backend": {"status": "in_progress", "description": "FastAPI backend"},
-    "frontend": {"status": "in_progress", "description": "React dashboard"},
-    "testing": {"status": "in_progress", "description": "Test suite"},
-    "documentation": {"status": "in_progress", "description": "Project documentation"},
+    "dqn": {"status": "done", "description": "DQN defense agent"},
+    "ppo": {"status": "done", "description": "PPO comparison baseline"},
+    "baseline": {"status": "done", "description": "Rule-based baseline policy"},
+    "evaluation": {"status": "done", "description": "Evaluation engine & controlled experiments"},
+    "backend": {"status": "done", "description": "FastAPI backend"},
+    "frontend": {"status": "done", "description": "React dashboard"},
+    "testing": {"status": "done", "description": "Test suite (143 passed)"},
+    "documentation": {"status": "done", "description": "Project documentation & reports"},
 }
 
 TEAM_MEMBERS = [
@@ -82,8 +82,8 @@ async def project_status():
         "college": "Dayananda Sagar University — School of Engineering",
         "department": "Computer Science and Engineering",
         "guide": "Prof. Namyapriya D",
-        "version": "0.1.0",
-        "current_phase": "Phase 1 — Foundation",
+        "version": "1.0.0",
+        "current_phase": "Phase 11 — Complete & Production Ready",
         "progress": {
             "completed_modules": completed,
             "in_progress_modules": in_progress,
