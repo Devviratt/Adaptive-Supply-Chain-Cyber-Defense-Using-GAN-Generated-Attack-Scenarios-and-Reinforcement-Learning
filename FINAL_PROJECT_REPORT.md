@@ -148,7 +148,7 @@ The evaluation engine ran 10 multi-step attack episodes across 5 distinct random
 
 ## 6. How to Run the Platform
 
-### Option A: Launch Interactive Demo (Frontend + Backend)
+### Option A: Launch Research Dashboard (Frontend + Backend)
 ```powershell
 # 1. Start Backend API
 $env:PYTHONUTF8="1"

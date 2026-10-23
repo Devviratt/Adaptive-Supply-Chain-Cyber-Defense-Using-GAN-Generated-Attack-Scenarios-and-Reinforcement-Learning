@@ -28,7 +28,6 @@ export default function GanLab() {
   }
 
   const val = data?.validation || {}
-  const utility = data?.utility || {}
 
   const VALIDATION_METRICS = [
     {
@@ -48,9 +47,10 @@ export default function GanLab() {
     {
       label: 'Jensen-Shannon Divergence (D_JS)',
       value: val.mean_js_divergence ? val.mean_js_divergence.toFixed(4) : '0.5117',
-      target: '< 0.6000',
-      status: 'Passed',
-      notes: 'Bounded symmetric divergence across discretized marginals',
+      target: '< 0.5000',
+      status: 'Soft Warning',
+      isWarning: true,
+      notes: 'Observed 0.5117 slightly exceeds strict 0.500 threshold due to heavy-tailed continuous distributions; W1 (0.1057) and Pearson (98.69%) pass cleanly',
     },
     {
       label: 'Exact Duplicate Ratio (Memorization)',
@@ -128,23 +128,25 @@ export default function GanLab() {
               +1.49% Test Classification Accuracy Gain with Synthetic Augmentation
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '0.25rem', maxWidth: '750px' }}>
-              Trained baseline classifiers on untouched held-out test data (737 samples). Augmenting real training data with 2,000 CTGAN synthetic attacks improved accuracy from 78.70% to 80.19%, confirming generated samples provide informative domain variation rather than noise.
+              Trained baseline classifiers on untouched held-out test data (737 samples). Augmenting real training data with 2,000 CTGAN synthetic attacks improved overall accuracy from 78.70% to 80.19% (+1.49%). Macro-averaged F1 changed from 0.1372 to 0.1272 (-0.0100 delta) due to extreme test-split imbalance on 1-sample rare classes (1 Web Attack, 2 Botnet).
             </p>
           </div>
           <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
             <div style={{ textAlign: 'center', padding: '0.75rem 1rem', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-md)' }}>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Model A (Real Only)</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
-                {utility.model_a_real_only?.accuracy ? `${(utility.model_a_real_only.accuracy * 100).toFixed(2)}%` : '78.70%'}
+              <div style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                78.70%
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>3,437 Real flows</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px' }}>Macro-F1: 0.1372</div>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>3,437 Real flows</div>
             </div>
             <div style={{ textAlign: 'center', padding: '0.75rem 1rem', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 'var(--radius-md)' }}>
               <div style={{ fontSize: '0.72rem', color: 'var(--status-healthy)', fontWeight: 600 }}>Model B (Augmented)</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--status-healthy)' }}>
-                {utility.model_b_augmented?.accuracy ? `${(utility.model_b_augmented.accuracy * 100).toFixed(2)}%` : '80.19%'}
+              <div style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--status-healthy)' }}>
+                80.19% <span style={{ fontSize: '0.8rem', color: 'var(--status-healthy)' }}>(+1.49%)</span>
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--status-healthy)' }}>+2,000 CTGAN flows</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Macro-F1: 0.1272 (-0.01)</div>
+              <div style={{ fontSize: '0.68rem', color: 'var(--status-healthy)' }}>+2,000 CTGAN flows</div>
             </div>
           </div>
         </div>
@@ -225,8 +227,8 @@ export default function GanLab() {
                   <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{m.value}</td>
                   <td style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{m.target}</td>
                   <td>
-                    <span className="badge badge-healthy">
-                      <span className="status-dot healthy"></span> {m.status}
+                    <span className={`badge ${m.isWarning ? 'badge-warning' : 'badge-healthy'}`}>
+                      <span className={`status-dot ${m.isWarning ? 'warning' : 'healthy'}`}></span> {m.status}
                     </span>
                   </td>
                   <td style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>{m.notes}</td>

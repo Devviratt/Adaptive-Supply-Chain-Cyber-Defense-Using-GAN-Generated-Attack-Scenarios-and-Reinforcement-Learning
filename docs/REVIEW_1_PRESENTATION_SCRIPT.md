@@ -10,10 +10,10 @@
 | Time | Topic | Speaker | Live Screen Action |
 | :---: | :--- | :--- | :--- |
 | **0:00 - 1:00** | Introduction & Problem Statement | **C A Anandavarthan** | Open **Overview** page (`http://localhost:5173`) |
-| **1:00 - 2:15** | Dataset, Class Imbalance & CTGAN | **Deekshay G** | Switch to **Review 1 Demo ➔ Tab 2 & 3** |
-| **2:15 - 3:30** | Scientific GAN Validation Audit | **Deekshay G** | Switch to **Review 1 Demo ➔ Tab 4** |
-| **3:30 - 4:30** | Digital Twin Cascading Containment | **Dev Virat** | Switch to **Review 1 Demo ➔ Tab 5** |
-| **4:30 - 5:00** | Summary & Scope Completed (40%) | **All / Team Lead** | Conclude & Open for Viva Questions |
+| **1:00 - 2:15** | Dataset, Class Imbalance & CTGAN | **Deekshay G** | Switch to **Data Preprocessing** (`/data`) & **CTGAN Threat Lab** (`/gan-lab`) |
+| **2:15 - 3:30** | Scientific GAN Validation Audit | **Deekshay G** | Switch to **Statistical Fidelity & Validation** (`/gan-lab` & `/evaluation`) |
+| **3:30 - 4:30** | Digital Twin Cascading Containment | **Dev Virat** | Switch to **Supply Chain Twin** (`/supply-chain`) |
+| **4:30 - 5:00** | Summary & Scope Completed (40%) | **All / Team Lead** | Conclude on **Audit & Limitations** (`/evaluation`) & Open for Q&A |
 
 ---
 
@@ -26,35 +26,35 @@
 >
 > *Our research investigates: **Can validated GAN-generated attack-scenario diversity improve the decision robustness and availability of an adaptive defense policy in a simulated supply-chain environment?***
 >
-> *For Review 1, representing the foundational 40% milestone, we have completed the end-to-end data pipeline, the CTGAN generative attack model, empirical statistical validation, and the 5-stage supply chain digital twin environment."*
+> *For Review 1, representing the foundational 40% milestone, we have completed the end-to-end data pipeline, the CTGAN generative attack model, empirical statistical validation, and the supply chain digital twin environment."*
 
 ---
 
 ### 2. Dataset & CTGAN Generative Model (Deekshay G — 1.25 min)
-*(Click on **Review 1 Live Demo ➔ Tab 2: Preprocessing**, then **Tab 3: CTGAN Lab**)*
+*(Click on **Data Preprocessing** (`/data`), then **CTGAN Threat Lab** (`/gan-lab`))*
 
 > *"To train adaptive defense systems, we need realistic attack data. We evaluated the Canadian Institute for Cybersecurity **CIC-IDS2017** benchmark, comprising over 2.83 million network sessions.*
 >
 > *However, we encountered a fundamental challenge: **extreme class imbalance**. Normal benign traffic represents 80.3% of the dataset, whereas critical attacks like Botnets, Brute Force, and Web Infiltrations comprise less than 0.5% combined (a 400:1 ratio). Standard classifiers and RL agents overfit to benign patterns and fail on minority attacks.*
 >
-> *Rather than basic linear interpolation like SMOTE, we implemented **Conditional Tabular GAN (CTGAN)**. As demonstrated live on screen in Tab 3, we can condition the generator on any attack class—such as DoS, DDoS, or PortScan—and synthesize novel, high-dimensional attack telemetry with tailored flow duration, packet rates, and severity levels targeting specific supply chain stages."*
+> *Rather than basic linear interpolation like SMOTE, we implemented **Conditional Tabular GAN (CTGAN)**. As demonstrated live on screen in the Threat Lab, we can condition the generator on any attack class—such as DoS, DDoS, or PortScan—and synthesize novel, high-dimensional attack telemetry with tailored flow duration, packet rates, and severity levels targeting specific supply chain stages."*
 
 ---
 
 ### 3. Scientific Validation Audit (Deekshay G — 1.25 min)
-*(Click on **Review 1 Live Demo ➔ Tab 4: Scientific Validation Audit**)*
+*(Click on **Statistical Fidelity & Figures** on `/gan-lab`)*
 
-> *"A critical requirement in generative cyber defense is proving that the synthetic data is mathematically valid and not hallucinated or memorized. We established a three-pillar validation audit:*
+> *"A critical requirement in generative cyber defense is proving that the synthetic data is mathematically valid and not hallucinated or memorized. We established a rigorous validation audit:*
 >
-> 1. ***Marginal Distribution Fidelity:*** *Our Wasserstein-1 distance is **0.1057**, well below the strict 0.15 passing threshold.*
+> 1. ***Marginal Distribution Fidelity:*** *Our Wasserstein-1 distance is **0.1057**, well below the 0.25 threshold.*
 > 2. ***Covariance Alignment:*** *The Pearson correlation matrix similarity between real and synthetic data is **0.9869**, proving that complex dependencies between network packet attributes were faithfully preserved.*
 > 3. ***Privacy & Novelty:*** *Nearest-neighbor distance tests revealed a **0.00% exact memorization rate**, proving that CTGAN generates truly novel synthetic vectors.*
-> 4. ***Downstream Utility:*** *Augmenting our training data with CTGAN samples improved classifier test accuracy by **+1.49%**."*
+> 4. ***Downstream Utility:*** *Augmenting our training data with CTGAN samples improved classifier test accuracy by **+1.49%** (78.70% to 80.19%)."*
 
 ---
 
 ### 4. Supply Chain Digital Twin & Live Mitigation (Dev Virat — 1 min)
-*(Click on **Review 1 Live Demo ➔ Tab 5: Digital Twin Propagation**)*
+*(Click on **Supply Chain Twin** (`/supply-chain`))*
 
 > *"Now, let us demonstrate how these attack scenarios interact with our software supply chain.*
 >
