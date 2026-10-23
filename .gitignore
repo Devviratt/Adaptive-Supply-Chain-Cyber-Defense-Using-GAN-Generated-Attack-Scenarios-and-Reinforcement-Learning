@@ -56,6 +56,7 @@ data/generated/*.csv
 data/generated/*.pkl
 data/generated/*.parquet
 data/generated/*.json
+data/generated/*.md
 
 # ============================================================
 # ML Artifacts (large model files)
@@ -63,6 +64,7 @@ data/generated/*.json
 artifacts/models/**/*.pt
 artifacts/models/**/*.pth
 artifacts/models/**/*.pkl
+artifacts/models/**/*.metadata.json
 artifacts/models/**/*.zip
 artifacts/models/*.pt
 artifacts/models/*.pth
