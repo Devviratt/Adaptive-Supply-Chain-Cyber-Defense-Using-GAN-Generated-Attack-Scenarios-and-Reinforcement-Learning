@@ -207,7 +207,7 @@ export default function SupplyChain() {
                   padding: 'var(--space-md)',
                   background: isCompromised ? '#fef2f2' : 'var(--bg-subtle)',
                   border: isCompromised ? '1px solid #fecaca' : '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 'var(--radius-inner)',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-sm)' }}>
@@ -294,24 +294,17 @@ export default function SupplyChain() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 'var(--space-md)' }}>
+        <div className="defense-actions-grid">
           {ACTIONS.map((act) => (
             <button
               key={act.id}
-              className="btn btn-secondary"
+              className="defense-action-btn"
               onClick={() => handleStep(act.id)}
               disabled={loading || simState?.terminated || simState?.truncated}
-              style={{
-                flexDirection: 'column',
-                padding: 'var(--space-md)',
-                height: 'auto',
-                textAlign: 'center',
-                alignItems: 'center',
-              }}
             >
-              <span style={{ fontSize: '1.4rem', marginBottom: '4px' }}>{act.icon}</span>
-              <strong style={{ fontSize: '0.9rem' }}>{act.name}</strong>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px' }}>{act.desc}</span>
+              <span className="defense-action-icon">{act.icon}</span>
+              <strong className="defense-action-title">{act.name}</strong>
+              <span className="defense-action-desc">{act.desc}</span>
             </button>
           ))}
         </div>

@@ -15,17 +15,17 @@
   /* Sidebar (Compact Dark Capsule) */
   --sidebar-bg: #0f172a;
   --sidebar-text: #94a3b8;
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.06);
-  --sidebar-active-bg: #1e293b;
-  --sidebar-active-text: #ffffff;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+  --sidebar-active-bg: #ffffff;
+  --sidebar-active-text: #0b0f19;
   --sidebar-border: rgba(255, 255, 255, 0.08);
 
-  /* Typography Colors */
+  /* Typography Colors — WCAG AA Contrast Compliant */
   --text-heading: #0f172a;
   --text-primary: #1e293b;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  --text-light: #94a3b8;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+  --text-light: #64748b;
 
   /* Primary Brand Accent — Restrained Blue */
   --accent-primary: #0284c7;
@@ -46,18 +46,19 @@
   --status-danger-bg: #fef2f2;
   --status-danger-border: #fecaca;
 
-  --status-neutral: #64748b;
+  --status-neutral: #475569;
   --status-neutral-bg: #f1f5f9;
   --status-neutral-border: #e2e8f0;
 
   /* Borders & Dividers */
-  --border-color: #e2e8f0;
+  --border-color: rgba(226, 232, 240, 0.85);
   --border-subtle: #f1f5f9;
 
-  /* Shadows — Subtle & Clean */
+  /* Shadows — Apple Elevation & Subtle Diffusion */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 14px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
   --shadow-pill: 0 1px 3px rgba(0, 0, 0, 0.05);
 
   /* Spacing Scale */
@@ -68,19 +69,20 @@
   --space-lg: 1.75rem;
   --space-xl: 2.25rem;
 
-  /* Consistent Radii */
+  /* Consistent Radii Scale */
   --radius-xs: 4px;
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-card: 18px;
+  --radius-md: 10px;
+  --radius-inner: 14px;
+  --radius-card: 20px;
   --radius-full: 9999px;
 
   /* Fonts */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'SF Mono', Monaco, Menlo, 'Consolas', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
 
   /* Layout Dimensions */
-  --sidebar-width: 220px;
+  --sidebar-width: 224px;
 }
 
 /* ============================================================
@@ -119,6 +121,12 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+}
+
+/* Accessible High-Contrast Focus Rings (Apple HIG Keyboard Navigation) */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 /* ============================================================
@@ -373,6 +381,17 @@ button {
 .status-dot.danger {
   background-color: var(--status-danger);
   box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+.status-dot.connecting {
+  background-color: var(--text-muted);
+  box-shadow: 0 0 0 2px rgba(71, 85, 105, 0.2);
+  animation: pulse-dot 1.4s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
 }
 
 /* Main Content Area */
@@ -655,12 +674,17 @@ button {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 7px 14px;
+  padding: 8px 16px;
   border-radius: var(--radius-md);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  transition: all 0.15s ease;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
+  user-select: none;
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .btn-primary {
@@ -684,9 +708,9 @@ button {
 }
 
 .btn-sm {
-  padding: 5px 10px;
-  font-size: 0.74rem;
-  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  border-radius: var(--radius-sm);
 }
 
 .form-input,
@@ -822,14 +846,18 @@ button {
 }
 
 .details-card summary::after {
-  content: '▼';
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  transition: transform 0.2s ease;
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(45deg);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-right: 6px;
 }
 
 .details-card[open] summary::after {
-  transform: rotate(180deg);
+  transform: rotate(-135deg);
 }
 
 .details-card[open] summary {
@@ -838,6 +866,66 @@ button {
 
 .details-content {
   padding: 20px;
+}
+
+/* Connected Stage Pipeline Topology */
+.stage-pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+.stage-card-item {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-inner);
+  padding: 14px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stage-card-item:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-sm);
+}
+
+.stage-connector-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 1rem;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Interactive Workflow Step Card (Apple HIG Agency & Navigation) */
+.workflow-step-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-inner);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.workflow-step-card:hover {
+  background: #ffffff;
+  border-color: var(--accent-primary-border);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+  transform: translateY(-1px);
+}
+
+.workflow-step-card:active {
+  transform: translateY(0);
 }
 
 /* ============================================================
@@ -900,3 +988,66 @@ button {
     padding: 16px;
   }
 }
+
+/* ============================================================
+   Tactile Defensive Control Panel Styles
+   ============================================================ */
+.defense-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: var(--space-md);
+}
+
+.defense-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0.85rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-inner);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.defense-action-btn:hover:not(:disabled) {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  transform: translateY(-2px);
+}
+
+.defense-action-btn:active:not(:disabled) {
+  transform: scale(0.97);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.defense-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.defense-action-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.defense-action-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.defense-action-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+

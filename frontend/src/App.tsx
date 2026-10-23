@@ -134,7 +134,10 @@ export default function App() {
             {/* Backend Connection Status Pill */}
             <div className="header-pill">
               {apiConnected === null ? (
-                <span style={{ color: 'var(--text-muted)' }}>Connecting API...</span>
+                <>
+                  <span className="status-dot connecting"></span>
+                  <span style={{ color: 'var(--text-muted)' }}>Connecting API...</span>
+                </>
               ) : apiConnected ? (
                 <>
                   <span className="status-dot healthy"></span>

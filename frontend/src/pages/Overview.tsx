@@ -74,43 +74,49 @@ export default function Overview() {
     },
   ]
 
-  // Verified Research Workflow Steps
+  // Verified Research Workflow Steps (Interactive agency to jump to module)
   const WORKFLOW_STEPS = [
     {
       step: 1,
       name: 'Real Network-Flow Ingestion',
       detail: 'CIC-IDS2017 raw captures with 73 initial telemetry attributes',
       status: 'implemented',
+      link: '/data',
     },
     {
       step: 2,
       name: 'Zero-Leakage Preprocessing',
       detail: 'Dropped 6 identifiers, scaled 71 continuous features on train split only',
       status: 'implemented',
+      link: '/data',
     },
     {
       step: 3,
       name: 'CTGAN Threat Synthesis',
       detail: 'Synthesized 2,000 attack records with SDV conditional generator',
       status: 'implemented',
+      link: '/gan-lab',
     },
     {
       step: 4,
       name: 'Statistical & Utility Validation',
       detail: 'Wasserstein W₁ = 0.1057, Pearson r = 98.69%, +1.49% classifier accuracy',
       status: 'implemented',
+      link: '/gan-lab',
     },
     {
       step: 5,
       name: 'Supply Chain Simulation',
       detail: 'Gymnasium 4-stage digital twin with 12-dim state and 5 defense actions',
       status: 'implemented',
+      link: '/supply-chain',
     },
     {
       step: 6,
       name: 'Defense Policy Evaluation',
       detail: 'Rule-based baseline evaluated; DQN smoke-test verified; RL training active',
       status: 'in_progress',
+      link: '/rl-defense',
     },
   ]
 
@@ -250,67 +256,55 @@ export default function Overview() {
               </Link>
             </div>
 
-            {/* 4 Connected Stages Visual Topology */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-                gap: '12px',
-                marginTop: '10px',
-                marginBottom: '14px',
-              }}
-            >
-              {STAGES.map((st) => (
-                <div
-                  key={st.id}
-                  style={{
-                    background: 'var(--bg-subtle)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '12px',
-                    padding: '12px',
-                    position: 'relative',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-heading)' }}>
-                      {st.order}. {st.name}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: '0.68rem',
-                        padding: '1px 6px',
-                        borderRadius: '4px',
-                        background: '#f0fdf4',
-                        color: '#16a34a',
-                        fontWeight: 600,
-                      }}
-                    >
-                      {st.status}
-                    </span>
-                  </div>
-
-                  {/* Health Bar */}
-                  <div style={{ marginBottom: '6px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                      <span>Health</span>
-                      <strong style={{ color: '#16a34a' }}>{st.health}%</strong>
+            {/* 4 Connected Stages Visual Topology (Apple HIG Flow Continuity) */}
+            <div className="stage-pipeline" style={{ marginTop: '12px', marginBottom: '14px' }}>
+              {STAGES.map((st, idx) => (
+                <div key={st.id} style={{ display: 'contents' }}>
+                  <div className="stage-card-item">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-heading)' }}>
+                        {st.order}. {st.name}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          background: '#f0fdf4',
+                          color: '#16a34a',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {st.status}
+                      </span>
                     </div>
-                    <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '3px', marginTop: '2px', overflow: 'hidden' }}>
-                      <div style={{ width: `${st.health}%`, height: '100%', background: '#16a34a', borderRadius: '3px' }} />
+
+                    {/* Health Bar */}
+                    <div style={{ marginBottom: '6px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        <span>Health</span>
+                        <strong style={{ color: '#16a34a' }}>{st.health}%</strong>
+                      </div>
+                      <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '3px', marginTop: '3px', overflow: 'hidden' }}>
+                        <div style={{ width: `${st.health}%`, height: '100%', background: '#16a34a', borderRadius: '3px' }} />
+                      </div>
+                    </div>
+
+                    {/* Risk Level */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                      <span>Threat Risk:</span>
+                      <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>{(st.risk * 100).toFixed(0)}%</span>
+                    </div>
+
+                    {/* Criticality */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      <span>Criticality:</span>
+                      <span>{st.criticality}</span>
                     </div>
                   </div>
-
-                  {/* Risk Level */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                    <span>Threat Risk:</span>
-                    <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>{(st.risk * 100).toFixed(0)}%</span>
-                  </div>
-
-                  {/* Criticality */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                    <span>Criticality:</span>
-                    <span>{st.criticality}</span>
-                  </div>
+                  {idx < STAGES.length - 1 && (
+                    <div className="stage-connector-arrow">→</div>
+                  )}
                 </div>
               ))}
             </div>
@@ -409,58 +403,52 @@ export default function Overview() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {WORKFLOW_STEPS.map((wf) => (
-                <div
+                <Link
                   key={wf.step}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '10px',
-                    padding: '8px 10px',
-                    borderRadius: '8px',
-                    background: 'var(--bg-subtle)',
-                    border: '1px solid var(--border-color)',
-                  }}
+                  to={wf.link}
+                  className="workflow-step-card"
+                  title={`Navigate to ${wf.name}`}
                 >
                   <div
                     style={{
-                      width: '20px',
-                      height: '20px',
+                      width: '24px',
+                      height: '24px',
                       borderRadius: '50%',
                       background: wf.status === 'implemented' ? '#dcfce7' : '#ffedd5',
-                      color: wf.status === 'implemented' ? '#16a34a' : '#d97706',
+                      color: wf.status === 'implemented' ? '#15803d' : '#c2410c',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '0.7rem',
+                      fontSize: '0.75rem',
                       fontWeight: 700,
                       flexShrink: 0,
-                      marginTop: '2px',
+                      marginTop: '1px',
                     }}
                   >
                     {wf.step}
                   </div>
-                  <div style={{ flex: 1 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-heading)' }}>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-heading)' }}>
                         {wf.name}
                       </span>
                       <span
                         style={{
-                          fontSize: '0.65rem',
-                          color: wf.status === 'implemented' ? '#16a34a' : '#d97706',
+                          fontSize: '0.72rem',
+                          color: wf.status === 'implemented' ? '#15803d' : '#b45309',
                           fontWeight: 600,
                         }}
                       >
                         {wf.status === 'implemented' ? 'Implemented' : 'In Progress'}
                       </span>
                     </div>
-                    <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35 }}>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35 }}>
                       {wf.detail}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

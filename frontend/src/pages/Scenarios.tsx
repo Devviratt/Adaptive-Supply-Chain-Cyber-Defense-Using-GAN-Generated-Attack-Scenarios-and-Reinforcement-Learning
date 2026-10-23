@@ -61,6 +61,14 @@ export default function Scenarios() {
     setMappingLoading(false)
   }
 
+  function handleResetFlowDefaults() {
+    setTestPackets(1500)
+    setTestDuration(120000)
+    setTestSyn(25)
+    setTestLabel('DDoS')
+    setMappedResult(null)
+  }
+
   function getSeverityBadge(sev: string) {
     const s = sev.toLowerCase()
     if (s === 'critical') return <span className="badge badge-danger">Critical</span>
@@ -250,7 +258,7 @@ export default function Scenarios() {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Total Forward Packets</label>
+            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Total Forward Packets (pkts)</label>
             <input
               type="number"
               className="form-input"
@@ -261,7 +269,7 @@ export default function Scenarios() {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Flow Duration (μs)</label>
+            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Flow Duration (μs)</label>
             <input
               type="number"
               className="form-input"
@@ -272,7 +280,7 @@ export default function Scenarios() {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>SYN Flag Count</label>
+            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-secondary)' }}>SYN Flag Count (flags)</label>
             <input
               type="number"
               className="form-input"
@@ -283,16 +291,25 @@ export default function Scenarios() {
           </div>
         </div>
 
-        <button
-          className="btn btn-primary"
-          onClick={handleMapRecord}
-          disabled={mappingLoading}
-        >
-          {mappingLoading ? 'Modulating...' : '⚡ Execute Scenario Mapping'}
-        </button>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
+          <button
+            className="btn btn-primary"
+            onClick={handleMapRecord}
+            disabled={mappingLoading}
+          >
+            {mappingLoading ? 'Modulating...' : '⚡ Execute Scenario Mapping'}
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={handleResetFlowDefaults}
+            disabled={mappingLoading}
+          >
+            Reset Defaults
+          </button>
+        </div>
 
         {mappedResult && (
-          <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-md)', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-md)', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-inner)', border: '1px solid var(--border-color)' }}>
             <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.25rem' }}>
               Mapped Scenario Output: <code style={{ fontFamily: 'var(--font-mono)' }}>{mappedResult.scenario_id}</code>
             </div>

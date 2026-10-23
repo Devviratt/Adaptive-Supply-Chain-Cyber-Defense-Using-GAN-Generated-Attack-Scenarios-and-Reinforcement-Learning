@@ -132,21 +132,21 @@ export default function GanLab() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <div style={{ textAlign: 'center', padding: '10px 14px', background: 'var(--bg-subtle)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Model A (Real Only)</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+            <div style={{ textAlign: 'center', padding: '12px 16px', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-inner)', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Model A (Real Only)</div>
+              <div style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 78.70%
               </div>
-              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>Macro-F1: 0.1372</div>
-              <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>3,437 Real flows</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>Macro-F1: 0.1372</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>3,437 Real flows</div>
             </div>
-            <div style={{ textAlign: 'center', padding: '10px 14px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px' }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--status-healthy)', fontWeight: 600 }}>Model B (Augmented)</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--status-healthy)' }}>
-                80.19% <span style={{ fontSize: '0.75rem', color: 'var(--status-healthy)' }}>(+1.49%)</span>
+            <div style={{ textAlign: 'center', padding: '12px 16px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 'var(--radius-inner)' }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--status-healthy)', fontWeight: 600 }}>Model B (Augmented)</div>
+              <div style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--status-healthy)' }}>
+                80.19% <span style={{ fontSize: '0.78rem', color: 'var(--status-healthy)' }}>(+1.49%)</span>
               </div>
-              <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Macro-F1: 0.1272 (-0.01)</div>
-              <div style={{ fontSize: '0.66rem', color: 'var(--status-healthy)' }}>+2,000 CTGAN flows</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Macro-F1: 0.1272 (-0.01)</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--status-healthy)' }}>+2,000 CTGAN flows</div>
             </div>
           </div>
         </div>
