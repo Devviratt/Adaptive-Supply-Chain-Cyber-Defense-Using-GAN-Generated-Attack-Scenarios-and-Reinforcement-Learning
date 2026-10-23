@@ -98,7 +98,7 @@ def inspect_raw_dataset(input_dir: Path) -> None:
     try:
         csv_files = discover_csv_files(input_dir)
     except Exception as e:
-        print(f"❌ Error discovering files: {e}")
+        print(f"ERROR: Could not discover files: {e}")
         sys.exit(1)
 
     print(f"Found {len(csv_files)} CSV files:")
@@ -123,13 +123,13 @@ def inspect_raw_dataset(input_dir: Path) -> None:
             total_rows += row_count
             size_mb = f.stat().st_size / (1024 * 1024)
 
-            print(f"\n📄 {f.name}")
+            print(f"\nFile: {f.name}")
             print(
                 f"   Size: {size_mb:.2f} MB | Approx Rows: {row_count:,} | Columns: {len(sample_df.columns)}"
             )
             print(f"   Label column found: {label_col is not None}")
         except Exception as e:
-            print(f"   ⚠️ Could not inspect {f.name}: {e}")
+            print(f"   WARNING: Could not inspect {f.name}: {e}")
 
     print("\n" + "=" * 70)
     print(f"Total Raw Files: {len(csv_files)} | Total Approx Rows: {total_rows:,}")
@@ -248,7 +248,7 @@ def run_pipeline(
 
     # Save dataset metadata
     dataset_meta_path = output_dir / "dataset_metadata.json"
-    with open(dataset_meta_path, "w") as f:
+    with open(dataset_meta_path, "w", encoding="utf-8") as f:
         json.dump(dataset_meta, f, indent=2, default=str)
 
     # Generate charts
@@ -267,7 +267,7 @@ def run_pipeline(
     print("\n" + "=" * 70)
     print("PREPROCESSING PIPELINE EXECUTION SUMMARY")
     print("=" * 70)
-    print(f"Status:            {'✅ SUCCESS (Validated)' if val_report.is_valid else '❌ FAILED'}")
+    print(f"Status:            {'SUCCESS (Validated)' if val_report.is_valid else 'FAILED'}")
     print(f"Total Rows Ingest: {dataset_meta['total_rows']:,}")
     print(f"Rows After Clean:  {len(cleaned_df):,}")
     print(f"Train Set Rows:    {len(train_processed):,}")
@@ -281,7 +281,7 @@ def run_pipeline(
     print("=" * 70)
 
     if not val_report.is_valid:
-        print("❌ Pipeline completed with validation errors:")
+        print("ERROR: Pipeline completed with validation errors:")
         for err in val_report.errors:
             print(f"   - {err}")
         sys.exit(1)
@@ -352,7 +352,7 @@ def main():
 
     # Check input directory exists and has files
     if not input_dir.exists():
-        print(f"❌ Input directory does not exist: {input_dir}")
+        print(f"ERROR: Input directory does not exist: {input_dir}")
         print(
             "Run `python scripts/download_dataset.py --generate-dev-sample` to create a dev sample."
         )
@@ -360,7 +360,7 @@ def main():
 
     csv_files = list(input_dir.glob("*.csv"))
     if not csv_files:
-        print(f"❌ No CSV files found in: {input_dir}")
+        print(f"ERROR: No CSV files found in: {input_dir}")
         print(
             "Run `python scripts/download_dataset.py --generate-dev-sample` to create a dev sample."
         )

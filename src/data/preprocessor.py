@@ -76,7 +76,7 @@ class PreprocessingReport:
 
     def save(self, filepath: str | Path) -> None:
         """Save report to JSON file."""
-        with open(filepath, "w") as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f, indent=2, default=str)
         logger.info("preprocessing_report_saved", filepath=str(filepath))
 
@@ -572,7 +572,7 @@ class DataPreprocessor:
 
         # Feature list
         features_path = output_path / "feature_list.json"
-        with open(features_path, "w") as f:
+        with open(features_path, "w", encoding="utf-8") as f:
             json.dump(
                 {
                     "features_after_selection": self._features_after_selection,
@@ -585,7 +585,7 @@ class DataPreprocessor:
 
         # Label mapping
         mapping_path = output_path / "label_mapping.json"
-        with open(mapping_path, "w") as f:
+        with open(mapping_path, "w", encoding="utf-8") as f:
             json.dump(
                 {
                     "label_mapping": self.label_mapping,

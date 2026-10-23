@@ -58,7 +58,7 @@ class SplitStatistics:
         }
 
     def save(self, filepath: str | Path) -> None:
-        with open(filepath, "w") as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f, indent=2, default=str)
         logger.info("split_statistics_saved", filepath=str(filepath))
 
