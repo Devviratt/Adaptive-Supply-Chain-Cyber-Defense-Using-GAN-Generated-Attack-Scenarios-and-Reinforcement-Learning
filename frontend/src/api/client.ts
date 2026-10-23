@@ -71,6 +71,9 @@ export async function getReadiness() {
 export interface ModuleStatus {
   status: string
   description: string
+  weight?: number
+  completion_ratio?: number
+  phase?: string
 }
 
 export interface ProjectStatusResponse {
@@ -79,12 +82,17 @@ export interface ProjectStatusResponse {
   college: string
   guide: string
   version: string
-  current_phase: string
+  target_milestone?: string
+  current_phase?: string
   progress: {
     completed_modules: number
     in_progress_modules: number
+    planned_modules?: number
     total_modules: number
-    percentage: number
+    percentage?: number
+    verified_percentage?: number
+    target_checkpoint_percentage?: number
+    calculation_method?: string
   }
   modules: Record<string, ModuleStatus>
   timestamp: string

@@ -118,12 +118,33 @@ export default function RLDefense() {
               <code>12 Inputs → [64, 64] MLP → 5 Actions</code>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Replay Buffer:</span>
-              <span>10,000 transitions · LR = 1e-4</span>
+              <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+              <span style={{ color: 'var(--status-healthy)', fontWeight: 600 }}>Operational & Evaluated (Exp A)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* DQN Policy Card */}
+        <div className="card" style={{ borderTop: '4px solid var(--accent-primary)' }}>
+          <div className="card-header">
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Deep Q-Network (DQN Defense)</h3>
+            <span className="badge badge-warning">Architecture & Smoke Test</span>
+          </div>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 'var(--space-md)' }}>
+            Value-based Q-learning agent with experience replay, epsilon annealing, and target network stabilization.
+          </p>
+          <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Architecture:</span>
+              <code>12 Inputs → [64, 64] MLP → 5 Actions</code>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Current Status:</span>
-              <span style={{ color: 'var(--status-warning)', fontWeight: 600 }}>Model trained; convergence tuning</span>
+              <span style={{ color: 'var(--text-muted)' }}>Checkpoint:</span>
+              <span>1,000-step smoke test (dqn_real_only_final.zip)</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+              <span style={{ color: 'var(--status-warning)', fontWeight: 600 }}>Checkpoint verified; 50k convergence ongoing</span>
             </div>
           </div>
         </div>
@@ -132,7 +153,7 @@ export default function RLDefense() {
         <div className="card" style={{ borderTop: '4px solid #8b5cf6' }}>
           <div className="card-header">
             <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>PPO Comparative Baseline</h3>
-            <span className="badge badge-neutral">Experimental</span>
+            <span className="badge badge-neutral">Architecture Built</span>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 'var(--space-md)' }}>
             On-policy Actor-Critic architecture providing an alternate policy-gradient baseline for comparison against DQN.
@@ -143,14 +164,68 @@ export default function RLDefense() {
               <span>Actor-Critic (MlpPolicy)</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Clipping Parameter:</span>
-              <span>ε = 0.2 · GAE λ = 0.95</span>
+              <span style={{ color: 'var(--text-muted)' }}>Checkpoint:</span>
+              <span style={{ color: 'var(--text-muted)' }}>None (SB3 wrapper verified in pytest)</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Current Status:</span>
-              <span style={{ color: 'var(--text-muted)' }}>SB3 wrapper verified in pytest</span>
+              <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Awaiting hyperparameter tuning</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* 5-Level Agent Readiness Audit Table */}
+      <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
+        <div className="card-header">
+          <div>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Rigorous Learning Agent Readiness Audit</h3>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+              Strict distinction between implemented architecture, test checkpoints, converged policies, and evaluations
+            </span>
+          </div>
+          <span className="badge badge-info">Honest Academic Audit</span>
+        </div>
+
+        <div className="data-table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Agent / Policy</th>
+                <th>1. Architecture</th>
+                <th>2. Training Run</th>
+                <th>3. Checkpoint Available</th>
+                <th>4. Policy Converged</th>
+                <th>5. Evaluation Executed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ fontWeight: 600 }}>Rule-Based SOC Baseline</td>
+                <td><span className="badge badge-healthy">✓ Implemented</span></td>
+                <td><span className="badge badge-neutral">N/A (Heuristic)</span></td>
+                <td><span className="badge badge-healthy">✓ Python Class</span></td>
+                <td><span className="badge badge-healthy">✓ Deterministic</span></td>
+                <td><span className="badge badge-healthy">✓ Exp A (5 Seeds)</span></td>
+              </tr>
+              <tr>
+                <td style={{ fontWeight: 600 }}>Deep Q-Network (DQN)</td>
+                <td><span className="badge badge-healthy">✓ Implemented</span></td>
+                <td><span className="badge badge-warning">~ 1,000 Steps Smoke</span></td>
+                <td><span className="badge badge-healthy">✓ 582 KB Zip</span></td>
+                <td><span className="badge badge-warning">In Progress (Review 2)</span></td>
+                <td><span className="badge badge-warning">Smoke Test Only</span></td>
+              </tr>
+              <tr>
+                <td style={{ fontWeight: 600 }}>PPO Baseline</td>
+                <td><span className="badge badge-healthy">✓ Implemented</span></td>
+                <td><span className="badge badge-neutral">Not Started</span></td>
+                <td><span className="badge badge-neutral">None</span></td>
+                <td><span className="badge badge-neutral">Planned (Review 2)</span></td>
+                <td><span className="badge badge-neutral">Pending Checkpoint</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

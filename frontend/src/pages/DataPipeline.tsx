@@ -1,4 +1,14 @@
 import { useState, useEffect } from 'react'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts'
 import { getDataSummary } from '../api/client'
 import type { DataSummaryResponse } from '../api/client'
 
@@ -35,6 +45,14 @@ export default function DataPipeline() {
   const trainRows = data?.splits?.train_count || 3500
   const valRows = data?.splits?.val_count || 750
   const testRows = data?.splits?.test_count || 750
+
+  // Prepare chart data for class distribution
+  const chartData = Object.entries(labelDist).map(([lbl, count]) => ({
+    name: lbl,
+    count: count as number,
+    percentage: Number(((count as number / totalRows) * 100).toFixed(1)),
+    isMajority: lbl.toUpperCase() === 'BENIGN',
+  }))
 
   const validationChecks = [
     { name: 'Split Proportions (70/15/15)', status: 'PASS', detail: 'Stratified sampling preserves exact class proportions across splits' },
@@ -112,6 +130,61 @@ export default function DataPipeline() {
           <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
             Scaler fit only on train split · 0 NaNs / Infs
           </p>
+        </div>
+      </div>
+
+      {/* Meaningful Central Chart: Class Distribution Imbalance */}
+      <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
+        <div className="card-header">
+          <div>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Raw Network Flow Class Distribution & Imbalance Profile</h3>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+              Empirical motivation for CTGAN threat synthesis: severe minority attack scarcity in raw captures
+            </span>
+          </div>
+          <span className="badge badge-info">{totalRows.toLocaleString()} Flows Verified</span>
+        </div>
+
+        <div style={{ height: '220px', width: '100%', marginTop: 'var(--space-sm)' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#64748b' }} />
+              <YAxis tick={{ fontSize: 11, fill: '#64748b' }} />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload
+                    return (
+                      <div
+                        style={{
+                          background: '#ffffff',
+                          border: '1px solid #e2e8f0',
+                          padding: '8px 12px',
+                          borderRadius: '6px',
+                          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                          fontSize: '0.8rem',
+                        }}
+                      >
+                        <p style={{ fontWeight: 600, color: '#1e293b' }}>{data.name}</p>
+                        <p style={{ color: '#0284c7' }}>Records: {data.count.toLocaleString()}</p>
+                        <p style={{ color: '#64748b' }}>Proportion: {data.percentage}%</p>
+                      </div>
+                    )
+                  }
+                  return null
+                }}
+              />
+              <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={entry.isMajority ? '#0ea5e9' : '#f59e0b'}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

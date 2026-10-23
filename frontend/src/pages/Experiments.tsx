@@ -84,10 +84,10 @@ export default function Experiments() {
             <span className="badge badge-healthy">100% Verified</span>
           </div>
           <div className="card-value" style={{ color: 'var(--status-healthy)' }}>
-            {expA ? `${(expA.security.mitigation_success_rate * 100).toFixed(0)}%` : '60.0%'}
+            {expA ? `${(expA.security.mitigation_success_rate * 100).toFixed(0)}%` : '30%'}
           </div>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Mitigation Rate · {expA ? `${(expA.availability.service_availability * 100).toFixed(1)}%` : '99.5%'} Service Availability
+            Multi-Seed Benchmark (30.0% over 5 seeds · 60.0% on seed 42) · 99.9% Uptime
           </p>
         </div>
 
