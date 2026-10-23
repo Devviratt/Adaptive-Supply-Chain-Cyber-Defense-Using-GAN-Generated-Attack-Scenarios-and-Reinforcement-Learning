@@ -107,8 +107,8 @@ export default function GanLab() {
     <div>
       <div className="page-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4px' }}>
-          <span className="badge badge-healthy"><span className="status-dot healthy"></span> Phase 3 Verified</span>
           <span className="badge badge-neutral">SDV CTGANSynthesizer</span>
+          <span className="badge badge-info">Generative Threat Synthesis</span>
         </div>
         <h2>CTGAN Threat Lab & Statistical Validation</h2>
         <p>
@@ -122,13 +122,13 @@ export default function GanLab() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
-              Downstream Utility Evaluation · Phase 3 Verification Gate
+              Downstream Utility Evaluation · Decision Tree Benchmark
             </div>
             <h3 style={{ fontSize: '1.15rem', color: 'var(--text-heading)', marginTop: '2px' }}>
               +1.49% Test Classification Accuracy Gain with Synthetic Augmentation
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '4px', maxWidth: '750px' }}>
-              Trained baseline classifiers on untouched held-out test data (737 samples). Augmenting real training data with 2,000 CTGAN synthetic attacks improved overall accuracy from 78.70% to 80.19% (+1.49%). Macro-averaged F1 changed from 0.1372 to 0.1272 (-0.0100 delta) due to extreme test-split imbalance on 1-sample rare classes (1 Web Attack, 2 Botnet).
+              Adding synthetic training records increased test accuracy from 78.70% to 80.19% in this experiment. Macro-F1 decreased from 0.1372 to 0.1272. The test set contains very few examples of some attack classes, so more evaluation is needed.
             </p>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>

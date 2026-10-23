@@ -59,8 +59,8 @@ export default function RLDefense() {
     <div>
       <div className="page-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4px' }}>
-          <span className="badge badge-healthy"><span className="status-dot healthy"></span> Baseline Verified</span>
-          <span className="badge badge-warning"><span className="status-dot warning"></span> RL Convergence In Progress</span>
+          <span className="badge badge-healthy"><span className="status-dot healthy"></span> Baseline Evaluated</span>
+          <span className="badge badge-warning"><span className="status-dot warning"></span> RL Training In Progress</span>
         </div>
         <h2>Adaptive Cyber Defense Policies</h2>
         <p>
@@ -72,7 +72,7 @@ export default function RLDefense() {
       {/* Honest Research Progress Notice */}
       <div className="alert alert-info">
         <div>
-          <strong>Academic Status for Review Checkpoint:</strong> The <strong>Rule-Based Baseline (Condition A)</strong> is 100% verified and evaluated. The <strong>DQN and PPO agent architectures</strong> are fully implemented with verified gym integration and save/load pipelines; multi-seed training convergence and reward shaping under non-stationary attacks are actively in progress for Review 2 (60%).
+          <strong>Research Policy Status:</strong> The <strong>Rule-Based Baseline (Condition A)</strong> is evaluated across 5 random seeds. The <strong>DQN and PPO agent architectures</strong> are implemented with verified gym integration and checkpoint pipelines; multi-seed training convergence and reward optimization are actively in progress.
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export default function RLDefense() {
         <div className="card" style={{ borderTop: '4px solid var(--status-healthy)' }}>
           <div className="card-header">
             <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>Rule-Based Heuristic (SOC Baseline)</h3>
-            <span className="badge badge-healthy">100% Verified</span>
+            <span className="badge badge-healthy">Evaluated</span>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '12px' }}>
             Deterministic decision tree modeling standard SOC playbook procedures. Evaluated as benchmark Experiment A.
@@ -149,7 +149,7 @@ export default function RLDefense() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Planned for Review 2 (60%)</span>
+              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Planned Training Run</span>
             </div>
           </div>
         </div>

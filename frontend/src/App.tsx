@@ -7,22 +7,18 @@ import SupplyChain from './pages/SupplyChain'
 import GanLab from './pages/GanLab'
 import RLDefense from './pages/RLDefense'
 import Experiments from './pages/Experiments'
-import Evaluation from './pages/Evaluation'
-import SystemLogs from './pages/SystemLogs'
-import Settings from './pages/Settings'
+import TechnicalDetails from './pages/TechnicalDetails'
 import { getHealth } from './api/client'
 
 const NAV_ITEMS = [
   { path: '/', label: 'Overview', icon: '◻' },
   { path: '/data', label: 'Data Processing', icon: '▤' },
-  { path: '/gan-lab', label: 'CTGAN Threat Lab', icon: '◈' },
+  { path: '/gan-lab', label: 'Synthetic Data / CTGAN', icon: '◈' },
   { path: '/scenarios', label: 'Attack Scenarios', icon: '⚡' },
-  { path: '/supply-chain', label: 'Supply Chain Twin', icon: '⛓' },
-  { path: '/rl-defense', label: 'Adaptive Defense', icon: '🛡' },
-  { path: '/experiments', label: 'Experiments', icon: '🔬' },
-  { path: '/evaluation', label: 'Audit & Limitations', icon: '📈' },
-  { path: '/logs', label: 'Telemetry & Logs', icon: '⌨' },
-  { path: '/settings', label: 'Settings', icon: '⚙' },
+  { path: '/supply-chain', label: 'Supply-Chain Simulation', icon: '⛓' },
+  { path: '/rl-defense', label: 'Defense Policies', icon: '🛡' },
+  { path: '/experiments', label: 'Experiments & Results', icon: '🔬' },
+  { path: '/technical', label: 'Technical Details', icon: '⌨' },
 ]
 
 export default function App() {
@@ -51,21 +47,20 @@ export default function App() {
       case '/data':
         return 'Data Ingestion & Preprocessing'
       case '/gan-lab':
-        return 'CTGAN Threat Lab & Validation'
+        return 'Synthetic Data / CTGAN Threat Lab'
       case '/scenarios':
         return 'Attack Scenario Mapper'
       case '/supply-chain':
-        return 'Supply Chain Digital Twin'
+        return 'Supply-Chain Simulation Twin'
       case '/rl-defense':
-        return 'Adaptive Defense Policies'
+        return 'Defense Policies'
       case '/experiments':
-        return 'Controlled Benchmark Experiments'
+        return 'Experiments & Results'
+      case '/technical':
       case '/evaluation':
-        return 'Scientific Audit & Limitations'
       case '/logs':
-        return 'System Telemetry & Logs'
       case '/settings':
-        return 'Configuration'
+        return 'Technical Details & Audit'
       default:
         return 'Cyber Defense Platform'
     }
@@ -156,13 +151,6 @@ export default function App() {
                 </>
               )}
             </div>
-
-            {/* Review Milestone Pill */}
-            <div className="header-pill" style={{ background: '#f0fdf4', borderColor: '#bbf7d0' }}>
-              <span style={{ color: '#16a34a', fontWeight: 600 }}>
-                Review 1 Checkpoint: 40% Target Met
-              </span>
-            </div>
           </div>
         </header>
 
@@ -175,9 +163,11 @@ export default function App() {
             <Route path="/supply-chain" element={<SupplyChain />} />
             <Route path="/rl-defense" element={<RLDefense />} />
             <Route path="/experiments" element={<Experiments />} />
-            <Route path="/evaluation" element={<Evaluation />} />
-            <Route path="/logs" element={<SystemLogs />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/technical" element={<TechnicalDetails />} />
+            {/* Backward-compatible routes */}
+            <Route path="/evaluation" element={<TechnicalDetails defaultTab="audit" />} />
+            <Route path="/logs" element={<TechnicalDetails defaultTab="logs" />} />
+            <Route path="/settings" element={<TechnicalDetails defaultTab="config" />} />
           </Routes>
         </main>
       </div>

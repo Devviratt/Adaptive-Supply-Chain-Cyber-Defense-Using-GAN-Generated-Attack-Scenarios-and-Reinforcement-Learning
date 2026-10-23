@@ -51,7 +51,7 @@ export default function Experiments() {
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-md)' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4px' }}>
-            <span className="badge badge-healthy"><span className="status-dot healthy"></span> Condition A Verified</span>
+            <span className="badge badge-healthy"><span className="status-dot healthy"></span> Condition A Evaluated</span>
             <span className="badge badge-neutral">artifacts/reports/experiments_summary.json</span>
           </div>
           <h2>Controlled Benchmark Experiments Hub</h2>
@@ -84,7 +84,7 @@ export default function Experiments() {
               <div className="kpi-icon-circle green">A</div>
               <span className="kpi-card-label">Condition A: Rule SOC</span>
             </div>
-            <span className="badge badge-healthy">100% Verified</span>
+            <span className="badge badge-healthy">Evaluated</span>
           </div>
           <div className="kpi-card-value" style={{ color: 'var(--status-healthy)' }}>
             {expA ? `${(expA.security.mitigation_success_rate * 100).toFixed(0)}%` : '30%'}

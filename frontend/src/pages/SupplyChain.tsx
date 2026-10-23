@@ -89,7 +89,7 @@ export default function SupplyChain() {
     <div>
       <div className="page-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4px' }}>
-          <span className="badge badge-healthy"><span className="status-dot healthy"></span> Phase 5 Verified</span>
+          <span className="badge badge-info">Digital Twin Simulation</span>
           <span className="badge badge-neutral">Gymnasium Environment (12-dim State)</span>
         </div>
         <h2>Supply Chain Digital Twin & Interactive Defense</h2>

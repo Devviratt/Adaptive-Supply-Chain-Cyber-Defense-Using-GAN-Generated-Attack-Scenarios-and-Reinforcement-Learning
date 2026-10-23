@@ -70,8 +70,8 @@ export default function DataPipeline() {
     <div>
       <div className="page-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4px' }}>
-          <span className="badge badge-healthy"><span className="status-dot healthy"></span> 100% Verified</span>
           <span className="badge badge-neutral">CIC-IDS2017 Pipeline</span>
+          <span className="badge badge-info">Zero-Leakage Split</span>
         </div>
         <h2>Data Ingestion & Preprocessing Foundation</h2>
         <p>
