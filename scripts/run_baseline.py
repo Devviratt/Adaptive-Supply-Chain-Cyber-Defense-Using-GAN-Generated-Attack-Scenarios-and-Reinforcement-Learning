@@ -22,7 +22,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 import gymnasium as gym
-
 from src.baselines import RuleBasedDefensePolicy
 from src.common.logging import get_logger
 

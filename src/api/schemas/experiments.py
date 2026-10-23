@@ -4,7 +4,6 @@ ASCCD Pydantic Schemas for Controlled Experiments and Benchmarking.
 
 from __future__ import annotations
 
-from typing import Any
 from pydantic import BaseModel, Field
 
 

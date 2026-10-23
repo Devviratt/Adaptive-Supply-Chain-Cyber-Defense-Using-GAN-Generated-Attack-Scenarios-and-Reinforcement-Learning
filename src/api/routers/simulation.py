@@ -8,9 +8,8 @@ resetting the environment, and stepping through sequential defensive responses.
 from __future__ import annotations
 
 from typing import Any
-from fastapi import APIRouter, HTTPException
-import gymnasium as gym
-import numpy as np
+
+from fastapi import APIRouter
 
 from src.api.schemas.simulation import (
     SimulationResetRequest,

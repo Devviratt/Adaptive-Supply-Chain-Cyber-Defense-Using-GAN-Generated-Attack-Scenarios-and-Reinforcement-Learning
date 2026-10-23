@@ -7,7 +7,6 @@ supply-chain cyber-defense scenarios.
 
 from __future__ import annotations
 
-import json
 import uuid
 from dataclasses import asdict, dataclass, field
 from enum import Enum

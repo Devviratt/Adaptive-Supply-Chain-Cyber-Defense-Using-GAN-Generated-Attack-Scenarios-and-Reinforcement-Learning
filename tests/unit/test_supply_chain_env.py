@@ -7,8 +7,7 @@ from __future__ import annotations
 import gymnasium as gym
 import numpy as np
 import pytest
-
-from src.environment import DefenseAction, StageState, SupplyChainEnv
+from src.environment import DefenseAction, SupplyChainEnv
 from src.scenarios.models import AttackScenario
 
 

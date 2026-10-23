@@ -22,7 +22,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 import pandas as pd
-
 from src.common.database import get_db_session
 from src.common.logging import get_logger
 from src.scenarios.mapper import ScenarioMapper

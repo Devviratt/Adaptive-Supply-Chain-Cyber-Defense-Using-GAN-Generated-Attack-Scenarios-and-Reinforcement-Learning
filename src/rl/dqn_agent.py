@@ -8,16 +8,16 @@ with full checkpointing, evaluation, and serialization capabilities.
 
 from __future__ import annotations
 
-from pathlib import Path
 import time
+from pathlib import Path
 from typing import Any
 
 import gymnasium as gym
 import numpy as np
-from stable_baselines3 import DQN
-from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback
 import structlog
 import yaml
+from stable_baselines3 import DQN
+from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback
 
 from src.environment.models import DefenseAction
 from src.rl.models import DQNEvaluationResult, DQNTrainingResult
@@ -174,11 +174,21 @@ class DQNDefenseAgent:
             exploration_initial_eps=self.exploration_initial_eps,
             exploration_final_eps=self.exploration_final_eps,
             policy_kwargs=policy_kwargs,
-            tensorboard_log=self.tensorboard_log if self.tensorboard_log else None,
+            tensorboard_log=self._resolve_tensorboard_log(),
             verbose=self.verbose,
             seed=self.seed,
         )
         return self.model
+
+    def _resolve_tensorboard_log(self) -> str | None:
+        """Return tensorboard_log path only if tensorboard is installed in environment."""
+        if not self.tensorboard_log:
+            return None
+        try:
+            import tensorboard  # noqa: F401
+            return str(self.tensorboard_log)
+        except ImportError:
+            return None
 
     def train(
         self,

@@ -9,10 +9,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
-from fastapi import APIRouter, HTTPException
 import numpy as np
+from fastapi import APIRouter, HTTPException
 
 from src.api.schemas.defense import ModelInfoSchema, PredictRequest, PredictResponse
 from src.baselines.rule_based import RuleBasedDefensePolicy

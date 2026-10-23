@@ -20,7 +20,7 @@ import pandas as pd
 import structlog
 import yaml
 
-from src.scenarios.models import AttackScenario, AttackSeverity, SupplyChainStage
+from src.scenarios.models import AttackScenario
 
 logger = structlog.get_logger(__name__)
 

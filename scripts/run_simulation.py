@@ -22,9 +22,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 import gymnasium as gym
 import numpy as np
-
 from src.common.logging import get_logger
-from src.environment import DefenseAction, SupplyChainEnv
+from src.environment import DefenseAction
 
 logger = get_logger("run_simulation")
 

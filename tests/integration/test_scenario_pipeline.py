@@ -9,11 +9,9 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import pytest
-
 from src.common.models import Scenario
 from src.scenarios.mapper import ScenarioMapper
-from src.scenarios.models import AttackScenario, SupplyChainStage
+from src.scenarios.models import SupplyChainStage
 
 
 def test_end_to_end_scenario_pipeline(tmp_path: Path, db_session) -> None:

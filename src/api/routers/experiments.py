@@ -11,12 +11,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from src.api.deps import get_db
 from src.api.schemas.experiments import ExperimentItemSchema, ExperimentRunRequest
-from src.common.models import Experiment, ExperimentMetric
+from src.common.models import Experiment
 from src.evaluation.engine import EvaluationEngine
 
 router = APIRouter()
@@ -54,10 +54,12 @@ def get_experiments_summary() -> dict[str, Any]:
     """Retrieve the latest comparative benchmarks summary report JSON."""
     report_file = Path("artifacts/reports/experiments_summary.json")
     if not report_file.exists():
-        raise HTTPException(
-            status_code=404,
-            detail="Experiments summary report not found. Run experiments first.",
-        )
+        return {
+            "status": "pending",
+            "message": "No experiments have been executed yet.",
+            "experiments": {},
+            "comparison": {},
+        }
 
     with open(report_file, encoding="utf-8") as f:
         data = json.load(f)

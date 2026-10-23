@@ -13,10 +13,10 @@ from pathlib import Path
 from typing import Any
 
 import gymnasium as gym
-from gymnasium import spaces
 import numpy as np
 import structlog
 import yaml
+from gymnasium import spaces
 
 from src.environment.models import DefenseAction, StageState
 from src.scenarios.mapper import ScenarioMapper

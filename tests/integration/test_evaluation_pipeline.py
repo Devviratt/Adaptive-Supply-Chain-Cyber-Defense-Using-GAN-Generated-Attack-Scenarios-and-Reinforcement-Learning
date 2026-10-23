@@ -7,10 +7,7 @@ Controlled Multi-Experiment Execution -> Metrics Aggregation -> Relative Gains -
 
 from __future__ import annotations
 
-from pathlib import Path
 import tempfile
-
-import pytest
 
 from src.common.models import Experiment
 from src.evaluation import ComparisonSummary, EvaluationEngine

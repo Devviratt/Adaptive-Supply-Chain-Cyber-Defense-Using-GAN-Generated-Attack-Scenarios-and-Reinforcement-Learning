@@ -7,7 +7,6 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 import pytest
-
 from src.scenarios.mapper import ScenarioMapper
 from src.scenarios.models import AttackScenario, AttackSeverity, SupplyChainStage
 

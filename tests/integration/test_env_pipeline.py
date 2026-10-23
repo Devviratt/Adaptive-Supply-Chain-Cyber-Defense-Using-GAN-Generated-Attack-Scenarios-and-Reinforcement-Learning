@@ -9,9 +9,7 @@ from __future__ import annotations
 
 import gymnasium as gym
 import pandas as pd
-import pytest
-
-from src.environment import DefenseAction, SupplyChainEnv
+from src.environment import DefenseAction
 from src.scenarios.mapper import ScenarioMapper
 
 

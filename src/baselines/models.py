@@ -6,7 +6,7 @@ Structures evaluation results and metric summaries for baseline defense policies
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from typing import Any
 
 

@@ -8,12 +8,8 @@ and direct comparability with the Rule-Based Baseline.
 
 from __future__ import annotations
 
-from pathlib import Path
 import tempfile
-
-import gymnasium as gym
-import numpy as np
-import pytest
+from pathlib import Path
 
 from src.baselines import RuleBasedDefensePolicy
 from src.environment import SupplyChainEnv

@@ -107,6 +107,9 @@ generate-synthetic: ## Generate synthetic data
 evaluate-utility: ## Run downstream ML utility evaluation
 	$(PYTHON) scripts/evaluate_synthetic_utility.py
 
+generate-figures: ## Generate publication figures from real artifacts
+	$(PYTHON) scripts/generate_visualizations.py
+
 train-dqn: ## Train DQN agent
 	$(PYTHON) scripts/train_dqn.py
 
