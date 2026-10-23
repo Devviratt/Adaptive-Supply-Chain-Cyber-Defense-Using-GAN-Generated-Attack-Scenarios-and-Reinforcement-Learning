@@ -87,66 +87,78 @@ export default function DataPipeline() {
       )}
 
       {/* KPI Cards */}
-      <div className="card-grid">
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Raw Records Ingested</span>
+      <div className="kpi-grid">
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle blue">▤</div>
+              <span className="kpi-card-label">Raw Records</span>
+            </div>
             <span className="badge badge-info">Sample Split</span>
           </div>
-          <div className="card-value">{totalRows.toLocaleString()}</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Multi-CSV loader with automated whitespace stripping
+          <div className="kpi-card-value">{totalRows.toLocaleString()}</div>
+          <p className="kpi-card-subtext">
+            Multi-CSV loader with whitespace normalization
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Retained Flow Features</span>
-            <span className="badge badge-healthy">71 Features + Label</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle orange">⚡</div>
+              <span className="kpi-card-label">Retained Features</span>
+            </div>
+            <span className="badge badge-healthy">71 + 1 Label</span>
           </div>
-          <div className="card-value">71</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            From {totalCols} raw network columns after cleaning
+          <div className="kpi-card-value">71</div>
+          <p className="kpi-card-subtext">
+            From {totalCols} raw features · Pruned 6 identifiers · Scaled
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Train / Val / Test Ratio</span>
-            <span className="badge badge-neutral">Stratified</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle purple">◈</div>
+              <span className="kpi-card-label">Stratified Splits</span>
+            </div>
+            <span className="badge badge-neutral">70 / 15 / 15</span>
           </div>
-          <div className="card-value">70 / 15 / 15</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <div className="kpi-card-value">{trainRows.toLocaleString()}</div>
+          <p className="kpi-card-subtext">
             {trainRows} train · {valRows} val · {testRows} test
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Leakage Prevention</span>
-            <span className="badge badge-healthy">Strict Pass</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle green">✓</div>
+              <span className="kpi-card-label">Zero Leakage Gate</span>
+            </div>
+            <span className="badge badge-healthy">Pass</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--status-healthy)' }}>0% Leakage</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Scaler fit only on train split · 0 NaNs / Infs
+          <div className="kpi-card-value" style={{ color: 'var(--status-healthy)' }}>0% Leakage</div>
+          <p className="kpi-card-subtext">
+            Scaler fitted strictly on train · 0 NaNs / Infs
           </p>
         </div>
       </div>
 
       {/* Meaningful Central Chart: Class Distribution Imbalance */}
-      <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
+      <div className="card" style={{ marginBottom: '16px' }}>
         <div className="card-header">
           <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Raw Network Flow Class Distribution & Imbalance Profile</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>Raw Network Flow Class Distribution & Imbalance Profile</h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
               Empirical motivation for CTGAN threat synthesis: severe minority attack scarcity in raw captures
             </span>
           </div>
           <span className="badge badge-info">{totalRows.toLocaleString()} Flows Verified</span>
         </div>
 
-        <div style={{ height: '220px', width: '100%', marginTop: 'var(--space-sm)' }}>
-          <ResponsiveContainer width="100%" height="100%">
+        <div style={{ minHeight: '220px', width: '100%', marginTop: '6px' }}>
+          <ResponsiveContainer width="100%" height={220}>
             <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#64748b' }} />
@@ -161,9 +173,9 @@ export default function DataPipeline() {
                           background: '#ffffff',
                           border: '1px solid #e2e8f0',
                           padding: '8px 12px',
-                          borderRadius: '6px',
-                          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
-                          fontSize: '0.8rem',
+                          borderRadius: '8px',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                          fontSize: '0.78rem',
                         }}
                       >
                         <p style={{ fontWeight: 600, color: '#1e293b' }}>{data.name}</p>
@@ -188,15 +200,13 @@ export default function DataPipeline() {
         </div>
       </div>
 
-      {/* Class Distribution & Pipeline Stages Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
-        {/* Class Distribution Table */}
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Attack Class Distribution (Raw & Preprocessed)</span>
-            <span className="badge badge-neutral">{Object.keys(labelDist).length} Classes</span>
-          </div>
-          <div className="data-table-container" style={{ maxHeight: '380px' }}>
+      {/* Progressive Disclosure: Class Distribution Details */}
+      <details className="details-card">
+        <summary>
+          <span>View Class-by-Class Flow Counts & Imbalance Classification ({Object.keys(labelDist).length} Classes)</span>
+        </summary>
+        <div className="details-content">
+          <div className="data-table-container">
             <table className="data-table">
               <thead>
                 <tr>
@@ -227,83 +237,67 @@ export default function DataPipeline() {
             </table>
           </div>
         </div>
+      </details>
 
-        {/* Pipeline Architecture Audit */}
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Preprocessing Transformation Stages</span>
-            <span className="badge badge-healthy">Automated Pipeline</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-            <div style={{ borderLeft: '3px solid var(--accent-primary)', paddingLeft: 'var(--space-md)' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>1. Raw Multi-CSV Ingestion & Schema Normalization</div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                Whitespace trimmed from header labels, duplicate records scrubbed, non-finite values handled.
+      {/* Progressive Disclosure: Pipeline Transformation Stages & 13 Quality Assertions */}
+      <details className="details-card">
+        <summary>
+          <span>View Preprocessing Pipeline Architecture & Quality Gate Matrix (13 / 13 Passed)</span>
+        </summary>
+        <div className="details-content">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+            <div style={{ padding: '12px', background: 'var(--bg-subtle)', borderRadius: '10px', borderLeft: '3px solid var(--accent-primary)' }}>
+              <strong>1. Multi-CSV Ingestion & Normalization</strong>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                Whitespace trimmed from headers, duplicate records scrubbed, non-finite values safely handled.
               </p>
             </div>
-
-            <div style={{ borderLeft: '3px solid var(--accent-primary)', paddingLeft: 'var(--space-md)' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>2. Identifier & Spurious Feature Removal</div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                Dropped 6 identifier columns (Flow ID, Source IP, Destination IP, Timestamp, Source Port, Destination Port) to prevent trivial memorization.
+            <div style={{ padding: '12px', background: 'var(--bg-subtle)', borderRadius: '10px', borderLeft: '3px solid var(--accent-primary)' }}>
+              <strong>2. Identifier Feature Removal</strong>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                Dropped 6 identifier columns (Flow ID, IPs, Timestamp, Ports) to prevent memorization.
               </p>
             </div>
-
-            <div style={{ borderLeft: '3px solid var(--accent-primary)', paddingLeft: 'var(--space-md)' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>3. Stratified Train / Validation / Test Splitting</div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                Partitioned into 70% Train, 15% Validation, and 15% Held-out Test using class-stratified splits with fixed random seed (42).
+            <div style={{ padding: '12px', background: 'var(--bg-subtle)', borderRadius: '10px', borderLeft: '3px solid var(--accent-primary)' }}>
+              <strong>3. Stratified Partition Splitting</strong>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                Stratified into 70% Train, 15% Val, 15% Held-out Test with fixed random seed (42).
               </p>
             </div>
-
-            <div style={{ borderLeft: '3px solid var(--accent-primary)', paddingLeft: 'var(--space-md)' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>4. Leakage-Free Scaling & Feature Selection</div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                StandardScaler fit strictly on the train partition. Variance thresholding removes invariant signals, yielding 71 clean flow features.
-              </p>
-            </div>
-
-            <div style={{ borderLeft: '3px solid var(--status-healthy)', paddingLeft: 'var(--space-md)' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>5. Automated Quality Gate Validation</div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                Executed 13 pre-flight integrity assertions prior to saving binary artifacts. All 13 checks passed.
+            <div style={{ padding: '12px', background: 'var(--bg-subtle)', borderRadius: '10px', borderLeft: '3px solid var(--status-healthy)' }}>
+              <strong>4. Leakage-Free Scaling & Filter</strong>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                StandardScaler fit strictly on train split; variance & correlation filtering yields 71 features.
               </p>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Quality Gate Verification Matrix */}
-      <div className="card">
-        <div className="card-header">
-          <span className="card-title">Automated Quality Gate Integrity Matrix (Phase 2 Audit)</span>
-          <span className="badge badge-healthy">13 / 13 Verification Checks Passed</span>
-        </div>
-        <div className="data-table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Verification Test</th>
-                <th>Result</th>
-                <th>Validation Description & Integrity Guarantee</th>
-              </tr>
-            </thead>
-            <tbody>
-              {validationChecks.map((chk, idx) => (
-                <tr key={idx}>
-                  <td style={{ fontWeight: 600 }}>{chk.name}</td>
-                  <td>
-                    <span className="badge badge-healthy">
-                      <span className="status-dot healthy"></span> {chk.status}
-                    </span>
-                  </td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{chk.detail}</td>
+          <div className="data-table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Verification Test</th>
+                  <th>Result</th>
+                  <th>Validation Description & Integrity Guarantee</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {validationChecks.map((chk, idx) => (
+                  <tr key={idx}>
+                    <td style={{ fontWeight: 600 }}>{chk.name}</td>
+                    <td>
+                      <span className="badge badge-healthy">
+                        <span className="status-dot healthy"></span> {chk.status}
+                      </span>
+                    </td>
+                    <td style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>{chk.detail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </details>
     </div>
   )
 }

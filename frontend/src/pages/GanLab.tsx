@@ -118,126 +118,139 @@ export default function GanLab() {
       </div>
 
       {/* Downstream Utility Hero Banner */}
-      <div className="card" style={{ marginBottom: 'var(--space-xl)', borderLeft: '4px solid var(--status-healthy)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-md)' }}>
+      <div className="card" style={{ marginBottom: '16px', borderLeft: '4px solid var(--status-healthy)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
               Downstream Utility Evaluation · Phase 3 Verification Gate
             </div>
-            <h3 style={{ fontSize: '1.25rem', color: 'var(--text-heading)', marginTop: '0.2rem' }}>
+            <h3 style={{ fontSize: '1.15rem', color: 'var(--text-heading)', marginTop: '2px' }}>
               +1.49% Test Classification Accuracy Gain with Synthetic Augmentation
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '0.25rem', maxWidth: '750px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '4px', maxWidth: '750px' }}>
               Trained baseline classifiers on untouched held-out test data (737 samples). Augmenting real training data with 2,000 CTGAN synthetic attacks improved overall accuracy from 78.70% to 80.19% (+1.49%). Macro-averaged F1 changed from 0.1372 to 0.1272 (-0.0100 delta) due to extreme test-split imbalance on 1-sample rare classes (1 Web Attack, 2 Botnet).
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
-            <div style={{ textAlign: 'center', padding: '0.75rem 1rem', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-md)' }}>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Model A (Real Only)</div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ textAlign: 'center', padding: '10px 14px', background: 'var(--bg-subtle)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Model A (Real Only)</div>
+              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 78.70%
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px' }}>Macro-F1: 0.1372</div>
-              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>3,437 Real flows</div>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>Macro-F1: 0.1372</div>
+              <div style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>3,437 Real flows</div>
             </div>
-            <div style={{ textAlign: 'center', padding: '0.75rem 1rem', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 'var(--radius-md)' }}>
-              <div style={{ fontSize: '0.72rem', color: 'var(--status-healthy)', fontWeight: 600 }}>Model B (Augmented)</div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--status-healthy)' }}>
-                80.19% <span style={{ fontSize: '0.8rem', color: 'var(--status-healthy)' }}>(+1.49%)</span>
+            <div style={{ textAlign: 'center', padding: '10px 14px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px' }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--status-healthy)', fontWeight: 600 }}>Model B (Augmented)</div>
+              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--status-healthy)' }}>
+                80.19% <span style={{ fontSize: '0.75rem', color: 'var(--status-healthy)' }}>(+1.49%)</span>
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Macro-F1: 0.1272 (-0.01)</div>
-              <div style={{ fontSize: '0.68rem', color: 'var(--status-healthy)' }}>+2,000 CTGAN flows</div>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Macro-F1: 0.1272 (-0.01)</div>
+              <div style={{ fontSize: '0.66rem', color: 'var(--status-healthy)' }}>+2,000 CTGAN flows</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="card-grid">
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Real Training Samples</span>
+      <div className="kpi-grid">
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle blue">▤</div>
+              <span className="kpi-card-label">Real Samples</span>
+            </div>
             <span className="badge badge-info">Train Split</span>
           </div>
-          <div className="card-value">{val.total_real_samples || 3437}</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Strictly train split only (zero test leakage)
+          <div className="kpi-card-value">{(val.total_real_samples || 3437).toLocaleString()}</div>
+          <p className="kpi-card-subtext">
+            Strictly train split only (0% test leakage)
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Synthesized Attacks</span>
-            <span className="badge badge-neutral">Generated</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle purple">◈</div>
+              <span className="kpi-card-label">Synthesized Attacks</span>
+            </div>
+            <span className="badge badge-healthy">Generated</span>
           </div>
-          <div className="card-value">{val.total_synthetic_samples || 2000}</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <div className="kpi-card-value">{(val.total_synthetic_samples || 2000).toLocaleString()}</div>
+          <p className="kpi-card-subtext">
             Conditional sampling targeting rare threat classes
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Mean Wasserstein Distance</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle green">W₁</div>
+              <span className="kpi-card-label">Wasserstein Dist</span>
+            </div>
             <span className="badge badge-healthy">Pass &lt; 0.25</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--status-healthy)' }}>
+          <div className="kpi-card-value" style={{ color: 'var(--status-healthy)' }}>
             {val.mean_wasserstein_distance ? val.mean_wasserstein_distance.toFixed(4) : '0.1057'}
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <p className="kpi-card-subtext">
             High marginal probability alignment across 71 features
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Correlation Similarity</span>
-            <span className="badge badge-healthy">Pass &gt; 85%</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle orange">D_JS</div>
+              <span className="kpi-card-label">JS Divergence</span>
+            </div>
+            <span className="badge badge-warning">Soft Warning</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--status-healthy)' }}>
-            {val.correlation_similarity ? `${(val.correlation_similarity * 100).toFixed(2)}%` : '98.69%'}
+          <div className="kpi-card-value" style={{ color: 'var(--status-warning)' }}>
+            {val.mean_js_divergence ? val.mean_js_divergence.toFixed(4) : '0.5117'}
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Preserves inter-feature covariance relationships
+          <p className="kpi-card-subtext">
+            Threshold: &lt; 0.5000 (heavy-tailed distributions)
           </p>
         </div>
       </div>
 
-      {/* Statistical Rigor Table */}
-      <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
-        <div className="card-header">
-          <span className="card-title">Empirical Statistical Fidelity & Anti-Memorization Gates</span>
-          <span className="badge badge-healthy">All Quality Gates Passed</span>
-        </div>
-        <div className="data-table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Fidelity & Integrity Metric</th>
-                <th>Measured Result</th>
-                <th>Acceptance Threshold</th>
-                <th>Status</th>
-                <th>Mathematical Significance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {VALIDATION_METRICS.map((m, idx) => (
-                <tr key={idx}>
-                  <td style={{ fontWeight: 600 }}>{m.label}</td>
-                  <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{m.value}</td>
-                  <td style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{m.target}</td>
-                  <td>
-                    <span className={`badge ${m.isWarning ? 'badge-warning' : 'badge-healthy'}`}>
-                      <span className={`status-dot ${m.isWarning ? 'warning' : 'healthy'}`}></span> {m.status}
-                    </span>
-                  </td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>{m.notes}</td>
+      {/* Progressive Disclosure: Statistical Rigor & Gates Table */}
+      <details className="details-card">
+        <summary>
+          <span>View Empirical Statistical Validation Matrix & Anti-Memorization Gates (5 Passed · 1 Soft Warning)</span>
+        </summary>
+        <div className="details-content">
+          <div className="data-table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Fidelity & Integrity Metric</th>
+                  <th>Measured Result</th>
+                  <th>Acceptance Threshold</th>
+                  <th>Status</th>
+                  <th>Mathematical Significance</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {VALIDATION_METRICS.map((m, idx) => (
+                  <tr key={idx}>
+                    <td style={{ fontWeight: 600 }}>{m.label}</td>
+                    <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{m.value}</td>
+                    <td style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{m.target}</td>
+                    <td>
+                      <span className={`badge ${m.isWarning ? 'badge-warning' : 'badge-healthy'}`}>
+                        <span className={`status-dot ${m.isWarning ? 'warning' : 'healthy'}`}></span> {m.status}
+                      </span>
+                    </td>
+                    <td style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>{m.notes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </details>
 
       {/* Generated Visualizations Gallery */}
       <div className="card">

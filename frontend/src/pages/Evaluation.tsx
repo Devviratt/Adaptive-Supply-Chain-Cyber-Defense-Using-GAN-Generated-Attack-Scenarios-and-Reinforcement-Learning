@@ -117,29 +117,24 @@ export default function Evaluation() {
         </div>
       </div>
 
-      {/* Academic Limitations & Ethical Boundaries */}
-      <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
-        <div className="card-header">
-          <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Academic Assumptions & Limitations</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Transparent academic disclosure of research scope and engineering boundaries
-            </span>
+      {/* Progressive Disclosure: Academic Limitations & Ethical Boundaries */}
+      <details className="details-card" open>
+        <summary>
+          <span>Academic Assumptions, Dataset Constraints & Ethical Disclosures (4 Statements)</span>
+        </summary>
+        <div className="details-content">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {ACADEMIC_LIMITATIONS.map((lim, idx) => (
+              <div key={idx} style={{ padding: '12px 14px', background: 'var(--bg-subtle)', borderRadius: '10px', borderLeft: '3px solid var(--accent-primary)' }}>
+                <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-heading)' }}>{lim.title}</div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.5 }}>
+                  {lim.description}
+                </p>
+              </div>
+            ))}
           </div>
-          <span className="badge badge-neutral">Research Ethics</span>
         </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-          {ACADEMIC_LIMITATIONS.map((lim, idx) => (
-            <div key={idx} style={{ padding: 'var(--space-md)', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-md)' }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-heading)' }}>{lim.title}</div>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.5 }}>
-                {lim.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+      </details>
 
       {/* Next Milestone Roadmap (Review 2: 60%) */}
       <div className="card">

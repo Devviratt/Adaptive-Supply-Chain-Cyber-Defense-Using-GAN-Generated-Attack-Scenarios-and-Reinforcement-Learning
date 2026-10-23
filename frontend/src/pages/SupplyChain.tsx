@@ -106,55 +106,67 @@ export default function SupplyChain() {
       )}
 
       {/* Control & KPI Header */}
-      <div className="card-grid">
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Simulation Step</span>
-            <span className="badge badge-neutral">Step Counter</span>
+      <div className="kpi-grid">
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle blue">⏱</div>
+              <span className="kpi-card-label">Simulation Step</span>
+            </div>
+            <span className="badge badge-neutral">Horizon: 50</span>
           </div>
-          <div className="card-value">{stepCount} / 50</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Max 50 steps per episode horizon
+          <div className="kpi-card-value">{stepCount} <span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>/ 50</span></div>
+          <p className="kpi-card-subtext">
+            Discrete-event step progression
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Cumulative Reward</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle green">★</div>
+              <span className="kpi-card-label">Cumulative Reward</span>
+            </div>
             <span className="badge badge-info">RL Objective</span>
           </div>
-          <div className="card-value" style={{ color: totalReward >= 0 ? 'var(--status-healthy)' : 'var(--status-danger)' }}>
+          <div className="kpi-card-value" style={{ color: totalReward >= 0 ? 'var(--status-healthy)' : 'var(--status-danger)' }}>
             {totalReward.toFixed(2)}
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Availability reward minus defense action costs
+          <p className="kpi-card-subtext">
+            Availability minus defense action costs
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Last Defense Action</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle purple">🛡</div>
+              <span className="kpi-card-label">Last Action</span>
+            </div>
             <span className="badge badge-neutral">Action Taken</span>
           </div>
-          <div className="card-value" style={{ fontSize: '1.4rem' }}>
+          <div className="kpi-card-value" style={{ fontSize: '1.4rem' }}>
             {simState?.action_taken || 'NONE'}
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <p className="kpi-card-subtext">
             Reward Delta: {simState ? simState.reward.toFixed(2) : '0.00'}
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Episode State</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle orange">⚡</div>
+              <span className="kpi-card-label">Episode State</span>
+            </div>
             <span className={`badge ${simState?.terminated ? 'badge-healthy' : simState?.truncated ? 'badge-warning' : 'badge-info'}`}>
               {simState?.terminated ? 'MITIGATED' : simState?.truncated ? 'TRUNCATED' : 'ACTIVE'}
             </span>
           </div>
-          <div className="card-value" style={{ fontSize: '1.4rem' }}>
+          <div className="kpi-card-value" style={{ fontSize: '1.3rem' }}>
             {simState?.terminated ? 'Attack Contained' : simState?.truncated ? 'Horizon Reached' : 'Simulating...'}
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <p className="kpi-card-subtext">
             {simState?.step_info?.attack_mitigated ? 'Full threat mitigation verified' : 'Threat active in pipeline'}
           </p>
         </div>

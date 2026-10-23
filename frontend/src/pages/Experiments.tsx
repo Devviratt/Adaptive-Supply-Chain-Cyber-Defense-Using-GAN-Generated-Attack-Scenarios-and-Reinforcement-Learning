@@ -77,51 +77,125 @@ export default function Experiments() {
       )}
 
       {/* Experimental Conditions Overview Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
-        <div className="card" style={{ borderLeft: '4px solid var(--status-healthy)' }}>
-          <div className="card-header">
-            <span className="card-title">Condition A: Rule-Based SOC Baseline</span>
+      <div className="kpi-grid">
+        <div className="kpi-card" style={{ borderLeft: '4px solid var(--status-healthy)' }}>
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle green">A</div>
+              <span className="kpi-card-label">Condition A: Rule SOC</span>
+            </div>
             <span className="badge badge-healthy">100% Verified</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--status-healthy)' }}>
+          <div className="kpi-card-value" style={{ color: 'var(--status-healthy)' }}>
             {expA ? `${(expA.security.mitigation_success_rate * 100).toFixed(0)}%` : '30%'}
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Multi-Seed Benchmark (30.0% over 5 seeds · 60.0% on seed 42) · 99.9% Uptime
+          <p className="kpi-card-subtext">
+            5 Seeds: 30.0% · Seed 42: 60.0% · 99.9% Uptime
           </p>
         </div>
 
-        <div className="card" style={{ borderLeft: '4px solid var(--accent-primary)' }}>
-          <div className="card-header">
-            <span className="card-title">Condition B: DQN on Real Data</span>
+        <div className="kpi-card" style={{ borderLeft: '4px solid var(--accent-primary)' }}>
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle orange">B</div>
+              <span className="kpi-card-label">Condition B: DQN Real</span>
+            </div>
             <span className="badge badge-warning">In Progress</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--text-secondary)' }}>Tuning</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Agent architecture built; policy training convergence in progress
+          <div className="kpi-card-value" style={{ color: 'var(--status-warning)' }}>Tuning</div>
+          <p className="kpi-card-subtext">
+            1,000-step smoke test; 50k convergence ongoing
           </p>
         </div>
 
-        <div className="card" style={{ borderLeft: '4px solid #8b5cf6)' }}>
-          <div className="card-header">
-            <span className="card-title">Condition C: DQN on Real + CTGAN</span>
+        <div className="kpi-card" style={{ borderLeft: '4px solid #8b5cf6' }}>
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle purple">C</div>
+              <span className="kpi-card-label">Condition C: DQN+CTGAN</span>
+            </div>
             <span className="badge badge-neutral">Planned</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--text-muted)' }}>Planned</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Will evaluate generalization gain under CTGAN threat augmentation
+          <div className="kpi-card-value" style={{ color: 'var(--text-muted)' }}>Planned</div>
+          <p className="kpi-card-subtext">
+            Will test generalization under CTGAN augmentation
           </p>
         </div>
 
-        <div className="card" style={{ borderLeft: '4px solid #64748b' }}>
-          <div className="card-header">
-            <span className="card-title">Condition D: PPO Comparison</span>
+        <div className="kpi-card" style={{ borderLeft: '4px solid #64748b' }}>
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle blue">D</div>
+              <span className="kpi-card-label">Condition D: PPO</span>
+            </div>
             <span className="badge badge-neutral">Planned</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--text-muted)' }}>Planned</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Actor-Critic policy gradient baseline for multi-algorithm validation
+          <div className="kpi-card-value" style={{ color: 'var(--text-muted)' }}>Planned</div>
+          <p className="kpi-card-subtext">
+            Actor-Critic policy gradient comparative baseline
           </p>
+        </div>
+      </div>
+
+      {/* Conditions Matrix Table */}
+      <div className="card" style={{ marginBottom: '16px' }}>
+        <div className="card-header">
+          <div>
+            <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>Controlled Experimental Conditions Comparison</h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              Identical evaluation protocols across 4 conditions to isolate synthetic generalization gains
+            </span>
+          </div>
+          <span className="badge badge-info">Evaluation Protocol</span>
+        </div>
+
+        <div className="data-table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Condition</th>
+                <th>Defensive Paradigm</th>
+                <th>Training Modality</th>
+                <th>Mitigation Efficacy</th>
+                <th>Service Availability</th>
+                <th>Evaluation Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ fontWeight: 600 }}>Condition A</td>
+                <td>Rule-Based SOC Playbook</td>
+                <td>Deterministic Heuristics</td>
+                <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--status-healthy)' }}>30.0% (5 Seeds) / 60.0% (Seed 42)</td>
+                <td style={{ fontFamily: 'var(--font-mono)' }}>99.92% Uptime</td>
+                <td><span className="badge badge-healthy">✓ Evaluated (10 Ep)</span></td>
+              </tr>
+              <tr>
+                <td style={{ fontWeight: 600 }}>Condition B</td>
+                <td>Deep Q-Network (DQN)</td>
+                <td>Real CIC-IDS2017 Only</td>
+                <td style={{ color: 'var(--text-muted)' }}>Pending Convergence</td>
+                <td style={{ color: 'var(--text-muted)' }}>Pending Convergence</td>
+                <td><span className="badge badge-warning">~ 1,000 Step Smoke Test</span></td>
+              </tr>
+              <tr>
+                <td style={{ fontWeight: 600 }}>Condition C</td>
+                <td>Deep Q-Network (DQN)</td>
+                <td>Real + CTGAN Synthetic</td>
+                <td style={{ color: 'var(--text-muted)' }}>Planned (Phase 10)</td>
+                <td style={{ color: 'var(--text-muted)' }}>Planned (Phase 10)</td>
+                <td><span className="badge badge-neutral">Awaiting Condition B</span></td>
+              </tr>
+              <tr>
+                <td style={{ fontWeight: 600 }}>Condition D</td>
+                <td>PPO Actor-Critic</td>
+                <td>Real Only / Comparative</td>
+                <td style={{ color: 'var(--text-muted)' }}>Planned (Phase 10)</td>
+                <td style={{ color: 'var(--text-muted)' }}>Planned (Phase 10)</td>
+                <td><span className="badge badge-neutral">Gym Wrapper Tested</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

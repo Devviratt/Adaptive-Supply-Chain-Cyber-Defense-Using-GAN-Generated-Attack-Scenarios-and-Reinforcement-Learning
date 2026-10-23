@@ -77,24 +77,25 @@ export default function RLDefense() {
       </div>
 
       {/* Policy Comparison Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
+      {/* Exactly 3 Balanced Policy Cards (No Duplicates) */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px', marginBottom: '18px' }}>
         {/* Rule-Based Policy Card */}
         <div className="card" style={{ borderTop: '4px solid var(--status-healthy)' }}>
           <div className="card-header">
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Rule-Based Heuristic (SOC Baseline)</h3>
+            <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>Rule-Based Heuristic (SOC Baseline)</h3>
             <span className="badge badge-healthy">100% Verified</span>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 'var(--space-md)' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '12px' }}>
             Deterministic decision tree modeling standard SOC playbook procedures. Evaluated as benchmark Experiment A.
           </p>
-          <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+          <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Mitigation Rate:</span>
-              <strong style={{ color: 'var(--status-healthy)' }}>60.0% (Single Seed) / 30.0% (10 Ep)</strong>
+              <strong style={{ color: 'var(--status-healthy)' }}>60.0% (Single Seed) / 30.0% (5 Seeds)</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Service Availability:</span>
-              <strong>99.5% - 99.9% Uptime</strong>
+              <strong>99.5% – 99.9% Uptime</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Primary Action:</span>
@@ -103,48 +104,27 @@ export default function RLDefense() {
           </div>
         </div>
 
-        {/* DQN Policy Card */}
+        {/* DQN Policy Card (Single, Honest) */}
         <div className="card" style={{ borderTop: '4px solid var(--accent-primary)' }}>
           <div className="card-header">
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Deep Q-Network (DQN Defense)</h3>
-            <span className="badge badge-warning">Tuning In-Progress</span>
+            <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>Deep Q-Network (DQN Defense)</h3>
+            <span className="badge badge-warning">Smoke Test Verified</span>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 'var(--space-md)' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '12px' }}>
             Value-based Q-learning agent with experience replay, epsilon annealing, and target network stabilization.
           </p>
-          <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+          <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Architecture:</span>
-              <code>12 Inputs → [64, 64] MLP → 5 Actions</code>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-              <span style={{ color: 'var(--status-healthy)', fontWeight: 600 }}>Operational & Evaluated (Exp A)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* DQN Policy Card */}
-        <div className="card" style={{ borderTop: '4px solid var(--accent-primary)' }}>
-          <div className="card-header">
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Deep Q-Network (DQN Defense)</h3>
-            <span className="badge badge-warning">Architecture & Smoke Test</span>
-          </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 'var(--space-md)' }}>
-            Value-based Q-learning agent with experience replay, epsilon annealing, and target network stabilization.
-          </p>
-          <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Architecture:</span>
-              <code>12 Inputs → [64, 64] MLP → 5 Actions</code>
+              <code style={{ fontSize: '0.75rem' }}>12 Inputs → [64, 64] MLP → 5 Actions</code>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Checkpoint:</span>
-              <span>1,000-step smoke test (dqn_real_only_final.zip)</span>
+              <span>1,000-step smoke test (582 KB)</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-              <span style={{ color: 'var(--status-warning)', fontWeight: 600 }}>Checkpoint verified; 50k convergence ongoing</span>
+              <span style={{ color: 'var(--status-warning)', fontWeight: 600 }}>50k convergence runs ongoing</span>
             </div>
           </div>
         </div>
@@ -152,82 +132,77 @@ export default function RLDefense() {
         {/* PPO Policy Card */}
         <div className="card" style={{ borderTop: '4px solid #8b5cf6' }}>
           <div className="card-header">
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>PPO Comparative Baseline</h3>
-            <span className="badge badge-neutral">Architecture Built</span>
+            <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>PPO Comparative Baseline</h3>
+            <span className="badge badge-neutral">Wrapper Built</span>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 'var(--space-md)' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '12px' }}>
             On-policy Actor-Critic architecture providing an alternate policy-gradient baseline for comparison against DQN.
           </p>
-          <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+          <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Policy Type:</span>
               <span>Actor-Critic (MlpPolicy)</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Checkpoint:</span>
-              <span style={{ color: 'var(--text-muted)' }}>None (SB3 wrapper verified in pytest)</span>
+              <span style={{ color: 'var(--text-muted)' }}>None (wrapper verified in pytest)</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Awaiting hyperparameter tuning</span>
+              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Planned for Review 2 (60%)</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 5-Level Agent Readiness Audit Table */}
-      <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
-        <div className="card-header">
-          <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Rigorous Learning Agent Readiness Audit</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Strict distinction between implemented architecture, test checkpoints, converged policies, and evaluations
-            </span>
+      {/* Progressive Disclosure: 5-Level Agent Readiness Audit Table */}
+      <details className="details-card">
+        <summary>
+          <span>View 5-Level Learning Agent Readiness Audit (Architecture vs Training vs Checkpoint)</span>
+        </summary>
+        <div className="details-content">
+          <div className="data-table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Agent / Policy</th>
+                  <th>1. Architecture</th>
+                  <th>2. Training Run</th>
+                  <th>3. Checkpoint Available</th>
+                  <th>4. Policy Converged</th>
+                  <th>5. Evaluation Executed</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ fontWeight: 600 }}>Rule-Based SOC Baseline</td>
+                  <td><span className="badge badge-healthy">✓ Implemented</span></td>
+                  <td><span className="badge badge-neutral">N/A (Heuristic)</span></td>
+                  <td><span className="badge badge-healthy">✓ Python Class</span></td>
+                  <td><span className="badge badge-healthy">✓ Deterministic</span></td>
+                  <td><span className="badge badge-healthy">✓ Exp A (5 Seeds)</span></td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 600 }}>Deep Q-Network (DQN)</td>
+                  <td><span className="badge badge-healthy">✓ Implemented</span></td>
+                  <td><span className="badge badge-warning">~ 1,000 Steps Smoke</span></td>
+                  <td><span className="badge badge-healthy">✓ 582 KB Zip</span></td>
+                  <td><span className="badge badge-warning">In Progress (Review 2)</span></td>
+                  <td><span className="badge badge-warning">Smoke Test Only</span></td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 600 }}>PPO Baseline</td>
+                  <td><span className="badge badge-healthy">✓ Implemented</span></td>
+                  <td><span className="badge badge-neutral">Not Started</span></td>
+                  <td><span className="badge badge-neutral">None</span></td>
+                  <td><span className="badge badge-neutral">Planned (Review 2)</span></td>
+                  <td><span className="badge badge-neutral">Pending Checkpoint</span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <span className="badge badge-info">Honest Academic Audit</span>
         </div>
-
-        <div className="data-table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Agent / Policy</th>
-                <th>1. Architecture</th>
-                <th>2. Training Run</th>
-                <th>3. Checkpoint Available</th>
-                <th>4. Policy Converged</th>
-                <th>5. Evaluation Executed</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ fontWeight: 600 }}>Rule-Based SOC Baseline</td>
-                <td><span className="badge badge-healthy">✓ Implemented</span></td>
-                <td><span className="badge badge-neutral">N/A (Heuristic)</span></td>
-                <td><span className="badge badge-healthy">✓ Python Class</span></td>
-                <td><span className="badge badge-healthy">✓ Deterministic</span></td>
-                <td><span className="badge badge-healthy">✓ Exp A (5 Seeds)</span></td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 600 }}>Deep Q-Network (DQN)</td>
-                <td><span className="badge badge-healthy">✓ Implemented</span></td>
-                <td><span className="badge badge-warning">~ 1,000 Steps Smoke</span></td>
-                <td><span className="badge badge-healthy">✓ 582 KB Zip</span></td>
-                <td><span className="badge badge-warning">In Progress (Review 2)</span></td>
-                <td><span className="badge badge-warning">Smoke Test Only</span></td>
-              </tr>
-              <tr>
-                <td style={{ fontWeight: 600 }}>PPO Baseline</td>
-                <td><span className="badge badge-healthy">✓ Implemented</span></td>
-                <td><span className="badge badge-neutral">Not Started</span></td>
-                <td><span className="badge badge-neutral">None</span></td>
-                <td><span className="badge badge-neutral">Planned (Review 2)</span></td>
-                <td><span className="badge badge-neutral">Pending Checkpoint</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </details>
 
       {/* Interactive Policy Decision Tester */}
       <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>

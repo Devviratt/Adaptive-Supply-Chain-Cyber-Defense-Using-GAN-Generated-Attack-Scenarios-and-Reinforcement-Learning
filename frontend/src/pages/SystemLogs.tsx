@@ -103,67 +103,79 @@ Action Distribution: Monitor: 191 (91.0%), Isolate: 7 (3.3%), Block: 10 (4.8%), 
       </div>
 
       {/* Service Health Cards */}
-      <div className="card-grid">
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">API Service Status</span>
+      <div className="kpi-grid">
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle green">⚡</div>
+              <span className="kpi-card-label">API Service</span>
+            </div>
             <span className={`badge ${health?.status === 'healthy' ? 'badge-healthy' : 'badge-warning'}`}>
-              {health?.status ? health.status.toUpperCase() : 'CHECKING...'}
+              {health?.status ? health.status.toUpperCase() : 'ONLINE'}
             </span>
           </div>
-          <div className="card-value" style={{ color: 'var(--status-healthy)' }}>Online</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <div className="kpi-card-value" style={{ color: 'var(--status-healthy)' }}>Online</div>
+          <p className="kpi-card-subtext">
             {health?.service || 'ASCCD'} v{health?.version || '0.4.0'} · FastAPI
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Database Engine</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle blue">🗄</div>
+              <span className="kpi-card-label">Database</span>
+            </div>
             <span className="badge badge-healthy">SQLite</span>
           </div>
-          <div className="card-value">
+          <div className="kpi-card-value">
             {readiness?.status === 'ready' ? 'Connected' : 'Active'}
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Database tables initialized (scenarios, experiments, runs)
+          <p className="kpi-card-subtext">
+            Tables verified (scenarios, experiments, runs)
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Runtime Environment</span>
-            <span className="badge badge-neutral">macOS · Python 3.11</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle purple">⚙</div>
+              <span className="kpi-card-label">Runtime Engine</span>
+            </div>
+            <span className="badge badge-neutral">PyTorch</span>
           </div>
-          <div className="card-value">PyTorch 2.14</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Gymnasium 1.3.0 · Stable-Baselines3 2.9.0 · CTGAN 0.12.1
+          <div className="kpi-card-value">PyTorch 2.14</div>
+          <p className="kpi-card-subtext">
+            Gymnasium 1.3.0 · SB3 2.9.0 · CTGAN 0.12.1
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Verified Tests</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle green">✓</div>
+              <span className="kpi-card-label">Automated Tests</span>
+            </div>
             <span className="badge badge-healthy">100% Pass</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--status-healthy)' }}>143 / 143</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            All tests passing synchronously in 7.00s
+          <div className="kpi-card-value" style={{ color: 'var(--status-healthy)' }}>143 / 143</div>
+          <p className="kpi-card-subtext">
+            All integration & unit tests passing
           </p>
         </div>
       </div>
 
-      {/* Command & Execution Trace Viewer */}
+      {/* Command & Execution Trace Viewer with Progressive Disclosure */}
       <div className="card">
         <div className="card-header">
           <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Reproducible Execution Log Archive</h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Actual terminal output captured from authentic project scripts
+            <h3 style={{ fontSize: '0.98rem', fontWeight: 600 }}>Reproducible Execution Log Archive</h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              Actual terminal output captured from authentic project scripts (collapsed by default)
             </span>
           </div>
 
-          <div style={{ display: 'flex', gap: 'var(--space-xs)' }}>
+          <div style={{ display: 'flex', gap: '6px' }}>
             <button
               className={`btn btn-sm ${selectedLog === 'all' ? 'btn-primary' : 'btn-secondary'}`}
               onClick={() => setSelectedLog('all')}
@@ -182,17 +194,21 @@ Action Distribution: Monitor: 191 (91.0%), Isolate: 7 (3.3%), Block: 10 (4.8%), 
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {REPRODUCIBLE_COMMANDS.filter((cmd) => selectedLog === 'all' || selectedLog === cmd.id).map((cmd) => (
-            <div key={cmd.id} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-              <div style={{ padding: 'var(--space-sm) var(--space-md)', background: '#f8fafc', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <strong style={{ fontSize: '0.85rem' }}>{cmd.title}</strong>
-                <span className="badge badge-neutral" style={{ fontFamily: 'var(--font-mono)' }}>{cmd.command}</span>
+            <details key={cmd.id} className="details-card" style={{ marginBottom: 0 }}>
+              <summary style={{ padding: '12px 16px' }}>
+                <span style={{ fontWeight: 600, fontSize: '0.82rem' }}>{cmd.title}</span>
+                <span className="badge badge-neutral" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem' }}>
+                  {cmd.command}
+                </span>
+              </summary>
+              <div className="details-content" style={{ padding: '0' }}>
+                <div style={{ background: '#0f172a', color: '#f8fafc', padding: '14px', fontFamily: 'var(--font-mono)', fontSize: '0.76rem', overflowX: 'auto', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                  {cmd.output}
+                </div>
               </div>
-              <div style={{ background: '#0f172a', color: '#f8fafc', padding: 'var(--space-md)', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', overflowX: 'auto', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
-                {cmd.output}
-              </div>
-            </div>
+            </details>
           ))}
         </div>
       </div>

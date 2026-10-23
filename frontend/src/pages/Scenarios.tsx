@@ -106,47 +106,59 @@ export default function Scenarios() {
       </div>
 
       {/* KPI Cards: Stage & Severity Breakdown */}
-      <div className="card-grid">
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Total Mapped Scenarios</span>
+      <div className="kpi-grid">
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle blue">⚡</div>
+              <span className="kpi-card-label">Total Scenarios</span>
+            </div>
             <span className="badge badge-info">SQLite DB</span>
           </div>
-          <div className="card-value">{totalCount || 100}</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Persistent scenario catalog in artifacts/reports/mapped_scenarios.json
+          <div className="kpi-card-value">{totalCount || 100}</div>
+          <p className="kpi-card-subtext">
+            Calibrated multi-stage attack scenarios in catalog
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Deployment Stage Attacks</span>
-            <span className="badge badge-neutral">72% of Total</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle purple">☸</div>
+              <span className="kpi-card-label">Deployment Stage</span>
+            </div>
+            <span className="badge badge-neutral">72% Share</span>
           </div>
-          <div className="card-value">{stageCounts.deployment || 72}</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <div className="kpi-card-value">{stageCounts.deployment || 72}</div>
+          <p className="kpi-card-subtext">
             DoS, DDoS & Volumetric targeting runtime clusters
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Build Stage Attacks</span>
-            <span className="badge badge-warning">23% of Total</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle orange">🛠</div>
+              <span className="kpi-card-label">Build Stage</span>
+            </div>
+            <span className="badge badge-warning">23% Share</span>
           </div>
-          <div className="card-value">{stageCounts.build || 23}</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <div className="kpi-card-value">{stageCounts.build || 23}</div>
+          <p className="kpi-card-subtext">
             Brute force & Infiltration targeting CI/CD runners
           </p>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Critical / High Severity</span>
-            <span className="badge badge-danger">39% of Total</span>
+        <div className="kpi-card">
+          <div className="kpi-card-header">
+            <div className="kpi-header-left">
+              <div className="kpi-icon-circle green">⚠</div>
+              <span className="kpi-card-label">Critical / High</span>
+            </div>
+            <span className="badge badge-danger">39% Risk</span>
           </div>
-          <div className="card-value" style={{ color: 'var(--status-danger)' }}>39</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
+          <div className="kpi-card-value" style={{ color: 'var(--status-danger)' }}>39</div>
+          <p className="kpi-card-subtext">
             11 Critical · 28 High · 15 Medium · 46 Low
           </p>
         </div>
@@ -164,8 +176,8 @@ export default function Scenarios() {
           <span className="badge badge-info">4-Stage Topology</span>
         </div>
 
-        <div style={{ height: '200px', width: '100%', marginTop: 'var(--space-sm)' }}>
-          <ResponsiveContainer width="100%" height="100%">
+        <div style={{ minHeight: '200px', width: '100%', marginTop: '6px' }}>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
               <XAxis dataKey="stage" tick={{ fontSize: 11, fill: '#64748b' }} />
