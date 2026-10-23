@@ -43,3 +43,6 @@ ctgan:
     enabled: true
     epochs: 50
     num_samples: 2000
+
+  # Label remains a discrete column in the processed training table.
+  label_column: "Label"
