@@ -96,7 +96,7 @@ class ValidationReport:
 
     def to_markdown(self) -> str:
         """Generate human-readable Markdown summary."""
-        status_badge = "✅ PASSED" if self.is_valid else "❌ FAILED"
+        status_badge = "PASSED" if self.is_valid else "FAILED"
         lines = [
             "# ASCCD Data Validation Report",
             "",
@@ -111,18 +111,18 @@ class ValidationReport:
             "|-------|--------|-------------|",
         ]
         for c in self.checks:
-            icon = "✅ Pass" if c.passed else "❌ Fail"
+            icon = "Pass" if c.passed else "Fail"
             lines.append(f"| {c.name} | {icon} | {c.message} |")
 
         if self.errors:
             lines.extend(["", "## Failures and Errors", ""])
             for err in self.errors:
-                lines.append(f"- 🔴 {err}")
+                lines.append(f"- ERROR: {err}")
 
         if self.warnings:
             lines.extend(["", "## Warnings", ""])
             for warn in self.warnings:
-                lines.append(f"- ⚠️ {warn}")
+                lines.append(f"- WARNING: {warn}")
 
         if self.split_metrics:
             lines.extend(["", "## Split Metrics", ""])
@@ -140,7 +140,7 @@ class ValidationReport:
         out_path.mkdir(parents=True, exist_ok=True)
 
         json_path = out_path / "validation_report.json"
-        with open(json_path, "w") as f:
+        with open(json_path, "w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f, indent=2, default=str)
 
         md_path = out_path / "validation_report.md"
