@@ -99,6 +99,30 @@ def create_app() -> FastAPI:
     app.include_router(defense.router, prefix="/api/defense", tags=["Defense"])
     app.include_router(experiments.router, prefix="/api/experiments", tags=["Experiments"])
 
+    # Mount static artifacts directory for figure access
+    from pathlib import Path
+    from fastapi.staticfiles import StaticFiles
+
+    artifacts_path = Path("artifacts")
+    if artifacts_path.exists():
+        app.mount("/artifacts", StaticFiles(directory=str(artifacts_path)), name="artifacts")
+
+    @app.get("/", tags=["Root"])
+    async def root_index():
+        """Root entry point providing service directory and docs links."""
+        return {
+            "service": "ASCCD — Adaptive Supply Chain Cyber Defense",
+            "team_number": 84,
+            "institution": "Dayananda Sagar University (DSU) — School of Engineering",
+            "guide": "Prof. Namyapriya D",
+            "version": "0.4.0",
+            "checkpoint": "40% Progress Review Milestone",
+            "status": "online",
+            "documentation": "/api/docs",
+            "health_check": "/api/health",
+            "project_status": "/api/project/status",
+        }
+
     return app
 
 

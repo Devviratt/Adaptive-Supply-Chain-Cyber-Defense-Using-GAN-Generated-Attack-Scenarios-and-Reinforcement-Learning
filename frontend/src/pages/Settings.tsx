@@ -14,6 +14,9 @@ export default function Settings() {
   return (
     <div>
       <div className="page-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4px' }}>
+          <span className="badge badge-neutral">Platform Config</span>
+        </div>
         <h2>System Configuration & Environment Settings</h2>
         <p>
           Configure runtime environment variables, simulation dynamics thresholds,
@@ -24,7 +27,11 @@ export default function Settings() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-lg)' }}>
         {/* Runtime Settings Card */}
         <div className="card">
-          <h3 style={{ marginBottom: 'var(--space-md)' }}>⚙️ Runtime Environment Parameters</h3>
+          <div className="card-header">
+            <span className="card-title">Runtime Environment Parameters</span>
+            <span className="badge badge-info">config/settings.yaml</span>
+          </div>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
             <div>
               <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Accelerated Development Mode</label>
@@ -34,10 +41,10 @@ export default function Settings() {
                   id="devMode"
                   checked={devMode}
                   onChange={(e) => setDevMode(e.target.checked)}
-                  style={{ width: '1.2rem', height: '1.2rem' }}
+                  style={{ width: '1.1rem', height: '1.1rem' }}
                 />
-                <label htmlFor="devMode" style={{ fontSize: '0.875rem', cursor: 'pointer' }}>
-                  Enable Dev Mode (shorter buffer, 10k timesteps for rapid testing)
+                <label htmlFor="devMode" style={{ fontSize: '0.85rem', cursor: 'pointer', color: 'var(--text-primary)' }}>
+                  Enable Dev Mode (accelerated buffer, 10 episodes for rapid local evaluation)
                 </label>
               </div>
             </div>
@@ -46,61 +53,64 @@ export default function Settings() {
               <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Global Random Seed</label>
               <input
                 type="number"
+                className="form-input"
                 value={randomSeed}
                 onChange={(e) => setRandomSeed(Number(e.target.value))}
-                style={{ width: '100%', marginTop: '0.25rem', padding: '0.5rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
+                style={{ marginTop: '0.25rem' }}
               />
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Default: 42 (Guarantees deterministic replication)</span>
             </div>
 
             <div>
               <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Logging Verbosity</label>
               <select
+                className="form-select"
                 value={logLevel}
                 onChange={(e) => setLogLevel(e.target.value)}
-                style={{ width: '100%', marginTop: '0.25rem', padding: '0.5rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
+                style={{ marginTop: '0.25rem' }}
               >
-                <option value="DEBUG">DEBUG (Detailed telemetry)</option>
-                <option value="INFO">INFO (Standard production)</option>
-                <option value="WARNING">WARNING (Only warnings and errors)</option>
+                <option value="DEBUG">DEBUG (Detailed Telemetry)</option>
+                <option value="INFO">INFO (Standard Audit)</option>
+                <option value="WARNING">WARNING (Issues Only)</option>
+                <option value="ERROR">ERROR (Critical Failures)</option>
               </select>
             </div>
 
-            <button className="btn btn-primary" onClick={handleSave} style={{ alignSelf: 'flex-start', marginTop: 'var(--space-sm)' }}>
-              Save Settings
-            </button>
-            {savedMsg && (
-              <span style={{ fontSize: '0.8rem', color: 'var(--status-healthy)' }}>✅ Settings updated successfully</span>
-            )}
+            <div style={{ marginTop: 'var(--space-sm)' }}>
+              <button className="btn btn-primary" onClick={handleSave}>
+                Save Environment Preferences
+              </button>
+              {savedMsg && (
+                <span style={{ marginLeft: 'var(--space-md)', color: 'var(--status-healthy)', fontSize: '0.85rem', fontWeight: 600 }}>
+                  ✓ Preferences Saved
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Directory Paths Card */}
+        {/* Directory Paths Reference */}
         <div className="card">
-          <h3 style={{ marginBottom: 'var(--space-md)' }}>📁 System Storage Paths</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)', fontSize: '0.85rem' }}>
-            <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Raw Datasets:</div>
-              <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>data/raw/</div>
+          <div className="card-header">
+            <span className="card-title">Storage & Artifact Directory Structure</span>
+            <span className="badge badge-neutral">Local Paths</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)', fontSize: '0.82rem' }}>
+            <div style={{ padding: 'var(--space-sm)', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)' }}>
+              <strong>Raw Dataset:</strong> <code style={{ fontFamily: 'var(--font-mono)' }}>data/raw/CIC-IDS2017_dev_sample.csv</code>
             </div>
-            <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Processed Clean Partitions:</div>
-              <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>data/processed/</div>
+            <div style={{ padding: 'var(--space-sm)', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)' }}>
+              <strong>Processed Splits:</strong> <code style={{ fontFamily: 'var(--font-mono)' }}>data/processed/train.csv, val.csv, test.csv</code>
             </div>
-            <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>CTGAN Generated Synthetic:</div>
-              <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>data/generated/</div>
+            <div style={{ padding: 'var(--space-sm)', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)' }}>
+              <strong>Synthesized Attacks:</strong> <code style={{ fontFamily: 'var(--font-mono)' }}>data/generated/synthetic_attacks.csv</code>
             </div>
-            <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>DQN & PPO Model Weights:</div>
-              <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)' }}>artifacts/models/</div>
+            <div style={{ padding: 'var(--space-sm)', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)' }}>
+              <strong>Scientific Figures:</strong> <code style={{ fontFamily: 'var(--font-mono)' }}>artifacts/figures/*.png</code>
             </div>
-            <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Benchmark Reports:</div>
-              <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-secondary)' }}>artifacts/reports/</div>
-            </div>
-            <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Database File:</div>
-              <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--status-healthy)' }}>asccd.db (SQLite)</div>
+            <div style={{ padding: 'var(--space-sm)', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)' }}>
+              <strong>Model Checkpoints:</strong> <code style={{ fontFamily: 'var(--font-mono)' }}>artifacts/models/dqn/dqn_real_only_final.zip</code>
             </div>
           </div>
         </div>

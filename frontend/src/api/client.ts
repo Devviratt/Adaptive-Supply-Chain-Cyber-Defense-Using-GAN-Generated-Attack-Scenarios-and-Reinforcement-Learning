@@ -314,3 +314,69 @@ export async function runExperiments(
     body: JSON.stringify({ experiments, episodes, dev_mode: devMode }),
   })
 }
+
+// ============================================================
+// Data & GAN Summaries
+// ============================================================
+
+export interface DataSummaryResponse {
+  metadata: {
+    total_rows?: number
+    total_columns?: number
+    label_distribution?: Record<string, number>
+    column_names?: string[]
+  }
+  splits: {
+    train_count?: number
+    val_count?: number
+    test_count?: number
+    stratified?: boolean
+    splits?: Record<string, number>
+  }
+  validation: {
+    passed_checks?: number
+    failed_checks?: number
+    all_passed?: boolean
+    checks?: Array<{ name: string; status: string; detail?: string }>
+  }
+}
+
+export interface GanSummaryResponse {
+  validation: {
+    total_real_samples?: number
+    total_synthetic_samples?: number
+    num_features?: number
+    mean_wasserstein_distance?: number
+    correlation_similarity?: number
+    mean_js_divergence?: number
+    schema_passed?: boolean
+    no_nan_or_inf_passed?: boolean
+  }
+  utility: {
+    model_a_real_only?: {
+      accuracy?: number
+      macro_f1?: number
+      weighted_f1?: number
+      training_sample_count?: number
+    }
+    model_b_augmented?: {
+      accuracy?: number
+      macro_f1?: number
+      weighted_f1?: number
+      training_sample_count?: number
+    }
+    accuracy_delta?: number
+    macro_f1_delta?: number
+    augmentation_utility_positive?: boolean
+  }
+  figures: string[]
+}
+
+export async function getDataSummary() {
+  return apiFetch<DataSummaryResponse>('/project/data-summary')
+}
+
+export async function getGanSummary() {
+  return apiFetch<GanSummaryResponse>('/project/gan-summary')
+}
+
