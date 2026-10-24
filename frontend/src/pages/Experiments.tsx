@@ -168,7 +168,7 @@ export default function Experiments() {
                 <td>Deterministic Heuristics</td>
                 <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--status-healthy)' }}>30.0% (5 Seeds) / 60.0% (Seed 42)</td>
                 <td style={{ fontFamily: 'var(--font-mono)' }}>99.92% Uptime</td>
-                <td><span className="badge badge-healthy">✓ Evaluated (10 Ep)</span></td>
+                <td><span className="badge badge-healthy">✓ Evaluated (10 Ep · 5 Seeds)</span></td>
               </tr>
               <tr>
                 <td style={{ fontWeight: 600 }}>Condition B</td>
@@ -206,7 +206,7 @@ export default function Experiments() {
             <div>
               <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>Experiment A: Verified Rule-Based Baseline Telemetry</h3>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Evaluated over {expA.n_episodes} test episodes across seeds {(expA as any).seeds?.join(', ') || '42, 123, 456'}
+                Evaluated over {expA.n_episodes} total evaluation episodes cycling across 5 seeds ({(expA as any).seeds?.join(', ') || '42, 123, 456, 789, 1024'})
               </span>
             </div>
             <span className="badge badge-healthy">Evaluated</span>

@@ -153,7 +153,7 @@ flowchart LR
 
 ### Q7: Why are rule-based mitigation results 60% in one report and 30% in another?
 **Answer:**  
-"`baseline_results.json` records an initial single-run sanity check of 10 episodes where the heuristic happened to mitigate 6 attacks (60.0%). In contrast, `experiments_summary.json` records our formal controlled benchmark (Condition A) evaluated across **5 distinct random seeds** (`[42, 123, 456, 789, 1024]`) totaling 50 episodes. Under varied multi-seed attack sequences, static rulebooks struggle against fast-propagating lateral attacks, yielding 30.0% mitigation while maintaining 99.92% service availability. This variance proves the necessity of multi-seed evaluation."
+"`baseline_results.json` records an initial single-run sanity check of 10 episodes where the heuristic happened to mitigate 6 attacks (60.0%). In contrast, `experiments_summary.json` records our formal controlled benchmark (Condition A) evaluated across **5 distinct random seeds** (`[42, 123, 456, 789, 1024]`) cycling across 10 evaluation episodes. Under varied multi-seed attack sequences, static rulebooks struggle against fast-propagating lateral attacks, yielding 30.0% mitigation while maintaining 99.92% service availability. This result supports the value of multi-seed evaluation; a larger episode count is needed for a more robust estimate."
 
 ---
 
@@ -188,7 +188,7 @@ flowchart LR
 ### C. Rule Baseline: 60.0% Mitigation vs 30.0% Mitigation
 - **The Numbers:**
   - Phase-I PPT Slide 17 & `baseline_results.json`: `60.0% mitigation success, 99.49% availability, 64.03 reward` (10 episodes, single seed).
-  - Formal Controlled Benchmark (`experiments_summary.json` Condition A): `30.0% mitigation success, 99.92% availability, 102.33 reward` (5 seeds: [42, 123, 456, 789, 1024], 50 episodes).
+  - Formal Controlled Benchmark (`experiments_summary.json` Condition A): `30.0% mitigation success, 99.92% availability, 102.33 reward` (10 episodes cycling across 5 seeds: [42, 123, 456, 789, 1024]).
 - **The Exact Root Cause:**
   - In an initial 10-episode run with fixed attacks, the heuristic happened to catch 6 out of 10 attacks (60%).
   - In rigorous multi-seed evaluation across varied attack distributions, static rules struggle when attacks target non-standard stages (e.g., rapid lateral propagation through Build to Registry), succeeding in only 30% of episodes.
