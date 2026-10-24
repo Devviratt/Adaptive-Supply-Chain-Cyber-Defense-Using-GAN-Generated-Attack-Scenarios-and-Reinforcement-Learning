@@ -102,12 +102,12 @@
     },
     "training_sample_count": 5437,
     "training_class_distribution": {
-      "benign": 3274,
-      "dos": 747,
-      "portscan": 414,
-      "ddos": 374,
-      "brute_force": 302,
-      "botnet": 180,
+      "benign": 3278,
+      "dos": 749,
+      "portscan": 412,
+      "ddos": 369,
+      "brute_force": 305,
+      "botnet": 178,
       "web_attack": 146
     }
   },
