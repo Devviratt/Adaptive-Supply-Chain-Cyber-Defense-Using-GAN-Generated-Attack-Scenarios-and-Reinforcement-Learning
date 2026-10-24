@@ -335,6 +335,10 @@ export interface DataSummaryResponse {
     column_names?: string[]
   }
   splits: {
+    total_size?: number
+    train_size?: number
+    val_size?: number
+    test_size?: number
     train_count?: number
     val_count?: number
     test_count?: number

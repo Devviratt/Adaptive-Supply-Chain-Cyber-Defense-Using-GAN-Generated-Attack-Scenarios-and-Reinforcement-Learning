@@ -4,26 +4,35 @@ import {
   getDataSummary,
   getExperiments,
   getStageTopology,
+  getGanSummary,
+  getScenarios,
 } from '../api/client'
 import type {
   DataSummaryResponse,
   ExperimentItem,
   StageTopologyResponse,
+  GanSummaryResponse,
 } from '../api/client'
 
 export default function Overview() {
   const [dataSummary, setDataSummary] = useState<DataSummaryResponse | null>(null)
+  const [ganSummary, setGanSummary] = useState<GanSummaryResponse | null>(null)
+  const [scenarioCount, setScenarioCount] = useState<number>(100)
   const [experiments, setExperiments] = useState<ExperimentItem[]>([])
   const [topology, setTopology] = useState<StageTopologyResponse | null>(null)
 
   useEffect(() => {
     async function fetchData() {
-      const [dataRes, expRes, topRes] = await Promise.all([
+      const [dataRes, ganRes, scenRes, expRes, topRes] = await Promise.all([
         getDataSummary(),
+        getGanSummary(),
+        getScenarios({ limit: 1 }),
         getExperiments(),
         getStageTopology(),
       ])
       if (dataRes.data) setDataSummary(dataRes.data)
+      if (ganRes.data) setGanSummary(ganRes.data)
+      if (scenRes.data?.total) setScenarioCount(scenRes.data.total)
       if (expRes.data) setExperiments(expRes.data)
       if (topRes.data) setTopology(topRes.data)
     }
@@ -177,14 +186,16 @@ export default function Overview() {
             <span className="badge badge-info">CIC-IDS2017</span>
           </div>
           <div className="kpi-card-value">
-            {dataSummary?.splits?.train_count && dataSummary?.splits?.test_count
-              ? (dataSummary.splits.train_count + dataSummary.splits.test_count).toLocaleString()
-              : '4,174'}
+            {dataSummary?.splits?.total_size
+              ? dataSummary.splits.total_size.toLocaleString()
+              : dataSummary?.splits?.train_size && dataSummary?.splits?.val_size && dataSummary?.splits?.test_size
+              ? (dataSummary.splits.train_size + dataSummary.splits.val_size + dataSummary.splits.test_size).toLocaleString()
+              : '4,910'}
           </div>
           <p className="kpi-card-subtext">
-            {dataSummary?.splits?.train_count && dataSummary?.splits?.test_count
-              ? `${dataSummary.splits.train_count.toLocaleString()} train / ${dataSummary.splits.test_count.toLocaleString()} test`
-              : '3,437 train / 737 test'} · 71 features (0% leakage)
+            {dataSummary?.splits?.train_size && dataSummary?.splits?.val_size && dataSummary?.splits?.test_size
+              ? `${dataSummary.splits.train_size.toLocaleString()} train / ${dataSummary.splits.val_size.toLocaleString()} val / ${dataSummary.splits.test_size.toLocaleString()} test`
+              : '3,437 train / 736 val / 737 test'} · 71 features (0% leakage)
           </p>
         </div>
 
@@ -197,9 +208,13 @@ export default function Overview() {
             </div>
             <span className="badge badge-neutral">CTGAN Model</span>
           </div>
-          <div className="kpi-card-value">2,000</div>
+          <div className="kpi-card-value">
+            {ganSummary?.validation?.total_synthetic_samples
+              ? ganSummary.validation.total_synthetic_samples.toLocaleString()
+              : '2,000'}
+          </div>
           <p className="kpi-card-subtext">
-            W₁ = 0.1057 (pass &lt; 0.25) · Pearson r = 98.69%
+            W₁ = {ganSummary?.validation?.mean_wasserstein_distance ? ganSummary.validation.mean_wasserstein_distance.toFixed(4) : '0.1057'} (pass &lt; 0.25) · Pearson r = {ganSummary?.validation?.correlation_similarity ? `${(ganSummary.validation.correlation_similarity * 100).toFixed(2)}%` : '98.69%'}
           </p>
         </div>
 
@@ -213,10 +228,12 @@ export default function Overview() {
             <span className="badge badge-healthy">+1.49% Boost</span>
           </div>
           <div className="kpi-card-value" style={{ color: 'var(--status-healthy)' }}>
-            80.19%
+            {ganSummary?.utility?.model_b_augmented?.accuracy
+              ? `${(ganSummary.utility.model_b_augmented.accuracy * 100).toFixed(2)}%`
+              : '80.19%'}
           </div>
           <p className="kpi-card-subtext">
-            Augmented vs 78.70% baseline (Macro-F1: 0.1272)
+            Augmented vs {ganSummary?.utility?.model_a_real_only?.accuracy ? `${(ganSummary.utility.model_a_real_only.accuracy * 100).toFixed(2)}%` : '78.70%'} baseline (Macro-F1: {ganSummary?.utility?.model_b_augmented?.macro_f1 ? ganSummary.utility.model_b_augmented.macro_f1.toFixed(4) : '0.1272'})
           </p>
         </div>
 
@@ -229,7 +246,7 @@ export default function Overview() {
             </div>
             <span className="badge badge-healthy">SQLite Online</span>
           </div>
-          <div className="kpi-card-value">100</div>
+          <div className="kpi-card-value">{scenarioCount}</div>
           <p className="kpi-card-subtext">
             Mapped across 4 stages · Duration: 10–30 steps
           </p>
