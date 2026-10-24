@@ -158,7 +158,7 @@ export default function Overview() {
       title: 'Data Preprocessing & Split',
       module: 'Data Pipeline',
       status: 'Completed',
-      result: '3,437 train / 737 test records · 71 clean features',
+      result: '3,437 train / 736 val / 737 test records · 71 clean features',
       date: '2026-10-23',
     },
   ]
