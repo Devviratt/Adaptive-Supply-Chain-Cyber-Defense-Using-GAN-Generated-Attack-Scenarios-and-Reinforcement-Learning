@@ -12,6 +12,19 @@ import pandas as pd
 from scipy.stats import ks_2samp
 
 
+def available_output_path(path: str | Path) -> Path:
+    """Return the requested path or the next unused numbered sibling."""
+    path = Path(path)
+    if not path.exists():
+        return path
+    index = 2
+    while True:
+        candidate = path.with_name(f"{path.stem}_{index}{path.suffix}")
+        if not candidate.exists():
+            return candidate
+        index += 1
+
+
 def train_ctgan(
     train_path: str | Path,
     model_path: str | Path,
@@ -90,7 +103,7 @@ def generate_ctgan(
     if generated.empty:
         raise ValueError("No rows generated; check requested per-class counts")
     generated["data_origin"] = "synthetic_ctgan"
-    output_path = Path(output_path)
+    output_path = available_output_path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     generated.to_csv(output_path, index=False)
     return generated

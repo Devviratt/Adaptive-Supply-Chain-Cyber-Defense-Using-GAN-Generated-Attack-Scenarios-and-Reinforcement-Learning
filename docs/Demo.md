@@ -113,10 +113,10 @@ The GAN is fitted only on `train.csv`; validation and test splits are not used. 
 ```powershell
 python scripts\train_ctgan_demo.py train --epochs 5
 python scripts\train_ctgan_demo.py generate --count 500
-python scripts\train_ctgan_demo.py validate --input data\processed\train.csv --output data\generated\ctgan_samples.csv
+python scripts\train_ctgan_demo.py validate --input data\processed\train.csv
 ```
 
-Training reads `data\processed\train.csv` only; validation and test splits are not used. The checkpoint is `artifacts\models\ctgan\model.pkl`, with run metadata in `artifacts\models\ctgan\model.metadata.json`. Generated rows are saved to `data\generated\ctgan_samples.csv` with a `data_origin=synthetic_ctgan` column. Validation reports are `data\generated\ctgan_validation.json` and `data\generated\ctgan_validation.md`.
+Training reads `data\processed\train.csv` only; validation and test splits are not used. The checkpoint is `artifacts\models\ctgan\model.pkl`, with run metadata in `artifacts\models\ctgan\model.metadata.json`. Each generation run creates a new file, starting with `data\generated\ctgan_samples.csv` and then using numbered names such as `ctgan_samples_2.csv`; existing samples are never overwritten. Rows include a `data_origin=synthetic_ctgan` column. Validation without `--output` automatically selects the most recently generated CTGAN sample and creates a correspondingly named validation report. Pass `--output <sample.csv>` to validate a specific sample.
 
 The report includes schema match, synthetic label proportions, duplicate ratio, non-finite numeric values, and per-feature Kolmogorov–Smirnov (KS) statistics. Lower KS values indicate closer marginal feature distributions. In the demo run on the 3,437-row development training split, 5 epochs and 500 generated rows, the observed mean KS statistic was about **0.258** and the maximum was **0.756**. Schema matched, with no duplicate rows or non-finite numeric values. This small prototype result shows some feature distributions still differ substantially; the checks do not establish downstream utility or improved RL defense. Runtime depends on hardware. Five epochs is the short demo setting; the configured research run uses more epochs.
 
@@ -130,3 +130,5 @@ python scripts\train_ctgan_demo.py generate --per-class '{"benign":250,"dos":250
 
 > “Our demo covers the backend API, CIC-IDS2017 preprocessing, and a prototype CTGAN workflow. We fit the generator on the training split, produce clearly marked synthetic rows, and inspect basic fidelity and validity metrics. The development input is generated sample data, so this demonstrates the pipeline rather than results on the full CIC-IDS2017 corpus. Supply-chain simulation and RL defense remain future implementation stages.”
 
+Command to create synthetic datasets
+python scripts\train_ctgan_demo.py generate --count 500
