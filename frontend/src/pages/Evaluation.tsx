@@ -24,7 +24,7 @@ export default function Evaluation() {
 
   return (
     <div>
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header page-header-split">
         <div>
           <h2>Evaluation & Tactical Metrics Engine</h2>
           <p>
@@ -33,12 +33,12 @@ export default function Evaluation() {
           </p>
         </div>
         {summary?.experiments && (
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <div className="page-header-control">
             <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Condition:</span>
             <select
+              className="form-input"
               value={selectedExp}
               onChange={(e) => setSelectedExp(e.target.value)}
-              style={{ padding: '0.4rem 0.8rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
             >
               {Object.entries(summary.experiments).map(([id, exp]) => (
                 <option key={id} value={id}>Exp {id}: {exp.name}</option>
@@ -59,7 +59,7 @@ export default function Evaluation() {
       ) : (
         <div>
           {/* Top 4 Multi-Objective Pillars */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
             <div className="metric-card" style={{ borderLeft: '4px solid var(--status-healthy)' }}>
               <div className="metric-label">Mitigation Success Rate</div>
               <div className="metric-value" style={{ color: 'var(--status-healthy)' }}>
@@ -102,7 +102,7 @@ export default function Evaluation() {
           </div>
 
           {/* Action Distribution Breakdown */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
             <div className="card">
               <h3 style={{ marginBottom: 'var(--space-md)' }}>Defensive Action Allocation</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
@@ -165,11 +165,12 @@ export default function Evaluation() {
 
           {/* Breakdown by Attack Class */}
           {expData.performance_by_attack_class && Object.keys(expData.performance_by_attack_class).length > 0 && (
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+            <div className="card table-card" style={{ padding: 0, overflow: 'hidden' }}>
               <div style={{ padding: 'var(--space-md)', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
                 <h3 style={{ margin: 0, fontSize: '1rem' }}>Robustness Across Attack Classes</h3>
               </div>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
+              <div className="table-scroll">
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
                     <th style={{ padding: '0.75rem 1rem' }}>Attack Vector Category</th>
@@ -192,7 +193,8 @@ export default function Evaluation() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           )}
         </div>

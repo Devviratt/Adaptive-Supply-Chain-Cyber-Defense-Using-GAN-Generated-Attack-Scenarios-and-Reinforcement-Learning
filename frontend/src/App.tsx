@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Routes, Route, NavLink } from 'react-router-dom'
 import Overview from './pages/Overview'
 import Scenarios from './pages/Scenarios'
@@ -42,6 +43,17 @@ const NAV_SECTIONS = [
 ]
 
 export default function App() {
+  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
+    window.localStorage.getItem('asccd-theme') === 'dark' ? 'dark' : 'light'
+  )
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem('asccd-theme', theme)
+    const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+    if (themeColor) themeColor.content = theme === 'dark' ? '#090d13' : '#f3f7fd'
+  }, [theme])
+
   return (
     <div className="app-layout">
       {/* Sidebar Navigation */}
@@ -85,13 +97,26 @@ export default function App() {
             textAlign: 'center',
           }}
         >
-          <div style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Team 84 · DSU</div>
           <div>Cyber Defense System</div>
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="main-content">
+        <header className="app-topbar">
+          <button
+            type="button"
+            className="theme-toggle"
+            aria-label={`Switch to ${theme === 'light' ? 'night' : 'day'} theme`}
+            aria-pressed={theme === 'dark'}
+            onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')}
+          >
+            <span className="theme-toggle-track" aria-hidden="true">
+              <span className="theme-toggle-thumb" />
+            </span>
+            <span>{theme === 'light' ? 'Night mode' : 'Day mode'}</span>
+          </button>
+        </header>
         <Routes>
           <Route path="/" element={<Overview />} />
           <Route path="/scenarios" element={<Scenarios />} />

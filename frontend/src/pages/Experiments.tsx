@@ -33,7 +33,7 @@ export default function Experiments() {
 
   return (
     <div>
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header page-header-split">
         <div>
           <h2>Controlled Benchmark Experiments Hub</h2>
           <p>
@@ -52,7 +52,7 @@ export default function Experiments() {
 
       {/* Relative Gains Summary Cards */}
       {summary?.relative_gains && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
           {summary.relative_gains.C_vs_A && (
             <div className="card" style={{ borderLeft: '4px solid var(--status-healthy)' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Scientific Value-Add (C vs A)</div>
@@ -132,7 +132,7 @@ export default function Experiments() {
             <p>Click "Run Benchmark Suite" above or execute `python scripts/run_experiments.py` on the CLI.</p>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-scroll">
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>

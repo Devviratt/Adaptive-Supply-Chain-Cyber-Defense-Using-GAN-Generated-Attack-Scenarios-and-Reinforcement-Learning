@@ -32,6 +32,11 @@ router = APIRouter()
 _rule_policy: RuleBasedDefensePolicy | None = None
 _dqn_agent: DQNDefenseAgent | None = None
 _ppo_agent: PPODefenseAgent | None = None
+DQN_MODEL_PATHS = (
+    Path("artifacts/models/dqn/cicids2017_sample/dqn_augmented_final.zip"),
+    Path("artifacts/models/dqn/dqn_augmented_final.zip"),
+    Path("artifacts/models/dqn/dqn_default_final.zip"),
+)
 
 
 def get_rule_policy() -> RuleBasedDefensePolicy:
@@ -44,10 +49,8 @@ def get_rule_policy() -> RuleBasedDefensePolicy:
 def get_dqn_agent() -> DQNDefenseAgent:
     global _dqn_agent
     if _dqn_agent is None:
-        model_path = Path("artifacts/models/dqn/dqn_augmented_final.zip")
-        if not model_path.exists():
-            model_path = Path("artifacts/models/dqn/dqn_default_final.zip")
-        _dqn_agent = DQNDefenseAgent.load(model_path) if model_path.exists() else DQNDefenseAgent()
+        model_path = next((path for path in DQN_MODEL_PATHS if path.is_file()), None)
+        _dqn_agent = DQNDefenseAgent.load(model_path) if model_path else DQNDefenseAgent()
     return _dqn_agent
 
 

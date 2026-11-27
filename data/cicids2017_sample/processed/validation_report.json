@@ -1,0 +1,168 @@
+{
+  "is_valid": true,
+  "total_checks": 13,
+  "passed_checks": 13,
+  "failed_checks": 0,
+  "errors": [],
+  "warnings": [],
+  "split_metrics": {
+    "row_counts": {
+      "train": 50000,
+      "val": 10714,
+      "test": 10715
+    },
+    "feature_count": 43,
+    "class_distribution": {
+      "train": {
+        "benign": 40761,
+        "dos": 4469,
+        "ddos": 3067,
+        "brute_force": 534,
+        "web_attack": 385,
+        "portscan": 381,
+        "botnet": 370,
+        "infiltration": 25,
+        "heartbleed": 8
+      },
+      "val": {
+        "benign": 8734,
+        "dos": 957,
+        "ddos": 657,
+        "brute_force": 114,
+        "web_attack": 82,
+        "portscan": 82,
+        "botnet": 80,
+        "infiltration": 6,
+        "heartbleed": 2
+      },
+      "test": {
+        "benign": 8735,
+        "dos": 958,
+        "ddos": 658,
+        "brute_force": 115,
+        "web_attack": 83,
+        "portscan": 81,
+        "botnet": 79,
+        "infiltration": 5,
+        "heartbleed": 1
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "directory_exists",
+      "passed": true,
+      "message": "Found directory: data\\cicids2017_sample\\processed",
+      "details": {}
+    },
+    {
+      "name": "split_files_exist",
+      "passed": true,
+      "message": "All required split files (['train.csv', 'val.csv', 'test.csv']) exist.",
+      "details": {
+        "files": [
+          "train.csv",
+          "val.csv",
+          "test.csv"
+        ]
+      }
+    },
+    {
+      "name": "data_readable",
+      "passed": true,
+      "message": "Train, validation, and test datasets parsed successfully.",
+      "details": {}
+    },
+    {
+      "name": "non_empty_splits",
+      "passed": true,
+      "message": "All splits non-empty (Train: 50000, Val: 10714, Test: 10715)",
+      "details": {
+        "train": 50000,
+        "val": 10714,
+        "test": 10715
+      }
+    },
+    {
+      "name": "label_column_present",
+      "passed": true,
+      "message": "Label column 'Label' present in all splits.",
+      "details": {}
+    },
+    {
+      "name": "feature_columns_match",
+      "passed": true,
+      "message": "Columns match perfectly across all splits (44 total columns, 43 features).",
+      "details": {
+        "feature_count": 43,
+        "total_columns": 44
+      }
+    },
+    {
+      "name": "no_nan_values",
+      "passed": true,
+      "message": "Zero NaN values detected across all splits.",
+      "details": {
+        "train": 0,
+        "val": 0,
+        "test": 0
+      }
+    },
+    {
+      "name": "no_infinite_values",
+      "passed": true,
+      "message": "Zero Infinite values detected across all splits.",
+      "details": {
+        "train": 0,
+        "val": 0,
+        "test": 0
+      }
+    },
+    {
+      "name": "class_distribution_verified",
+      "passed": true,
+      "message": "Class distribution verified (Train classes: 9, Val: 9, Test: 9).",
+      "details": {
+        "unique_classes_train": 9
+      }
+    },
+    {
+      "name": "split_leakage_check",
+      "passed": true,
+      "message": "Split partitions verified; independent datasets created.",
+      "details": {}
+    },
+    {
+      "name": "artifacts_exist",
+      "passed": true,
+      "message": "All expected preprocessing artifacts exist.",
+      "details": {
+        "artifacts": [
+          "scaler.joblib",
+          "label_encoder.joblib",
+          "feature_list.json",
+          "label_mapping.json",
+          "preprocessing_report.json"
+        ]
+      }
+    },
+    {
+      "name": "feature_metadata_consistency",
+      "passed": true,
+      "message": "Feature list (43) matches split feature count (43).",
+      "details": {
+        "feature_list_count": 43,
+        "split_features_count": 43
+      }
+    },
+    {
+      "name": "scaler_dimension_consistency",
+      "passed": true,
+      "message": "Scaler dimension (43) matches split features count (43).",
+      "details": {
+        "scaler_features": 43,
+        "split_features": 43
+      }
+    }
+  ]
+}

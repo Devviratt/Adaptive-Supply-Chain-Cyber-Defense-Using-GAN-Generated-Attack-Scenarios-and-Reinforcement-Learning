@@ -69,20 +69,21 @@ dqn:
 reward:
   weights:
     mitigation: 1.0
+    risk_reduction: 5.0
     containment: 0.3
     availability: 0.4
     impact: -0.5
     cost: -0.2
-    delay: -0.1
-    unnecessary: -0.3
+    delay: -0.5
+    unnecessary: -1.0
 
   # Bonus/penalty magnitudes
   values:
-    mitigation_success: 10.0
+    mitigation_success: 25.0
     containment_per_stage: 2.0
     availability_bonus: 1.0
     impact_per_stage: -3.0
-    step_penalty: -0.1        # Small penalty per step to encourage speed
+    step_penalty: 1.0
     
   # Action costs
   action_costs:

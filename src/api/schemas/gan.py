@@ -12,6 +12,9 @@ AttackCategory = Literal[
     "portscan",
     "botnet",
     "brute_force",
+    "web_attack",
+    "infiltration",
+    "heartbleed",
 ]
 SupplyChainStage = Literal["supplier", "build", "registry", "deployment"]
 

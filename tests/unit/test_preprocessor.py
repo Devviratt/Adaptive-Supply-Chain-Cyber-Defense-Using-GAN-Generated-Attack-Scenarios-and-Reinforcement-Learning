@@ -89,11 +89,12 @@ def test_normalize_labels_mapping_and_quirks(sample_config: dict):
     """Test label normalization including unknown fallbacks and en-dash quirks."""
     df = pd.DataFrame(
         {
-            "feat": [1, 2, 3, 4],
+            "feat": [1, 2, 3, 4, 5],
             "Label": [
                 "BENIGN",
                 "DoS Hulk",
                 "Web Attack \x96 Brute Force",  # Windows-1252 byte quirk
+                "Web Attack \ufffd XSS",  # Replacement character in the supplied archive
                 "UnseenLabel",
             ],
         }
@@ -101,7 +102,7 @@ def test_normalize_labels_mapping_and_quirks(sample_config: dict):
     preprocessor = DataPreprocessor(sample_config)
     normalized = preprocessor.normalize_labels(df)
 
-    expected = ["benign", "dos", "web_attack", "unknown"]
+    expected = ["benign", "dos", "web_attack", "web_attack", "unknown"]
     assert list(normalized["Label"]) == expected
 
 

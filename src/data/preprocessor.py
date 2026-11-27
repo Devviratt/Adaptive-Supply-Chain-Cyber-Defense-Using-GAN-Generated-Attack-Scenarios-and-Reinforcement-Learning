@@ -275,7 +275,7 @@ class DataPreprocessor:
 
         # Pre-normalize mapping keys so dash variants match regardless of character encoding
         norm_mapping = {
-            re.sub(r"[\x96\u2013\u2014\u2212]", "-", k).strip().lower(): v
+            re.sub(r"[\x96\u2013\u2014\u2212\ufffd]", "-", k).strip().lower(): v
             for k, v in self.label_mapping.items()
         }
 
@@ -285,7 +285,7 @@ class DataPreprocessor:
             s = val.strip()
             if s in self.label_mapping:
                 return self.label_mapping[s]
-            normalized = re.sub(r"[\x96\u2013\u2014\u2212]", "-", s).strip().lower()
+            normalized = re.sub(r"[\x96\u2013\u2014\u2212\ufffd]", "-", s).strip().lower()
             if normalized in norm_mapping:
                 return norm_mapping[normalized]
             return "unknown"

@@ -1,0 +1,45 @@
+{
+  "train_size": 50000,
+  "val_size": 10714,
+  "test_size": 10715,
+  "total_size": 71429,
+  "train_ratio_actual": 0.7,
+  "val_ratio_actual": 0.15,
+  "test_ratio_actual": 0.15,
+  "train_class_distribution": {
+    "benign": 40761,
+    "dos": 4469,
+    "ddos": 3067,
+    "brute_force": 534,
+    "web_attack": 385,
+    "portscan": 381,
+    "botnet": 370,
+    "infiltration": 25,
+    "heartbleed": 8
+  },
+  "val_class_distribution": {
+    "benign": 8734,
+    "dos": 957,
+    "ddos": 657,
+    "brute_force": 114,
+    "web_attack": 82,
+    "portscan": 82,
+    "botnet": 80,
+    "infiltration": 6,
+    "heartbleed": 2
+  },
+  "test_class_distribution": {
+    "benign": 8735,
+    "dos": 958,
+    "ddos": 658,
+    "brute_force": 115,
+    "web_attack": 83,
+    "portscan": 81,
+    "botnet": 79,
+    "infiltration": 5,
+    "heartbleed": 1
+  },
+  "stratified": true,
+  "random_seed": 42,
+  "label_column": "Label"
+}

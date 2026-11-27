@@ -46,6 +46,7 @@ export default function GanLab() {
             <label htmlFor="attack-type">Choose an attack type</label>
             <select
               id="attack-type"
+              className="form-input"
               value={selectedClass}
               onChange={(event) => setSelectedClass(event.target.value)}
               disabled={generating}
@@ -55,12 +56,16 @@ export default function GanLab() {
               <option value="portscan">Port scan — search for exposed services</option>
               <option value="botnet">Botnet — coordinate compromised devices</option>
               <option value="brute_force">Password guessing — attempt account access</option>
+              <option value="web_attack">Web attack — target an exposed application</option>
+              <option value="infiltration">Infiltration — maintain hidden access</option>
+              <option value="heartbleed">Heartbleed — expose memory from a vulnerable dependency</option>
             </select>
           </div>
           <div>
             <label htmlFor="attack-stage">Where should the attack happen?</label>
             <select
               id="attack-stage"
+              className="form-input"
               value={selectedStage}
               onChange={(event) => setSelectedStage(event.target.value)}
               disabled={generating}

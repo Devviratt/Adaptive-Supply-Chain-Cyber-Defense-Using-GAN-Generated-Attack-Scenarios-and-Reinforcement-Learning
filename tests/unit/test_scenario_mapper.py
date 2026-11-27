@@ -104,7 +104,17 @@ class TestScenarioMapper:
 
     def test_default_categories_loaded(self, mapper: ScenarioMapper) -> None:
         """Verify standard attack categories are present."""
-        expected = ["web_attack", "brute_force", "botnet", "dos", "ddos", "portscan", "benign"]
+        expected = [
+            "web_attack",
+            "brute_force",
+            "botnet",
+            "dos",
+            "ddos",
+            "portscan",
+            "infiltration",
+            "heartbleed",
+            "benign",
+        ]
         for cat in expected:
             assert cat in mapper.categories
 

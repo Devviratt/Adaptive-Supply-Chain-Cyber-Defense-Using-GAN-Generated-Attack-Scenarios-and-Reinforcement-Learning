@@ -39,7 +39,7 @@ export default function ProjectStatus() {
     <div>
       <div className="page-header">
         <h2>Project Status</h2>
-        <p>Team 84 — Module progress and team contributions</p>
+        <p>Module progress and team contributions</p>
       </div>
 
       {/* Progress Overview */}
@@ -105,7 +105,7 @@ export default function ProjectStatus() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 200px), 1fr))',
               gap: 'var(--space-md)',
               marginTop: 'var(--space-md)',
             }}
@@ -138,7 +138,7 @@ export default function ProjectStatus() {
           <div className="card-header">
             <span className="card-title">Team Members</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-lg)', marginTop: 'var(--space-md)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 'var(--space-lg)', marginTop: 'var(--space-md)' }}>
             {team.members.map((member) => (
               <div
                 key={member.usn}

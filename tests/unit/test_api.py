@@ -131,6 +131,32 @@ class TestSyntheticAttackEndpoint:
         scenarios = api_client.get("/api/scenarios?limit=10").json()["scenarios"]
         assert any(scenario["scenario_id"] == data["scenario_id"] for scenario in scenarios)
 
+    def test_generate_attack_supports_heartbleed(self, api_client, monkeypatch, tmp_path):
+        import pandas as pd
+        from src.api.routers import gan
+
+        model_path = tmp_path / "model.pkl"
+        model_path.touch()
+
+        def fake_generate_ctgan(**kwargs):
+            assert kwargs["per_class"] == {"heartbleed": 1}
+            return pd.DataFrame(
+                [{"Label": "heartbleed", "Flow Duration": 50000, "data_origin": "synthetic_ctgan"}]
+            )
+
+        monkeypatch.setattr(gan, "MODEL_PATH", model_path)
+        monkeypatch.setattr(gan, "generate_ctgan", fake_generate_ctgan)
+
+        response = api_client.post(
+            "/api/gan/generate",
+            json={"attack_category": "heartbleed", "count": 1, "affected_stage": "supplier"},
+        )
+
+        assert response.status_code == 200
+        assert response.json()["attack_category"] == "heartbleed"
+        assert response.json()["affected_stage"] == "supplier"
+        assert response.json()["severity"] == "critical"
+
     def test_generate_attack_reports_missing_model(self, api_client, monkeypatch, tmp_path):
         from src.api.routers import gan
 
@@ -175,6 +201,32 @@ class TestSimulationEndpoint:
 
 class TestDefenseEndpoint:
     """Tests for defense prediction and model metadata endpoints."""
+
+    def test_get_dqn_agent_prefers_sample_checkpoint(self, tmp_path, monkeypatch):
+        from pathlib import Path
+
+        from src.api.routers import defense
+
+        sample_path = Path("artifacts/models/dqn/cicids2017_sample/dqn_augmented_final.zip")
+        (tmp_path / sample_path).parent.mkdir(parents=True)
+        (tmp_path / sample_path).touch()
+        fallback_path = Path("artifacts/models/dqn/dqn_augmented_final.zip")
+        (tmp_path / fallback_path).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / fallback_path).touch()
+
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setattr(defense, "_dqn_agent", None)
+        loaded_paths = []
+        agent = object()
+
+        def fake_load(model_path):
+            loaded_paths.append(model_path)
+            return agent
+
+        monkeypatch.setattr(defense.DQNDefenseAgent, "load", fake_load)
+
+        assert defense.get_dqn_agent() is agent
+        assert loaded_paths == [sample_path]
 
     def test_predict_rule_based(self, api_client):
         """POST /api/defense/predict with rule_based should return valid action."""

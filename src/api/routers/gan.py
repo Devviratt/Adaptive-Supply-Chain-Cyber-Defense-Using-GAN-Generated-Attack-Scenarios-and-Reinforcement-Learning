@@ -19,7 +19,11 @@ from src.scenarios.mapper import ScenarioMapper
 
 router = APIRouter()
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-MODEL_PATH = PROJECT_ROOT / "artifacts" / "models" / "ctgan" / "model.pkl"
+SAMPLE_MODEL_PATH = (
+    PROJECT_ROOT / "artifacts" / "models" / "ctgan" / "cicids2017_sample" / "model.pkl"
+)
+DEFAULT_MODEL_PATH = PROJECT_ROOT / "artifacts" / "models" / "ctgan" / "model.pkl"
+MODEL_PATH = SAMPLE_MODEL_PATH if SAMPLE_MODEL_PATH.is_file() else DEFAULT_MODEL_PATH
 GENERATED_PATH = PROJECT_ROOT / "data" / "generated" / "ui_synthetic_attacks.csv"
 
 

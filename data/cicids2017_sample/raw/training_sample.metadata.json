@@ -1,0 +1,42 @@
+{
+  "source_directory": "data\\raw\\cicids2017_full",
+  "source_files": [
+    "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+    "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv",
+    "Friday-WorkingHours-Morning.pcap_ISCX.csv",
+    "Monday-WorkingHours.pcap_ISCX.csv",
+    "Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv",
+    "Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv",
+    "Tuesday-WorkingHours.pcap_ISCX.csv",
+    "Wednesday-workingHours.pcap_ISCX.csv"
+  ],
+  "sample_path": "data\\cicids2017_sample\\raw\\training_sample.csv",
+  "source_unique_clean_rows": 2233164,
+  "sample_rows": 71429,
+  "source_class_distribution": {
+    "benign": 1896672,
+    "botnet": 1437,
+    "brute_force": 9150,
+    "ddos": 128014,
+    "dos": 193745,
+    "heartbleed": 11,
+    "infiltration": 36,
+    "portscan": 1956,
+    "web_attack": 2143
+  },
+  "sample_class_quotas": {
+    "benign": 58230,
+    "botnet": 529,
+    "brute_force": 763,
+    "ddos": 4382,
+    "dos": 6384,
+    "heartbleed": 11,
+    "infiltration": 36,
+    "portscan": 544,
+    "web_attack": 550
+  },
+  "minimum_per_class": 500,
+  "random_seed": 42,
+  "chunk_size": 25000,
+  "note": "This is a stratified training sample, not the complete archive. Run preprocessing on this sample to create an internal train/validation/test split. Full-archive evaluation is deferred."
+}

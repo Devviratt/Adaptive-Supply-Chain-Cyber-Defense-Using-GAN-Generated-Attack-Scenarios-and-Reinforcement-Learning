@@ -129,6 +129,33 @@ class TestSupplyChainEnvironment:
         assert env.stages["build"].risk == 0.0
         assert env.stages["build"].is_compromised is False
 
+    def test_rebuild_rewards_mitigation_more_than_recovering_during_attack(
+        self, env: SupplyChainEnv
+    ) -> None:
+        """A rapid defensive action should beat recovery while an attack is active."""
+        custom_scen = AttackScenario(
+            scenario_id="test_reward_shaping",
+            attack_category="botnet",
+            severity="high",
+            affected_stage="build",
+            propagation_risk=0.8,
+            availability_impact=0.4,
+            integrity_impact=0.8,
+            confidentiality_impact=0.7,
+            duration_steps=20,
+        )
+
+        env.reset(seed=42, options={"scenario": custom_scen})
+        _, rebuild_reward, rebuild_terminated, _, rebuild_info = env.step(DefenseAction.REBUILD)
+
+        env.reset(seed=42, options={"scenario": custom_scen})
+        _, recover_reward, recover_terminated, _, _ = env.step(DefenseAction.RECOVER)
+
+        assert rebuild_terminated is True
+        assert rebuild_info["mitigated"] is True
+        assert recover_terminated is False
+        assert rebuild_reward > recover_reward
+
     def test_inter_stage_propagation(self, env: SupplyChainEnv) -> None:
         """Verify compromise spreads downstream from supplier to build when unquarantined."""
         custom_scen = AttackScenario(
@@ -219,6 +246,10 @@ class TestSupplyChainEnvironment:
 
         # Monitoring should have higher reward than unnecessary blocking
         assert reward_monitor > reward_block
+
+        env.reset(options={"scenario": benign_scen})
+        _, reward_recover, _, _, _ = env.step(DefenseAction.RECOVER)
+        assert reward_monitor > reward_recover
 
     def test_render_ansi_output(self, env: SupplyChainEnv) -> None:
         """Verify render produces formatted ASCII simulation table."""

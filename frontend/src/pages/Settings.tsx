@@ -21,7 +21,7 @@ export default function Settings() {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-lg)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 'var(--space-lg)' }}>
         {/* Runtime Settings Card */}
         <div className="card">
           <h3 style={{ marginBottom: 'var(--space-md)' }}>Runtime Environment Parameters</h3>
@@ -55,9 +55,9 @@ export default function Settings() {
             <div>
               <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Logging Verbosity</label>
               <select
+                className="form-input"
                 value={logLevel}
                 onChange={(e) => setLogLevel(e.target.value)}
-                style={{ width: '100%', marginTop: '0.25rem', padding: '0.5rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
               >
                 <option value="DEBUG">DEBUG (Detailed telemetry)</option>
                 <option value="INFO">INFO (Standard production)</option>

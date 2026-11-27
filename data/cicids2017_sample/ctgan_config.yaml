@@ -1,0 +1,10 @@
+ctgan:
+  epochs: 50
+  batch_size: 500
+  generator_dim: [128, 128]
+  discriminator_dim: [128, 128]
+  generator_lr: 2.0e-4
+  discriminator_lr: 2.0e-4
+  discriminator_steps: 1
+  verbose: true
+  seed: 42

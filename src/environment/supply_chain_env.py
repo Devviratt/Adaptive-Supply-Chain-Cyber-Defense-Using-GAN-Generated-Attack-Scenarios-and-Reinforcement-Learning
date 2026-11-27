@@ -323,6 +323,16 @@ class SupplyChainEnv(gym.Env):
         self.last_action = action
         target_stage_name = self._determine_target_stage()
         target_stage = self.stages[target_stage_name]
+        previous_total_risk = sum(stage.risk for stage in self.stages.values())
+        previous_contained_stages = sum(
+            1 for stage in self.stages.values() if stage.risk < self.thresholds["suspicious"]
+        )
+        previous_mean_health = float(np.mean([stage.health for stage in self.stages.values()]))
+        attack_in_progress = (
+            self.active_scenario is not None
+            and self.active_scenario.attack_category != "benign"
+            and self.current_step <= self.active_scenario.duration_steps
+        )
 
         # 1. Apply Defense Action
         action_name = DefenseAction.get_name(action).lower()
@@ -363,6 +373,17 @@ class SupplyChainEnv(gym.Env):
 
         elif action == DefenseAction.RECOVER:
             # Service recovery: re-opens stage and restores availability
+            if (
+                attack_in_progress
+                or target_stage.risk >= self.thresholds["suspicious"]
+                or (
+                    target_stage.health >= 1.0
+                    and not target_stage.is_isolated
+                    and not target_stage.is_blocked
+                )
+            ):
+                unnecessary_action = True
+
             target_stage.is_isolated = False
             target_stage.is_blocked = False
             if target_stage.risk < self.thresholds["suspicious"]:
@@ -372,12 +393,7 @@ class SupplyChainEnv(gym.Env):
                 target_stage.risk = min(1.0, target_stage.risk + 0.15)
 
         # 2. Simulate Attack Impact
-        attack_active = (
-            self.active_scenario is not None
-            and self.active_scenario.attack_category != "benign"
-            and self.current_step <= self.active_scenario.duration_steps
-            and not rebuilt_this_step
-        )
+        attack_active = attack_in_progress and not rebuilt_this_step
 
         if attack_active and self.active_scenario:
             attack_stage = self.stages.get(self.active_scenario.affected_stage)
@@ -436,15 +452,20 @@ class SupplyChainEnv(gym.Env):
         w = self.reward_weights
         v = self.reward_values
 
-        # Containment: count stages below suspicious
+        # Reward changes in containment and availability, not their repeated state values.
         contained_stages = sum(
             1 for s in self.stages.values() if s.risk < self.thresholds["suspicious"]
         )
-        containment_rew = contained_stages * float(v.get("containment_per_stage", 2.0))
+        containment_rew = (contained_stages - previous_contained_stages) * float(
+            v.get("containment_per_stage", 2.0)
+        )
 
-        # Availability: mean health across all stages
         mean_health = float(np.mean([s.health for s in self.stages.values()]))
-        availability_rew = mean_health * float(v.get("availability_bonus", 1.0))
+        availability_rew = (mean_health - previous_mean_health) * float(
+            v.get("availability_bonus", 1.0)
+        )
+        total_risk = sum(stage.risk for stage in self.stages.values())
+        risk_reduction_rew = previous_total_risk - total_risk
 
         # Impact penalty: count severely compromised stages
         compromised_stages = sum(
@@ -458,10 +479,10 @@ class SupplyChainEnv(gym.Env):
         # Unnecessary action penalty
         unnecessary_penalty = 1.0 if unnecessary_action else 0.0
 
-        # Reward = w_mit * R_mit + w_cont * R_cont + w_avail * R_avail
-        #        + w_imp * P_imp + w_cost * P_cost + w_delay * P_delay + w_unnec * P_unnec
+        # Reward risk reduction and state improvements; avoid positive reward for waiting.
         step_reward = float(
             w.get("mitigation", 1.0) * mitigation_bonus
+            + w.get("risk_reduction", 5.0) * risk_reduction_rew
             + w.get("containment", 0.3) * containment_rew
             + w.get("availability", 0.4) * availability_rew
             + w.get("impact", -0.5) * impact_penalty

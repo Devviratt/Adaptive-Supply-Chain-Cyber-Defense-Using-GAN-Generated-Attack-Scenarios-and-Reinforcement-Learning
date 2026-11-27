@@ -97,6 +97,16 @@ DEFAULT_CATEGORY_RULES: dict[str, dict[str, Any]] = {
         "base_duration_steps": 35,
         "description": "Targeted stealth intrusion directly compromising developer workstation or upstream codebase.",
     },
+    "heartbleed": {
+        "affected_stage": "supplier",
+        "severity": "critical",
+        "propagation_risk": 0.75,
+        "availability_impact": 0.20,
+        "integrity_impact": 0.70,
+        "confidentiality_impact": 0.95,
+        "base_duration_steps": 20,
+        "description": "A vulnerable upstream cryptographic dependency exposes sensitive memory.",
+    },
     "benign": {
         "affected_stage": "deployment",
         "severity": "low",

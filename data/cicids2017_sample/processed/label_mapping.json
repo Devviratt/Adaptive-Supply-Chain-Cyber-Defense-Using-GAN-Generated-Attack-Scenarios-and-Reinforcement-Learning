@@ -1,0 +1,48 @@
+{
+  "label_mapping": {
+    "BENIGN": "benign",
+    "DoS Hulk": "dos",
+    "DoS GoldenEye": "dos",
+    "DoS slowloris": "dos",
+    "DoS Slowhttptest": "dos",
+    "DDoS": "ddos",
+    "PortScan": "portscan",
+    "FTP-Patator": "brute_force",
+    "SSH-Patator": "brute_force",
+    "Web Attack \u2013 Brute Force": "web_attack",
+    "Web Attack \u2013 XSS": "web_attack",
+    "Web Attack \u2013 Sql Injection": "web_attack",
+    "Web Attack \u00e2\u20ac\u201c Brute Force": "web_attack",
+    "Web Attack \u00e2\u20ac\u201c XSS": "web_attack",
+    "Web Attack \u00e2\u20ac\u201c Sql Injection": "web_attack",
+    "Web Attack - Brute Force": "web_attack",
+    "Web Attack - XSS": "web_attack",
+    "Web Attack - Sql Injection": "web_attack",
+    "Bot": "botnet",
+    "Infiltration": "infiltration",
+    "Heartbleed": "heartbleed"
+  },
+  "valid_labels": [
+    "benign",
+    "dos",
+    "ddos",
+    "portscan",
+    "brute_force",
+    "web_attack",
+    "botnet",
+    "infiltration",
+    "heartbleed",
+    "unknown"
+  ],
+  "encoder_classes": [
+    "benign",
+    "botnet",
+    "brute_force",
+    "ddos",
+    "dos",
+    "heartbleed",
+    "infiltration",
+    "portscan",
+    "web_attack"
+  ]
+}

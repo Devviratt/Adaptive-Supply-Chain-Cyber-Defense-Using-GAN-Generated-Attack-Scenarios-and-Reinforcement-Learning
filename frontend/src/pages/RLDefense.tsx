@@ -66,7 +66,7 @@ export default function RLDefense() {
       </div>
 
       {/* Architecture & Hyperparameters Comparison */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
         {/* DQN Card */}
         <div className="card" style={{ borderTop: '4px solid var(--accent-primary)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-sm)' }}>
@@ -141,13 +141,13 @@ export default function RLDefense() {
           Select an incident scenario state and query the defense agent to observe its autonomous tactical decision.
         </p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-md)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-md)' }}>
           <div>
             <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Preset Supply-Chain Incident</label>
             <select
+              className="form-input"
               value={currentPreset}
               onChange={(e) => setCurrentPreset(e.target.value)}
-              style={{ width: '100%', padding: '0.5rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
             >
               {Object.entries(PRESETS).map(([key, item]) => (
                 <option key={key} value={key}>{item.label}</option>
@@ -157,9 +157,9 @@ export default function RLDefense() {
           <div>
             <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Evaluating Defense Policy</label>
             <select
+              className="form-input"
               value={selectedAlgo}
               onChange={(e) => setSelectedAlgo(e.target.value as any)}
-              style={{ width: '100%', padding: '0.5rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
             >
               <option value="dqn">Deep Q-Network (DQN)</option>
               <option value="ppo">Proximal Policy Optimization (PPO)</option>
@@ -205,6 +205,7 @@ export default function RLDefense() {
             No models found in artifacts/models/. Run training scripts to generate model weights.
           </div>
         ) : (
+          <div className="table-scroll">
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
             <thead>
               <tr style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
@@ -229,6 +230,7 @@ export default function RLDefense() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>

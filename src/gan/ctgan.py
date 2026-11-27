@@ -9,6 +9,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+from joblib import parallel_backend
 from scipy.stats import ks_2samp
 
 
@@ -59,7 +60,8 @@ def train_ctgan(
     else:
         ctgan_options["cuda"] = False
     model = CTGAN(**ctgan_options)
-    model.fit(data, discrete_columns=[label_column])
+    with parallel_backend("threading", n_jobs=1):
+        model.fit(data, discrete_columns=[label_column])
     model_path = Path(model_path)
     model_path.parent.mkdir(parents=True, exist_ok=True)
     model.save(str(model_path))
@@ -69,8 +71,18 @@ def train_ctgan(
         "training_rows": len(data),
         "columns": list(data.columns),
         "discrete_columns": [label_column],
+        "class_labels": sorted(data[label_column].unique().tolist()),
+        "class_distribution": data[label_column].value_counts().sort_index().to_dict(),
         "seed": seed,
-        "epochs": int(ctgan_cfg.get("epochs", 50)),
+        "training_parameters": {
+            "epochs": ctgan_options["epochs"],
+            "batch_size": ctgan_options["batch_size"],
+            "generator_dim": list(ctgan_options["generator_dim"]),
+            "discriminator_dim": list(ctgan_options["discriminator_dim"]),
+            "generator_lr": ctgan_options["generator_lr"],
+            "discriminator_lr": ctgan_options["discriminator_lr"],
+            "discriminator_steps": ctgan_options["discriminator_steps"],
+        },
     }
     model_path.with_suffix(".metadata.json").write_text(
         json.dumps(metadata, indent=2), encoding="utf-8"

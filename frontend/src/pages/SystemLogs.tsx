@@ -34,7 +34,7 @@ export default function SystemLogs() {
       </div>
 
       {/* Service Health Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
         <div className="metric-card">
           <div className="metric-label">API Service Status</div>
           <div className="metric-value" style={{ color: health?.status === 'healthy' ? 'var(--status-healthy)' : 'var(--status-warning)' }}>
@@ -85,6 +85,7 @@ export default function SystemLogs() {
           </button>
         </div>
 
+        <div className="table-scroll">
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
@@ -113,6 +114,7 @@ export default function SystemLogs() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )

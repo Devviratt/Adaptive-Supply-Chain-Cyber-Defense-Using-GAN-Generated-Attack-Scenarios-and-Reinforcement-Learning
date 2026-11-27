@@ -16,9 +16,8 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import sys
-import time
+from pathlib import Path
 
 # Ensure project root is on sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -26,14 +25,16 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 import gymnasium as gym
 import pandas as pd
-
 from src.common.logging import get_logger
-from src.environment.supply_chain_env import SupplyChainEnv
+from src.environment.supply_chain_env import STAGE_NAMES, SupplyChainEnv
 from src.rl import DQNDefenseAgent
 from src.scenarios.mapper import ScenarioMapper
 from src.scenarios.models import AttackScenario
 
 logger = get_logger("train_dqn")
+BENIGN_LABELS = {"0", "0.0", "benign", "normal"}
+SAMPLES_PER_CATEGORY = 50
+EVALUATION_SAMPLES_PER_CATEGORY = 10
 
 
 def parse_args() -> argparse.Namespace:
@@ -84,6 +85,18 @@ def parse_args() -> argparse.Namespace:
         help="Directory to save model checkpoints and final weights (default: artifacts/models/dqn).",
     )
     parser.add_argument(
+        "--data-root",
+        type=Path,
+        default=PROJECT_ROOT / "data",
+        help="Root directory containing processed and generated training data.",
+    )
+    parser.add_argument(
+        "--evaluation-data-root",
+        type=Path,
+        default=None,
+        help="Optional data root whose processed/test.csv is used for held-out evaluation.",
+    )
+    parser.add_argument(
         "--report",
         type=Path,
         default=Path("artifacts/reports/dqn_training_report.json"),
@@ -92,42 +105,136 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_scenarios_for_condition(condition: str) -> list[AttackScenario] | None:
-    """Load attack scenarios tailored to experimental conditions."""
-    mapper = ScenarioMapper()
+def sample_balanced_rows(
+    sources: list[tuple[pd.DataFrame, str]],
+    seed: int,
+    include_benign: bool,
+    samples_per_category: int = SAMPLES_PER_CATEGORY,
+) -> pd.DataFrame:
+    """Take a reproducible, per-label sample from real and synthetic data."""
+    labeled_frames = []
+    for frame, source in sources:
+        if "Label" not in frame.columns or frame.empty:
+            continue
+        labeled = frame.copy()
+        labeled["_training_source"] = source
+        labeled["_training_label"] = labeled["Label"].astype(str).str.strip().str.lower()
+        if not include_benign:
+            labeled = labeled[~labeled["_training_label"].isin(BENIGN_LABELS)]
+        if not labeled.empty:
+            labeled_frames.append(labeled)
 
-    if condition == "real_only":
-        csv_path = Path("data/processed/train.csv")
-        if not csv_path.exists():
-            csv_path = Path("data/processed/test.csv")
-        if csv_path.exists():
-            logger.info("loading_real_scenarios", path=str(csv_path))
-            df = pd.read_csv(csv_path)
-            # Use representative sample of real attack records
-            attack_df = df[df["Label"] != 0] if "Label" in df.columns else df
-            sample_df = attack_df.head(200)
-            return mapper.map_batch(sample_df)
+    if not labeled_frames:
+        return pd.DataFrame()
 
-    elif condition == "augmented":
-        scenarios: list[AttackScenario] = []
-        real_path = Path("data/processed/train.csv")
-        if not real_path.exists():
-            real_path = Path("data/processed/test.csv")
-        if real_path.exists():
-            df_real = pd.read_csv(real_path)
-            attack_real = df_real[df_real["Label"] != 0] if "Label" in df_real.columns else df_real
-            scenarios.extend(mapper.map_batch(attack_real.head(100)))
+    combined = pd.concat(labeled_frames, ignore_index=True)
+    balanced = [
+        group.sample(n=min(samples_per_category, len(group)), random_state=seed)
+        for _, group in combined.groupby("_training_label", sort=True)
+    ]
+    return (
+        pd.concat(balanced, ignore_index=True)
+        .sample(frac=1.0, random_state=seed)
+        .reset_index(drop=True)
+    )
 
-        syn_path = Path("data/generated/synthetic_attacks.csv")
-        if syn_path.exists():
-            logger.info("loading_synthetic_scenarios", path=str(syn_path))
-            df_syn = pd.read_csv(syn_path)
-            scenarios.extend(mapper.map_batch(df_syn.head(100)))
 
-        if scenarios:
-            return scenarios
+def build_training_scenarios(
+    rows: pd.DataFrame,
+    mapper: ScenarioMapper,
+    condition: str,
+) -> list[AttackScenario]:
+    """Map each sampled row to all supply-chain stages."""
+    scenarios = []
+    for index, row in rows.iterrows():
+        record = row.drop(labels=["_training_source", "_training_label"]).to_dict()
+        source = str(row["_training_source"])
+        for stage in STAGE_NAMES:
+            scenarios.append(
+                mapper.map_record(
+                    record,
+                    source=source,
+                    scenario_id=f"train_{condition}_{index:05d}_{stage}",
+                    affected_stage=stage,
+                )
+            )
+    return scenarios
 
-    return None
+
+def load_scenarios_for_condition(
+    condition: str,
+    seed: int = 42,
+    data_root: Path | None = None,
+) -> list[AttackScenario] | None:
+    """Load balanced real or real-plus-CTGAN scenarios for training."""
+    if condition == "default":
+        return None
+
+    data_root = Path(data_root) if data_root is not None else PROJECT_ROOT / "data"
+    real_path = data_root / "processed" / "train.csv"
+    if not real_path.is_file():
+        raise FileNotFoundError(f"Training split is required for {condition!r}: {real_path}")
+
+    sources = [(pd.read_csv(real_path), "real")]
+    include_benign = condition == "augmented"
+    if condition == "augmented":
+        synthetic_paths = (
+            data_root / "generated" / "synthetic_attacks.csv",
+            data_root / "generated" / "ctgan_samples.csv",
+            data_root / "generated" / "ui_synthetic_attacks.csv",
+        )
+        synthetic_path = next((path for path in synthetic_paths if path.is_file()), None)
+        if synthetic_path is None:
+            raise FileNotFoundError(
+                "Augmented training requires CTGAN samples; generate them before training."
+            )
+        sources.append((pd.read_csv(synthetic_path), "synthetic"))
+
+    rows = sample_balanced_rows(
+        sources,
+        seed=seed,
+        include_benign=include_benign,
+    )
+    if rows.empty:
+        raise ValueError(f"No labeled training rows available for {condition!r}.")
+
+    mapper = ScenarioMapper(config_path=PROJECT_ROOT / "config" / "scenario.yaml")
+    scenarios = build_training_scenarios(rows, mapper, condition)
+    logger.info(
+        "loaded_balanced_scenarios",
+        condition=condition,
+        row_labels=rows["_training_label"].value_counts().to_dict(),
+        scenarios=len(scenarios),
+        stages=list(STAGE_NAMES),
+    )
+    return scenarios
+
+
+def load_evaluation_scenarios(data_root: Path, seed: int = 42) -> list[AttackScenario]:
+    """Build a balanced evaluation scenario set from the held-out test split."""
+    test_path = Path(data_root) / "processed" / "test.csv"
+    if not test_path.is_file():
+        raise FileNotFoundError(f"Evaluation split is required: {test_path}")
+
+    rows = sample_balanced_rows(
+        [(pd.read_csv(test_path), "real")],
+        seed=seed,
+        include_benign=True,
+        samples_per_category=EVALUATION_SAMPLES_PER_CATEGORY,
+    )
+    if rows.empty:
+        raise ValueError(f"No labeled evaluation rows available in {test_path}.")
+
+    mapper = ScenarioMapper(config_path=PROJECT_ROOT / "config" / "scenario.yaml")
+    scenarios = build_training_scenarios(rows, mapper, "evaluation")
+    logger.info(
+        "loaded_held_out_evaluation_scenarios",
+        source=str(test_path),
+        row_labels=rows["_training_label"].value_counts().to_dict(),
+        scenarios=len(scenarios),
+        stages=list(STAGE_NAMES),
+    )
+    return scenarios
 
 
 def main() -> int:
@@ -141,12 +248,22 @@ def main() -> int:
     )
 
     # 1. Prepare environment
-    scenarios = load_scenarios_for_condition(args.condition)
-    if scenarios:
-        logger.info("Custom scenarios loaded for condition", count=len(scenarios), condition=args.condition)
-        env = SupplyChainEnv(scenarios=scenarios)
-    else:
+    scenarios = load_scenarios_for_condition(
+        args.condition,
+        seed=args.seed,
+        data_root=args.data_root,
+    )
+    if args.condition == "default":
         env = gym.make("asccd/SupplyChain-v0")
+    else:
+        if not scenarios:
+            raise ValueError(f"No scenarios loaded for training condition {args.condition!r}.")
+        logger.info(
+            "Custom scenarios loaded for condition",
+            count=len(scenarios),
+            condition=args.condition,
+        )
+        env = SupplyChainEnv(scenarios=scenarios)
 
     # 2. Initialize DQN agent
     agent = DQNDefenseAgent(
@@ -165,14 +282,33 @@ def main() -> int:
         checkpoint_dir=args.output_dir,
     )
 
-    # 4. Comprehensive post-training evaluation
-    eval_result = agent.evaluate(env, n_episodes=args.episodes, seed=args.seed)
-    env.close()
+    # 4. Evaluate on held-out scenarios when an evaluation data root is supplied.
+    evaluation_env = env
+    evaluation_episodes = args.episodes
+    if args.evaluation_data_root is not None:
+        evaluation_scenarios = load_evaluation_scenarios(
+            args.evaluation_data_root,
+            seed=args.seed,
+        )
+        evaluation_env = SupplyChainEnv(scenarios=evaluation_scenarios)
+        evaluation_episodes = len(evaluation_scenarios)
+
+    eval_result = agent.evaluate(
+        evaluation_env,
+        n_episodes=evaluation_episodes,
+        seed=args.seed,
+    )
+    evaluation_env.close()
+    if evaluation_env is not env:
+        env.close()
 
     # 5. Export report
     report_data = {
         "training": training_result.to_dict(),
         "evaluation": eval_result.to_dict(),
+        "evaluation_data_root": (
+            str(args.evaluation_data_root) if args.evaluation_data_root is not None else None
+        ),
     }
     args.report.parent.mkdir(parents=True, exist_ok=True)
     with open(args.report, "w", encoding="utf-8") as f:
@@ -193,7 +329,9 @@ def main() -> int:
     print("POST-TRAINING BENCHMARK EVALUATION:")
     print(f"Evaluation Episodes:   {eval_result.n_episodes}")
     print(f"Mean Cumulative Rew:   {eval_result.mean_reward:.2f} ± {eval_result.std_reward:.2f}")
-    print(f"Mitigation Rate:       {eval_result.mitigation_rate * 100:.1f}% ({eval_result.mitigated_episodes}/{eval_result.n_episodes})")
+    print(
+        f"Mitigation Rate:       {eval_result.mitigation_rate * 100:.1f}% ({eval_result.mitigated_episodes}/{eval_result.n_episodes})"
+    )
     print(f"Mean Service Uptime:   {eval_result.mean_availability * 100:.1f}%")
     print(f"Mean Steps/Episode:    {eval_result.mean_episode_length:.1f}")
     print("\nAction Distribution:")

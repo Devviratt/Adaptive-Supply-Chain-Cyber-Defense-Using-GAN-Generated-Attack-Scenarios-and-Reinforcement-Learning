@@ -125,77 +125,94 @@ Metrics include mitigation success rate, service availability, cumulative reward
 
 ### Prerequisites
 - Python 3.11+
-- Node.js 18+
+- Node.js 20.19+ or 22.12+
 - Git
 
 ### Setup
 
-```bash
-# Clone the repository
+Run the following in PowerShell. Python 3.11 or newer and Node.js 20.19+ or 22.12+ are required by the current frontend toolchain.
+
+```powershell
 git clone https://github.com/Devviratt/Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning.git
-cd "Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning"
+Set-Location Adaptive-Supply-Chain-Cyber-Defense-Using-GAN-Generated-Attack-Scenarios-and-Reinforcement-Learning
 
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# .venv\Scripts\activate   # Windows
+py -3.13 -m venv "$env:TEMP\asccd313"
+& "$env:TEMP\asccd313\Scripts\Activate.ps1"
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 
-# Install dependencies
-make setup
+if (-not (Test-Path .env)) {
+    Copy-Item .env.example .env
+}
 
-# Or manually:
-pip install -e ".[dev]"
-cp .env.example .env
-cd frontend && npm install && cd ..
+Push-Location frontend
+npm install
+Pop-Location
 ```
 
-### Running Locally
+If Python 3.13 is not installed, replace `-3.13` with an installed Python 3.11+ version.
+Keep the virtual environment under `$env:TEMP` rather than inside this repository; the shorter install path avoids Windows long-path failures while installing PyTorch. The `&` before `Activate.ps1` is required to run the activation script. Confirm the environment is active with:
 
-```bash
-# Start backend (terminal 1)
-make run-backend
-
-# Start frontend (terminal 2)
-make run-frontend
+```powershell
+python -c "import sys; print(sys.executable)"
 ```
 
-The API will be available at `http://localhost:8000` and the dashboard at `http://localhost:5173`.
+The printed executable should be under `$env:TEMP\asccd313\Scripts`. If `pip install` fails, resolve that first and rerun the install before starting the API; a partially installed environment can produce misleading errors such as `No module named 'pandas'`.
 
-### Dataset Ingestion & Preprocessing (Phase 2)
+### Run the application
 
-```bash
-# Generate a development sample (quick offline development without 6GB download)
-python scripts/download_dataset.py --generate-dev-sample --rows 50000
+Open two PowerShell terminals at the repository root. Do not `cd backend` (there is no `backend` directory) or use the Makefile commands on Windows; the backend command below runs from the repository root.
 
-# Inspect raw CSV files
-python scripts/preprocess.py --inspect
+**Terminal 1 — backend API**
 
-# Run complete preprocessing pipeline (cleaning, encoding, feature selection, splitting)
-python scripts/preprocess.py
-
-# Validate processed datasets and artifacts
-python scripts/preprocess.py --validate
+```powershell
+& "$env:TEMP\asccd313\Scripts\Activate.ps1"
+python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-### CTGAN Attack Generation & Validation (Phase 3)
+**Terminal 2 — frontend**
 
-```bash
-# Train CTGAN on processed training features
-python scripts/train_gan.py --epochs 25 --batch-size 200
-
-# Generate 2,000 synthetic attack samples and validate quality
-python scripts/generate_synthetic.py --num-samples 2000 --validate
-
-# Evaluate downstream ML utility on untouched test data
-python scripts/evaluate_synthetic_utility.py
+```powershell
+Set-Location frontend
+npm run dev -- --host 127.0.0.1
 ```
+
+Open `http://127.0.0.1:5173` for the dashboard and `http://127.0.0.1:8000/api/docs` for the API.
+
+### Prepare data and train the models
+
+For a quick offline run, create the development sample, preprocess it, train CTGAN, generate examples, and train the DQN agent:
+
+```powershell
+python scripts\download_dataset.py --generate-dev-sample --rows 50000
+python scripts\preprocess.py --input data\raw --output data\quickstart\processed
+python scripts\preprocess.py --output data\quickstart\processed --validate
+
+python scripts\train_ctgan_demo.py train --input data\quickstart\processed\train.csv --model artifacts\models\ctgan\model.pkl --epochs 25
+python scripts\train_ctgan_demo.py generate --model artifacts\models\ctgan\model.pkl --output data\quickstart\generated\ctgan_samples.csv --count 2000
+python scripts\train_ctgan_demo.py validate --input data\quickstart\processed\train.csv --output data\quickstart\generated\ctgan_samples.csv
+
+python scripts\train_dqn.py --condition augmented --data-root data\quickstart --evaluation-data-root data\quickstart --timesteps 100000 --output-dir artifacts\models\dqn\quickstart --report artifacts\reports\dqn_quickstart.json
+```
+
+To use the supplied full CIC-IDS2017 archive without loading it all into memory, put its CSV files in `data\raw\cicids2017_full` and create the stratified sample first:
+
+```powershell
+python scripts\sample_cicids2017.py --input data\raw\cicids2017_full --output data\cicids2017_sample\raw\training_sample.csv --rows 71429 --minimum-per-class 500
+python scripts\preprocess.py --input data\cicids2017_sample\raw --output data\cicids2017_sample\processed
+python scripts\train_ctgan_demo.py train --input data\cicids2017_sample\processed\train.csv --model artifacts\models\ctgan\cicids2017_sample\model.pkl --config data\cicids2017_sample\ctgan_config.yaml
+python scripts\train_ctgan_demo.py generate --model artifacts\models\ctgan\cicids2017_sample\model.pkl --output data\cicids2017_sample\generated\ctgan_samples.csv --count 2000
+python scripts\train_dqn.py --condition augmented --data-root data\cicids2017_sample --evaluation-data-root data\cicids2017_sample --timesteps 100000 --output-dir artifacts\models\dqn\cicids2017_sample --report artifacts\reports\dqn_cicids2017_sample.json
+```
+
+The full-archive workflow above trains on a stratified sample and does not perform full-archive evaluation. The archive has very few `infiltration` and `heartbleed` examples; synthetic rows for those classes should be treated as experimental.
 
 ### Running Tests
 
-```bash
-make test          # All tests
-make test-unit     # Unit tests only
-make lint          # Linting
+```powershell
+python -m pytest
+python -m ruff check src tests
+python -m black --check src tests
 ```
 
 ## Team

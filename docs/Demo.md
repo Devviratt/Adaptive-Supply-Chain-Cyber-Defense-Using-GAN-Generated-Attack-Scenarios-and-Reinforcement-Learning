@@ -4,6 +4,25 @@ The main workflow creates synthetic attack examples with CTGAN, maps them to a s
 
 The development CSV generated for this demo is synthetic sample data for pipeline development. It must not be described as the full CIC-IDS2017 dataset or as real attack observations.
 
+## Training with the supplied CIC-IDS2017 archive
+
+The archive can be sampled without loading all CSV files into memory. This workflow creates a 71,429-row stratified sample, then preprocesses it into a 50,000-row training split plus sample validation and test splits:
+
+```powershell
+python scripts\sample_cicids2017.py --input data\raw\cicids2017_full --output data\cicids2017_sample\raw\training_sample.csv --rows 71429 --minimum-per-class 500
+python scripts\preprocess.py --input data\cicids2017_sample\raw --output data\cicids2017_sample\processed
+```
+
+Train separate CTGAN and DQN checkpoints from that sample so the existing development artifacts remain unchanged:
+
+```powershell
+python scripts\train_ctgan_demo.py train --input data\cicids2017_sample\processed\train.csv --model artifacts\models\ctgan\cicids2017_sample\model.pkl --config data\cicids2017_sample\ctgan_config.yaml
+python scripts\train_ctgan_demo.py generate --model artifacts\models\ctgan\cicids2017_sample\model.pkl --output data\cicids2017_sample\generated\ctgan_samples.csv --count 2000
+python scripts\train_dqn.py --condition augmented --data-root data\cicids2017_sample --evaluation-data-root data\cicids2017_sample --timesteps 100000 --output-dir artifacts\models\dqn\cicids2017_sample --report artifacts\reports\dqn_cicids2017_sample.json
+```
+
+This is sample-based training, not full-archive preprocessing or evaluation. The low-resource CTGAN config uses 50 epochs and 128-unit layers; its exact settings and class counts are recorded in the model metadata. The archive's `infiltration` and `heartbleed` labels have only 36 and 11 cleaned examples respectively, so generated examples for those labels are especially uncertain. Check the sample metadata, preprocessing validation report, CTGAN validation report, and DQN evaluation report before making performance claims.
+
 ## One-time setup
 
 Run these commands in PowerShell from the repository root. Python 3.13 64-bit is supported by the current dependency configuration. Create the virtual environment under `%TEMP%`: installing PyTorch into a virtual environment inside this repository can fail on Windows because the project path is long. If an install reports a missing `pandas` module, confirm this temp environment is activated and install the dependencies here.

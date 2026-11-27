@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   getScenarios,
@@ -51,6 +51,13 @@ const PRIORITY_ORDER: Record<string, number> = {
   low: 3,
 }
 
+type AttackAlert = {
+  id: number
+  attackCategory: string
+  severity: string
+  affectedStage: string
+}
+
 export default function SupplyChain() {
   const [searchParams] = useSearchParams()
   const requestedScenarioId = searchParams.get('scenario_id')
@@ -64,7 +71,26 @@ export default function SupplyChain() {
   const [recommendation, setRecommendation] = useState<PredictResponse | null>(null)
   const [policy, setPolicy] = useState('dqn')
   const [error, setError] = useState('')
+  const [attackAlert, setAttackAlert] = useState<AttackAlert | null>(null)
   const initialized = useRef(false)
+  const alertSequence = useRef(0)
+
+  const publishAttackAlert = useCallback((state: SimulationStepResponse) => {
+    const scenario = state.step_info?.active_scenario as ScenarioItem | undefined
+    const attackCategory = scenario?.attack_category ?? String(state.step_info?.attack_category ?? '')
+    if (!attackCategory || attackCategory.toLowerCase() === 'benign') {
+      setAttackAlert(null)
+      return
+    }
+
+    setAttackAlert({
+      id: ++alertSequence.current,
+      attackCategory,
+      severity: scenario?.severity ?? String(state.step_info?.severity ?? 'unknown'),
+      affectedStage:
+        scenario?.affected_stage ?? String(state.step_info?.affected_stage ?? 'unknown'),
+    })
+  }, [])
 
   useEffect(() => {
     if (initialized.current) return
@@ -100,6 +126,7 @@ export default function SupplyChain() {
       const reset = await resetSimulation(undefined, firstScenarioId || undefined)
       if (reset.data) {
         setSimState(reset.data)
+        publishAttackAlert(reset.data)
         setCountermeasures(reset.data.step_info?.countermeasures ?? null)
         const sensed = await predictDefenseAction(reset.data.observation, 'dqn')
         if (sensed.data) setRecommendation(sensed.data)
@@ -111,7 +138,7 @@ export default function SupplyChain() {
     }
 
     void initialize()
-  }, [requestedScenarioId])
+  }, [requestedScenarioId, publishAttackAlert])
 
   async function handleReset(seed?: number, scenarioId: string | null = selectedScenarioId || null) {
     setLoading(true)
@@ -119,6 +146,7 @@ export default function SupplyChain() {
     const res = await resetSimulation(seed, scenarioId || undefined)
     if (res.data) {
       setSimState(res.data)
+      publishAttackAlert(res.data)
       setCountermeasures(res.data.step_info?.countermeasures ?? null)
       setStepCount(0)
       setHistory([])
@@ -236,7 +264,7 @@ export default function SupplyChain() {
 
   return (
     <div>
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header">
         <div>
           <h2>Supply-chain attack simulator</h2>
           <p>
@@ -244,6 +272,29 @@ export default function SupplyChain() {
           </p>
         </div>
       </div>
+
+      {attackAlert && (
+        <aside key={attackAlert.id} className="attack-alert-toast" role="alert" aria-live="assertive">
+          <div className="attack-alert-indicator" aria-hidden="true" />
+          <div className="attack-alert-copy">
+            <strong>Simulated attack detected</strong>
+            <span>
+              {attackAlert.attackCategory} · {attackAlert.severity} severity · {attackAlert.affectedStage}
+            </span>
+            <span className="attack-alert-sms-note">
+              SMS preview: a text message would be sent to your phone. This demo does not send SMS.
+            </span>
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary attack-alert-dismiss"
+            onClick={() => setAttackAlert(null)}
+            aria-label="Dismiss simulated attack alert"
+          >
+            Dismiss
+          </button>
+        </aside>
+      )}
 
       {error && (
         <div role="alert" className="card" style={{ marginBottom: 'var(--space-md)', borderColor: 'var(--status-danger)', color: 'var(--status-danger)' }}>
@@ -479,27 +530,16 @@ export default function SupplyChain() {
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: 'var(--space-md)' }}>
           Try a response yourself, or use the suggested action above.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-md)' }}>
+        <div className="defensive-action-grid">
           {ACTIONS.map((act) => (
             <button
               key={act.id}
+              className="defensive-action-button"
               onClick={() => handleStep(act.id)}
               disabled={loading || !simState || simState.terminated || simState.truncated}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: 'var(--space-md)',
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-md)',
-                cursor: 'pointer',
-                color: 'var(--text-primary)',
-                transition: 'all 200ms ease',
-              }}
             >
-              <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{act.name}</span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{act.desc}</span>
+              <span className="defensive-action-name">{act.name}</span>
+              <span className="defensive-action-description">{act.desc}</span>
             </button>
           ))}
         </div>
@@ -590,7 +630,7 @@ export default function SupplyChain() {
       {history.length > 0 && (
         <details className="overview-glossary">
           <summary>Show technical simulation details</summary>
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-scroll">
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>

@@ -75,14 +75,13 @@ export default function Scenarios() {
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: 'var(--space-md)' }}>
           Test the logarithmic volume and flag modulation algorithm: convert continuous network traffic into supply-chain risk parameters.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-md)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-md)' }}>
           <div>
             <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Attack Category</label>
             <select
               className="form-input"
               value={testLabel}
               onChange={(e) => setTestLabel(e.target.value)}
-              style={{ width: '100%', padding: '0.5rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
             >
               <option value="DDoS">DDoS</option>
               <option value="DoS">DoS</option>
@@ -129,7 +128,7 @@ export default function Scenarios() {
         </button>
 
         {mappedResult && (
-          <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-md)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 'var(--space-md)' }}>
+          <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-md)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 'var(--space-md)' }}>
             <div>
               <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Target Stage</div>
               <div style={{ fontWeight: 600, color: 'var(--accent-primary)', textTransform: 'uppercase' }}>{mappedResult.affected_stage}</div>
@@ -155,13 +154,13 @@ export default function Scenarios() {
       </div>
 
       {/* Filter Toolbar */}
-      <div style={{ display: 'flex', gap: 'var(--space-md)', marginBottom: 'var(--space-lg)', flexWrap: 'wrap', alignItems: 'center' }}>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+      <div className="scenario-filters">
+        <div className="scenario-filter-control">
           <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Category:</span>
           <select
+            className="form-input"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ padding: '0.4rem 0.8rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
           >
             <option value="">All Categories</option>
             <option value="ddos">DDoS</option>
@@ -173,12 +172,12 @@ export default function Scenarios() {
           </select>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="scenario-filter-control">
           <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Source:</span>
           <select
+            className="form-input"
             value={sourceFilter}
             onChange={(e) => setSourceFilter(e.target.value)}
-            style={{ padding: '0.4rem 0.8rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
           >
             <option value="">All Sources</option>
             <option value="real">Real (CIC-IDS2017)</option>
@@ -186,7 +185,7 @@ export default function Scenarios() {
           </select>
         </div>
 
-        <div style={{ marginLeft: 'auto', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+        <div className="scenario-filter-count">
           Showing {scenarios.length} of {totalCount} mapped scenarios
         </div>
       </div>
@@ -204,7 +203,7 @@ export default function Scenarios() {
             <p>Run scenario mapping via CLI (`python scripts/run_scenario_mapping.py`) or use the mapper above.</p>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-scroll scenario-table-scroll">
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--bg-secondary)' }}>
