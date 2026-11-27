@@ -206,8 +206,13 @@ class TestExperimentsEndpoint:
         data = response.json()
         assert isinstance(data, list)
 
-    def test_get_summary_report(self, api_client):
+    def test_get_summary_report(self, api_client, monkeypatch, tmp_path):
         """GET /api/experiments/summary should return JSON report."""
+        report_path = tmp_path / "artifacts" / "reports" / "experiments_summary.json"
+        report_path.parent.mkdir(parents=True)
+        report_path.write_text('{"experiments": {}}', encoding="utf-8")
+        monkeypatch.chdir(tmp_path)
+
         response = api_client.get("/api/experiments/summary")
         assert response.status_code == 200
         data = response.json()
