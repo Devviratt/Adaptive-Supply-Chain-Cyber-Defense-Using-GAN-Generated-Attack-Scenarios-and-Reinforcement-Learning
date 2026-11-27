@@ -24,7 +24,7 @@ export default function Settings() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-lg)' }}>
         {/* Runtime Settings Card */}
         <div className="card">
-          <h3 style={{ marginBottom: 'var(--space-md)' }}>⚙️ Runtime Environment Parameters</h3>
+          <h3 style={{ marginBottom: 'var(--space-md)' }}>Runtime Environment Parameters</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
             <div>
               <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Accelerated Development Mode</label>
@@ -69,14 +69,14 @@ export default function Settings() {
               Save Settings
             </button>
             {savedMsg && (
-              <span style={{ fontSize: '0.8rem', color: 'var(--status-healthy)' }}>✅ Settings updated successfully</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--status-healthy)' }}>Settings updated successfully</span>
             )}
           </div>
         </div>
 
         {/* Directory Paths Card */}
         <div className="card">
-          <h3 style={{ marginBottom: 'var(--space-md)' }}>📁 System Storage Paths</h3>
+          <h3 style={{ marginBottom: 'var(--space-md)' }}>System Storage Paths</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)', fontSize: '0.85rem' }}>
             <div>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Raw Datasets:</div>

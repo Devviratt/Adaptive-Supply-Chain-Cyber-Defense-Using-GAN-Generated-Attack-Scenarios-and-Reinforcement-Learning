@@ -16,6 +16,12 @@ export default function Overview() {
     fetchData()
   }, [])
 
+  const projectSteps = [
+    { title: 'Create a synthetic attack', description: 'Choose an attack type and generate artificial examples for a safe demo.', to: '/gan-lab', link: 'Generate an attack' },
+    { title: 'See what it affects', description: 'Open the generated incident in the supply-chain simulator.', to: '/supply-chain', link: 'Open simulator' },
+    { title: 'Try to prevent it', description: 'Review the suggested response and apply a defensive action.', to: '/supply-chain', link: 'Explore defenses' },
+  ]
+
   if (loading) {
     return (
       <div className="loading-spinner">
@@ -25,189 +31,85 @@ export default function Overview() {
   }
 
   return (
-    <div>
-      {/* Executive Header */}
-      <div className="page-header">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-md)' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: '4px' }}>
-              <span className="badge badge-healthy">System Operational</span>
-              <span className="badge badge-info">Team 84 · Dayananda Sagar University</span>
-            </div>
-            <h2>Adaptive Supply Chain Cyber Defense (ASCCD)</h2>
-            <p>Cyber Defense Platform Powered by GAN Scenario Synthesis & Reinforcement Learning</p>
+    <div className="overview-page">
+      <section className="overview-hero">
+        <div>
+          <span className="overview-eyebrow">Supply chain security learning lab</span>
+          <h2>Generate a synthetic attack. Try to stop it.</h2>
+          <p>
+            Create an artificial attack scenario, see how it affects a sample software supply chain,
+            and apply a defensive response in a safe simulation.
+          </p>
+          <div className="overview-actions">
+            <Link to="/gan-lab" className="btn btn-primary">Generate synthetic attack</Link>
+            <Link to="/supply-chain" className="btn btn-secondary">Open simulator</Link>
           </div>
-          <div>
-            <Link to="/demo" className="btn btn-primary" style={{ padding: '10px 18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>⭐</span>
-              <strong>Launch Review 1 Demo</strong>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Review 1 Highlight Card */}
-      <div className="card" style={{ background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%)', border: '1px solid var(--accent-primary)', marginBottom: 'var(--space-xl)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-md)' }}>
-          <div>
-            <span className="badge badge-info" style={{ marginBottom: '8px' }}>Review 1 Evaluation Showcase</span>
-            <h3 style={{ margin: '4px 0 8px 0', fontSize: '1.25rem', color: 'var(--text-heading)' }}>
-              Interactive Technical Demo Ready for Review Panel
-            </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '750px', margin: 0 }}>
-              Demonstrate the live CTGAN synthetic threat synthesizer, rigorous statistical fidelity tests (Wasserstein & Pearson), and the 5-stage Supply Chain Digital Twin environment with cascading failure containment.
-            </p>
-          </div>
-          <Link to="/demo" className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
-            Open Interactive Demo ➔
-          </Link>
-        </div>
-      </div>
-
-      {/* Operational Telemetry Cards */}
-      <div className="card-grid" style={{ marginBottom: 'var(--space-xl)' }}>
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Defense State</span>
-            <span className={`badge ${health?.status === 'healthy' ? 'badge-healthy' : 'badge-danger'}`}>
-              {health?.status === 'healthy' ? 'ACTIVE GUARD' : 'OFFLINE'}
-            </span>
-          </div>
-          <div className="card-value" style={{ color: 'var(--status-healthy)' }}>Protected</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Real-time supply chain monitoring
+          <p className="overview-disclaimer">
+            This is a research simulation. It does not connect to or protect real systems.
           </p>
         </div>
+        <div className={`overview-service-status ${health?.status === 'healthy' ? 'is-healthy' : 'is-offline'}`}>
+          <span className="overview-status-dot" />
+          <span>{health?.status === 'healthy' ? 'Demo services are running' : 'Demo service is unavailable'}</span>
+        </div>
+      </section>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Network Flows Analyzed</span>
-            <span className="badge badge-info">CIC-IDS2017</span>
-          </div>
-          <div className="card-value">2,830,743</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            15 salient features preprocessed
+      <section className="overview-section" aria-labelledby="overview-journey-title">
+        <div className="overview-section-heading">
+          <h3 id="overview-journey-title">How to explore the demo</h3>
+          <p>Start with an incident, watch the simulation, and try a defense.</p>
+        </div>
+        <div className="overview-journey-grid">
+          {projectSteps.map((step) => (
+            <article className="overview-journey-card" key={step.title}>
+              <h4>{step.title}</h4>
+              <p>{step.description}</p>
+              <Link to={step.to}>{step.link}</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="overview-supply-chain" aria-labelledby="overview-chain-title">
+        <div className="overview-section-heading">
+          <h3 id="overview-chain-title">What does “software supply chain” mean?</h3>
+          <p>
+            Software passes through these stages before it reaches users. The simulator shows how a
+            problem at one stage can affect the next.
           </p>
         </div>
-
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">CTGAN Fidelity Score</span>
-            <span className="badge badge-healthy">Empirical Pass</span>
-          </div>
-          <div className="card-value" style={{ color: 'var(--accent-primary)' }}>98.69%</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Pearson correlation · W₁ = 0.1057
-          </p>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Digital Twin Stages</span>
-            <span className="badge badge-info">5 Interconnected</span>
-          </div>
-          <div className="card-value">5 Nodes</div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-            Supplier ➔ Ingest ➔ Process ➔ Registry ➔ Deploy
-          </p>
-        </div>
-      </div>
-
-      {/* Supply Chain Topology Live Visualizer */}
-      <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
-        <div className="card-header">
-          <span className="card-title">Supply Chain Dependency Topology</span>
-          <span className="badge badge-healthy">All Stages Online</span>
-        </div>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 'var(--space-md)' }}>
-          Continuous monitoring of service availability and threat exposure across the digital twin architecture:
-        </p>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            padding: 'var(--space-md) 0',
-            gap: 'var(--space-sm)',
-            overflowX: 'auto',
-          }}
-        >
+        <div className="overview-flow">
           {[
-            { name: 'Supplier', role: 'External Packages', health: '98%', status: 'Normal' },
-            { name: 'Ingestion', role: 'Source Repositories', health: '99%', status: 'Normal' },
-            { name: 'Processing', role: 'CI/CD Build Pipeline', health: '96%', status: 'Normal' },
-            { name: 'Registry', role: 'Artifact Store', health: '100%', status: 'Optimal' },
-            { name: 'Deployment', role: 'Production Cluster', health: '100%', status: 'Optimal' },
-          ].map((stage, i) => (
-            <div key={stage.name} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', flex: 1 }}>
-              <div
-                style={{
-                  textAlign: 'center',
-                  padding: 'var(--space-md)',
-                  background: 'var(--bg-elevated)',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--border-color)',
-                  flex: 1,
-                  minWidth: '120px',
-                }}
-              >
-                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '2px' }}>
-                  STAGE 0{i + 1}
-                </div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '2px' }}>
-                  {stage.name}
-                </div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-                  {stage.role}
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', alignItems: 'center' }}>
-                  <span className="badge badge-healthy" style={{ fontSize: '0.7rem' }}>{stage.status}</span>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--status-healthy)' }}>{stage.health}</span>
-                </div>
-              </div>
-              {i < 4 && (
-                <span style={{ color: 'var(--text-muted)', fontSize: '1.25rem' }}>➔</span>
-              )}
+            { name: 'Supplier', description: 'Where software components come from' },
+            { name: 'Build', description: 'Where components are assembled' },
+            { name: 'Registry', description: 'Where finished packages are stored' },
+            { name: 'Deployment', description: 'Where software is put into use' },
+          ].map((stage) => (
+            <div className="overview-flow-stage" key={stage.name}>
+              <strong>{stage.name}</strong>
+              <span>{stage.description}</span>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Research Pillars Overview */}
-      <div className="card">
-        <div className="card-header">
-          <span className="card-title">Core Research Framework Pillars</span>
-          <span className="badge badge-info">ASCCD Methodology</span>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-md)', marginTop: 'var(--space-sm)' }}>
-          <div style={{ background: 'var(--bg-elevated)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '6px' }}>
-              1. Threat Telemetry Preprocessing
-            </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-              Standardizes raw CIC-IDS2017 bidirectional network flows, resolves extreme minority class imbalance (DoS, DDoS, PortScan, Botnets, Web Attacks), and applies RobustScaler transformations.
-            </p>
+      <details className="overview-glossary">
+        <summary>What do the technical terms mean?</summary>
+        <dl>
+          <div>
+            <dt>Synthetic attack data</dt>
+            <dd>Artificial example records used to test the research pipeline; they are not real incidents.</dd>
           </div>
-
-          <div style={{ background: 'var(--bg-elevated)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '6px' }}>
-              2. Generative Attack Modeling (CTGAN)
-            </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-              Conditional Tabular GAN synthesizes diverse multi-stage attack scenarios with verified statistical fidelity (W₁ = 0.1057, Pearson r = 0.9869, 0.00% memorization).
-            </p>
+          <div>
+            <dt>Defense policy</dt>
+            <dd>A set of choices the simulator can use to respond, such as monitoring, blocking, or isolating a stage.</dd>
           </div>
-
-          <div style={{ background: 'var(--bg-elevated)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '6px' }}>
-              3. Supply Chain Digital Twin & RL Defense
-            </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-              Gymnasium environment simulating cascading vulnerability propagation across 5 supply chain stages with autonomous reinforcement learning defense policies.
-            </p>
+          <div>
+            <dt>Simulation result</dt>
+            <dd>An outcome inside this model only. It is not a guarantee about real-world security.</dd>
           </div>
-        </div>
-      </div>
+        </dl>
+      </details>
     </div>
   )
 }

@@ -7,7 +7,6 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 import pytest
-
 from src.scenarios.mapper import ScenarioMapper
 from src.scenarios.models import AttackScenario, AttackSeverity, SupplyChainStage
 
@@ -201,8 +200,12 @@ class TestScenarioMapper:
         from src.common.models import Scenario
 
         scenarios = [
-            mapper.map_record({"Label": "portscan", "Flow Duration": 500}, scenario_id="scen_db_001"),
-            mapper.map_record({"Label": "botnet", "Flow Duration": 12000}, scenario_id="scen_db_002"),
+            mapper.map_record(
+                {"Label": "portscan", "Flow Duration": 500}, scenario_id="scen_db_001"
+            ),
+            mapper.map_record(
+                {"Label": "botnet", "Flow Duration": 12000}, scenario_id="scen_db_002"
+            ),
         ]
 
         inserted = mapper.save_to_db(scenarios, db_session)

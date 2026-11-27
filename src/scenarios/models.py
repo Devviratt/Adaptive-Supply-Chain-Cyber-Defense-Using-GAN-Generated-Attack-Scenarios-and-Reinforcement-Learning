@@ -7,7 +7,6 @@ supply-chain cyber-defense scenarios.
 
 from __future__ import annotations
 
-import json
 import uuid
 from dataclasses import asdict, dataclass, field
 from enum import Enum
@@ -16,7 +15,8 @@ from typing import Any
 import numpy as np
 
 
-class SupplyChainStage(str, Enum):
+# Keep these str enums; StrEnum changes their str() output.
+class SupplyChainStage(str, Enum):  # noqa: UP042
     """Four core stages of the software supply chain lifecycle."""
 
     SUPPLIER = "supplier"
@@ -25,7 +25,7 @@ class SupplyChainStage(str, Enum):
     DEPLOYMENT = "deployment"
 
 
-class AttackSeverity(str, Enum):
+class AttackSeverity(str, Enum):  # noqa: UP042
     """Discrete severity levels for attack scenarios."""
 
     LOW = "low"

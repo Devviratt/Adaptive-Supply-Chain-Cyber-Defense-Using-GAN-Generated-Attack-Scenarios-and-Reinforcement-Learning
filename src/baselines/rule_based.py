@@ -122,7 +122,9 @@ class RuleBasedDefensePolicy:
 
         # Rule 2: Integrity Compromised / Rebuild Needed
         # If threat level is critical or stage is severely compromised
-        if max_risk >= t["rebuild_risk"] or (min_health < t["rebuild_health_critical"] and max_risk >= 0.40):
+        if max_risk >= t["rebuild_risk"] or (
+            min_health < t["rebuild_health_critical"] and max_risk >= 0.40
+        ):
             return int(DefenseAction.REBUILD), None
 
         # Rule 3: High Threat / Volumetric Flood -> Block
@@ -160,9 +162,7 @@ class RuleBasedDefensePolicy:
         episode_rewards: list[float] = []
         episode_lengths: list[int] = []
         availability_samples: list[float] = []
-        action_counts = {
-            DefenseAction.get_name(a): 0 for a in range(5)
-        }
+        action_counts = {DefenseAction.get_name(a): 0 for a in range(5)}
         mitigated_count = 0
         catastrophic_count = 0
 

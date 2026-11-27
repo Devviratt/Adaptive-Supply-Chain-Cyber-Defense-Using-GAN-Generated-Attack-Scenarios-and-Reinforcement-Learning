@@ -8,16 +8,16 @@ with full checkpointing, evaluation, and serialization capabilities.
 
 from __future__ import annotations
 
-from pathlib import Path
 import time
+from pathlib import Path
 from typing import Any
 
 import gymnasium as gym
 import numpy as np
-from stable_baselines3 import DQN
-from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback
 import structlog
 import yaml
+from stable_baselines3 import DQN
+from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback
 
 from src.environment.models import DefenseAction
 from src.rl.models import DQNEvaluationResult, DQNTrainingResult
@@ -313,8 +313,11 @@ class DQNDefenseAgent:
             Tuple of (action_int, state).
         """
         if self.model is None:
-            # Fallback to passive monitoring if uninitialized
-            return int(DefenseAction.MONITOR), None
+            # Safe fallback until a trained DQN checkpoint is loaded.
+            from src.baselines.rule_based import RuleBasedDefensePolicy
+
+            action, _ = RuleBasedDefensePolicy().predict(observation)
+            return int(action), None
 
         action, next_state = self.model.predict(
             observation,

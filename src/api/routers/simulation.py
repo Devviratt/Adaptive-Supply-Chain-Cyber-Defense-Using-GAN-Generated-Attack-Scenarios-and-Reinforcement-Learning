@@ -7,19 +7,22 @@ resetting the environment, and stepping through sequential defensive responses.
 
 from __future__ import annotations
 
-from typing import Any
-from fastapi import APIRouter, HTTPException
-import gymnasium as gym
-import numpy as np
+from typing import Annotated, Any
 
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from src.api.deps import get_db
 from src.api.schemas.simulation import (
     SimulationResetRequest,
     SimulationStepRequest,
     SimulationStepResponse,
     StageStatusSchema,
 )
+from src.common.models import Scenario
 from src.environment.models import DefenseAction
 from src.environment.supply_chain_env import STAGE_NAMES, SupplyChainEnv
+from src.scenarios.models import AttackScenario
 
 router = APIRouter()
 
@@ -52,11 +55,24 @@ def _format_stages(env: SupplyChainEnv) -> dict[str, StageStatusSchema]:
 
 
 @router.post("/reset", response_model=SimulationStepResponse)
-def reset_simulation(payload: SimulationResetRequest | None = None) -> SimulationStepResponse:
+def reset_simulation(
+    db: Annotated[Session, Depends(get_db)],
+    payload: SimulationResetRequest | None = None,
+) -> SimulationStepResponse:
     """Reset the simulation environment to an initial attack state."""
     env = get_simulation_env()
     seed = payload.seed if payload else None
-    obs, info = env.reset(seed=seed)
+    scenario_id = payload.scenario_id if payload else None
+
+    options = None
+    if scenario_id:
+        record = db.query(Scenario).filter_by(scenario_id=scenario_id).first()
+        if record:
+            options = {"scenario": AttackScenario.from_orm(record)}
+        else:
+            raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found.")
+
+    obs, info = env.reset(seed=seed, options=options)
 
     return SimulationStepResponse(
         observation=[round(float(x), 4) for x in obs],
@@ -101,9 +117,29 @@ def get_stage_topology() -> dict[str, Any]:
         ],
         "actions": [
             {"id": 0, "name": "Monitor", "cost": 0.01, "description": "Passive telemetry logging"},
-            {"id": 1, "name": "Isolate", "cost": 0.15, "description": "Quarantine stage to prevent lateral spread"},
-            {"id": 2, "name": "Block", "cost": 0.25, "description": "Drop active attack traffic vectors"},
-            {"id": 3, "name": "Rebuild", "cost": 0.35, "description": "Clean reconstruction from verified state"},
-            {"id": 4, "name": "Recover", "cost": 0.20, "description": "Restore service availability and throughput"},
+            {
+                "id": 1,
+                "name": "Isolate",
+                "cost": 0.15,
+                "description": "Quarantine stage to prevent lateral spread",
+            },
+            {
+                "id": 2,
+                "name": "Block",
+                "cost": 0.25,
+                "description": "Drop active attack traffic vectors",
+            },
+            {
+                "id": 3,
+                "name": "Rebuild",
+                "cost": 0.35,
+                "description": "Clean reconstruction from verified state",
+            },
+            {
+                "id": 4,
+                "name": "Recover",
+                "cost": 0.20,
+                "description": "Restore service availability and throughput",
+            },
         ],
     }

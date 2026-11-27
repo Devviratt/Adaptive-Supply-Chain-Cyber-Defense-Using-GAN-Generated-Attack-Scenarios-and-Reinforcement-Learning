@@ -12,6 +12,19 @@ import pandas as pd
 from scipy.stats import ks_2samp
 
 
+def available_output_path(path: str | Path) -> Path:
+    """Return the requested path or the next unused numbered sibling."""
+    path = Path(path)
+    if not path.exists():
+        return path
+    index = 2
+    while True:
+        candidate = path.with_name(f"{path.stem}_{index}{path.suffix}")
+        if not candidate.exists():
+            return candidate
+        index += 1
+
+
 def train_ctgan(
     train_path: str | Path,
     model_path: str | Path,
@@ -59,7 +72,9 @@ def train_ctgan(
         "seed": seed,
         "epochs": int(ctgan_cfg.get("epochs", 50)),
     }
-    model_path.with_suffix(".metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    model_path.with_suffix(".metadata.json").write_text(
+        json.dumps(metadata, indent=2), encoding="utf-8"
+    )
     return metadata
 
 
@@ -71,7 +86,7 @@ def generate_ctgan(
     class_column: str = "Label",
     per_class: dict[str, int] | None = None,
 ) -> pd.DataFrame:
-    """Generate samples, optionally requesting counts for specific label values."""
+    """Generate samples and enforce exact counts for requested discrete labels."""
     from ctgan import CTGAN
 
     if count < 1:
@@ -81,16 +96,45 @@ def generate_ctgan(
     frames: list[pd.DataFrame] = []
     if per_class:
         for label, amount in per_class.items():
-            if int(amount) < 1:
+            requested_count = int(amount)
+            if requested_count < 1:
                 continue
-            frames.append(model.sample(int(amount), condition_column=class_column, condition_value=str(label)))
+            accepted: list[pd.DataFrame] = []
+            accepted_count = 0
+            batch_count = max(500, requested_count * 10)
+            for _ in range(10):
+                if accepted_count >= requested_count:
+                    break
+                candidates = model.sample(
+                    batch_count,
+                    condition_column=class_column,
+                    condition_value=str(label),
+                )
+                if class_column not in candidates.columns:
+                    raise ValueError(
+                        f"Generated samples do not contain the label column {class_column!r}"
+                    )
+                matching = candidates.loc[
+                    candidates[class_column].astype(str).str.strip().str.lower()
+                    == str(label).strip().lower()
+                ].head(requested_count - accepted_count)
+                if not matching.empty:
+                    accepted.append(matching)
+                    accepted_count += len(matching)
+            if accepted_count < requested_count:
+                raise ValueError(
+                    f"CTGAN produced {accepted_count} of {requested_count} requested "
+                    f"{label!r} examples. Retrain the model with more representative "
+                    "examples for this attack type."
+                )
+            frames.append(pd.concat(accepted, ignore_index=True))
         generated = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
     else:
         generated = model.sample(count)
     if generated.empty:
         raise ValueError("No rows generated; check requested per-class counts")
     generated["data_origin"] = "synthetic_ctgan"
-    output_path = Path(output_path)
+    output_path = available_output_path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     generated.to_csv(output_path, index=False)
     return generated
@@ -117,7 +161,9 @@ def validate_synthetic(
             ks[column] = float(ks_2samp(lhs, rhs).statistic)
     label_distribution = {}
     if label_column in synthetic:
-        label_distribution = synthetic[label_column].astype(str).value_counts(normalize=True).round(6).to_dict()
+        label_distribution = (
+            synthetic[label_column].astype(str).value_counts(normalize=True).round(6).to_dict()
+        )
     report = {
         "real_rows": len(real),
         "synthetic_rows": len(synthetic),
@@ -128,7 +174,12 @@ def validate_synthetic(
         "mean_ks_statistic": float(np.mean(list(ks.values()))) if ks else None,
         "max_ks_statistic": max(ks.values()) if ks else None,
         "duplicate_ratio": float(synthetic.duplicated().mean()) if len(synthetic) else 0.0,
-        "non_finite_numeric_values": int(synthetic.select_dtypes(include=[np.number]).apply(lambda c: ~np.isfinite(c)).sum().sum()),
+        "non_finite_numeric_values": int(
+            synthetic.select_dtypes(include=[np.number])
+            .apply(lambda c: ~np.isfinite(c))
+            .sum()
+            .sum()
+        ),
         "synthetic_label_distribution": label_distribution,
         "ks_statistic_by_feature": ks,
         "note": "Descriptive fidelity checks only; passing does not establish downstream utility or improve RL defense.",
@@ -136,7 +187,18 @@ def validate_synthetic(
     report_path = Path(report_path)
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    markdown = ["# CTGAN Synthetic Data Validation", "", f"- Real rows: {report['real_rows']}", f"- Synthetic rows: {report['synthetic_rows']}", f"- Schema matches: {report['schema_matches']}", f"- Mean numeric KS statistic: {report['mean_ks_statistic']}", f"- Duplicate ratio: {report['duplicate_ratio']:.4f}", f"- Non-finite numeric values: {report['non_finite_numeric_values']}", "", "Synthetic label proportions:"]
+    markdown = [
+        "# CTGAN Synthetic Data Validation",
+        "",
+        f"- Real rows: {report['real_rows']}",
+        f"- Synthetic rows: {report['synthetic_rows']}",
+        f"- Schema matches: {report['schema_matches']}",
+        f"- Mean numeric KS statistic: {report['mean_ks_statistic']}",
+        f"- Duplicate ratio: {report['duplicate_ratio']:.4f}",
+        f"- Non-finite numeric values: {report['non_finite_numeric_values']}",
+        "",
+        "Synthetic label proportions:",
+    ]
     markdown += [f"- {label}: {share:.4f}" for label, share in label_distribution.items()]
     markdown += ["", report["note"]]
     report_path.with_suffix(".md").write_text("\n".join(markdown) + "\n", encoding="utf-8")

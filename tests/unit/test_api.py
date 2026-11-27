@@ -94,6 +94,56 @@ class TestScenariosEndpoint:
         assert "scenario_id" in data
 
 
+class TestSyntheticAttackEndpoint:
+    """Tests for creating synthetic incidents for the simulator."""
+
+    def test_generate_attack_saves_simulation_scenarios(self, api_client, monkeypatch, tmp_path):
+        import pandas as pd
+        from src.api.routers import gan
+
+        model_path = tmp_path / "model.pkl"
+        model_path.touch()
+
+        def fake_generate_ctgan(**kwargs):
+            assert kwargs["per_class"] == {"ddos": 2}
+            return pd.DataFrame(
+                [
+                    {"Label": "ddos", "Flow Duration": 50000, "data_origin": "synthetic_ctgan"},
+                    {"Label": "ddos", "Flow Duration": 65000, "data_origin": "synthetic_ctgan"},
+                ]
+            )
+
+        monkeypatch.setattr(gan, "MODEL_PATH", model_path)
+        monkeypatch.setattr(gan, "generate_ctgan", fake_generate_ctgan)
+
+        response = api_client.post(
+            "/api/gan/generate",
+            json={"attack_category": "ddos", "count": 2, "affected_stage": "registry"},
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["attack_category"] == "ddos"
+        assert data["generated_count"] == 2
+        assert data["scenario_id"].startswith("scen_synthetic_")
+        assert data["affected_stage"] == "registry"
+
+        scenarios = api_client.get("/api/scenarios?limit=10").json()["scenarios"]
+        assert any(scenario["scenario_id"] == data["scenario_id"] for scenario in scenarios)
+
+    def test_generate_attack_reports_missing_model(self, api_client, monkeypatch, tmp_path):
+        from src.api.routers import gan
+
+        monkeypatch.setattr(gan, "MODEL_PATH", tmp_path / "missing-model.pkl")
+        response = api_client.post(
+            "/api/gan/generate",
+            json={"attack_category": "ddos", "count": 2},
+        )
+
+        assert response.status_code == 503
+        assert "model is not available" in response.json()["detail"]
+
+
 class TestSimulationEndpoint:
     """Tests for interactive simulation environment endpoints."""
 
@@ -162,4 +212,3 @@ class TestExperimentsEndpoint:
         assert response.status_code == 200
         data = response.json()
         assert "experiments" in data
-

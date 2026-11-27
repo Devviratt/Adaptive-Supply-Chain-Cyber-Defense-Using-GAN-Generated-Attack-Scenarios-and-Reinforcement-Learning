@@ -13,11 +13,12 @@ from pathlib import Path
 from typing import Any
 
 import gymnasium as gym
-from gymnasium import spaces
 import numpy as np
 import structlog
 import yaml
+from gymnasium import spaces
 
+from src.defense.countermeasures import build_countermeasure_plan
 from src.environment.models import DefenseAction, StageState
 from src.scenarios.mapper import ScenarioMapper
 from src.scenarios.models import AttackScenario
@@ -228,7 +229,7 @@ class SupplyChainEnv(gym.Env):
             return copy.deepcopy(scen)
 
         # Default synthetic fallback scenario if none provided
-        sample_cats = ["dos", "ddos", "web_attack", "brute_force", "botnet", "portscan", "benign"]
+        sample_cats = ["dos", "ddos", "web_attack", "brute_force", "botnet", "portscan"]
         chosen_cat = self.np_random.choice(sample_cats)
         fake_rec = {
             "Label": chosen_cat,
@@ -281,6 +282,13 @@ class SupplyChainEnv(gym.Env):
             "affected_stage": self.active_scenario.affected_stage,
             "severity": self.active_scenario.severity,
             "duration_steps": self.active_scenario.duration_steps,
+            "source": self.active_scenario.source,
+            "active_scenario": self.active_scenario.to_dict(),
+            "countermeasures": build_countermeasure_plan(
+                self.active_scenario.attack_category,
+                self.active_scenario.affected_stage,
+                self.active_scenario.severity,
+            ).to_dict(),
         }
 
         if self.render_mode == "human":
@@ -376,9 +384,7 @@ class SupplyChainEnv(gym.Env):
             if attack_stage and not attack_stage.is_blocked:
                 # Availability degradation
                 avail_drop = (
-                    self.active_scenario.availability_impact
-                    * attack_stage.criticality
-                    * 0.15
+                    self.active_scenario.availability_impact * attack_stage.criticality * 0.15
                 )
                 attack_stage.health = max(0.0, attack_stage.health - avail_drop)
 
@@ -416,7 +422,11 @@ class SupplyChainEnv(gym.Env):
 
         # 4. Check Mitigation Success
         all_mitigated = all(s.risk < 0.10 for s in self.stages.values())
-        if all_mitigated and not self.mitigated and self.active_scenario.attack_category != "benign":
+        if (
+            all_mitigated
+            and not self.mitigated
+            and self.active_scenario.attack_category != "benign"
+        ):
             self.mitigated = True
             mitigation_bonus = float(self.reward_values.get("mitigation_success", 10.0))
         else:
@@ -427,7 +437,9 @@ class SupplyChainEnv(gym.Env):
         v = self.reward_values
 
         # Containment: count stages below suspicious
-        contained_stages = sum(1 for s in self.stages.values() if s.risk < self.thresholds["suspicious"])
+        contained_stages = sum(
+            1 for s in self.stages.values() if s.risk < self.thresholds["suspicious"]
+        )
         containment_rew = contained_stages * float(v.get("containment_per_stage", 2.0))
 
         # Availability: mean health across all stages
@@ -435,7 +447,9 @@ class SupplyChainEnv(gym.Env):
         availability_rew = mean_health * float(v.get("availability_bonus", 1.0))
 
         # Impact penalty: count severely compromised stages
-        compromised_stages = sum(1 for s in self.stages.values() if s.risk >= self.thresholds["compromised"])
+        compromised_stages = sum(
+            1 for s in self.stages.values() if s.risk >= self.thresholds["compromised"]
+        )
         impact_penalty = compromised_stages * abs(float(v.get("impact_per_stage", -3.0)))
 
         # Delay penalty: penalty per step while attack is active
@@ -477,6 +491,16 @@ class SupplyChainEnv(gym.Env):
             "step_reward": round(step_reward, 4),
             "cumulative_reward": round(self.cumulative_reward, 4),
             "stages": {name: s.to_dict() for name, s in self.stages.items()},
+            "active_scenario": self.active_scenario.to_dict() if self.active_scenario else None,
+            "countermeasures": (
+                build_countermeasure_plan(
+                    self.active_scenario.attack_category,
+                    self.active_scenario.affected_stage,
+                    self.active_scenario.severity,
+                ).to_dict()
+                if self.active_scenario
+                else None
+            ),
         }
 
         if self.render_mode == "human":
@@ -500,7 +524,9 @@ class SupplyChainEnv(gym.Env):
                 f"Target: {self.active_scenario.affected_stage.upper()}"
             )
         if self.last_action is not None:
-            lines.append(f" Last Defense Action: {DefenseAction.get_name(self.last_action).upper()}")
+            lines.append(
+                f" Last Defense Action: {DefenseAction.get_name(self.last_action).upper()}"
+            )
 
         lines.append("-" * 64)
         lines.append(f" {'STAGE':<12} {'HEALTH':<16} {'RISK':<10} {'STATUS':<12} {'FLAGS'}")
@@ -525,6 +551,8 @@ class SupplyChainEnv(gym.Env):
             )
 
         lines.append(sep)
-        lines.append(f" Cumulative Reward: {self.cumulative_reward:.2f} | Mitigated: {self.mitigated}")
+        lines.append(
+            f" Cumulative Reward: {self.cumulative_reward:.2f} | Mitigated: {self.mitigated}"
+        )
         lines.append(sep)
         return "\n".join(lines)

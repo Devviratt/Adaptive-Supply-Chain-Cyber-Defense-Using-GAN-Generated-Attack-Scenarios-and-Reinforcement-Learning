@@ -8,7 +8,7 @@ C (DQN Augmented), and D (PPO Comparison).
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from typing import Any
 
 
@@ -24,7 +24,9 @@ class ExperimentResult:
     seeds: list[int] = field(default_factory=list)
 
     # Security Metrics
-    mitigation_success_rate: float = 0.0  # [0.0, 1.0] Proportion of attacks successfully neutralized
+    mitigation_success_rate: float = (
+        0.0  # [0.0, 1.0] Proportion of attacks successfully neutralized
+    )
     containment_rate: float = 0.0  # [0.0, 1.0] Proportion of attacks contained without propagating
     attack_impact_score: float = 0.0  # Aggregate damage caused to stages (lower is better)
 

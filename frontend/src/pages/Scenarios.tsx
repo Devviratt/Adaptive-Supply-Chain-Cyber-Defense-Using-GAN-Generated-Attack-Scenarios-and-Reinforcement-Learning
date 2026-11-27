@@ -71,7 +71,7 @@ export default function Scenarios() {
 
       {/* Interactive Mapper Card */}
       <div className="card" style={{ marginBottom: 'var(--space-xl)', borderLeft: '4px solid var(--accent-primary)' }}>
-        <h3 style={{ marginBottom: 'var(--space-sm)' }}>⚡ Live Dynamic Scenario Mapper</h3>
+        <h3 style={{ marginBottom: 'var(--space-sm)' }}>Live Dynamic Scenario Mapper</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: 'var(--space-md)' }}>
           Test the logarithmic volume and flag modulation algorithm: convert continuous network traffic into supply-chain risk parameters.
         </p>
@@ -125,7 +125,7 @@ export default function Scenarios() {
           onClick={handleMapRecord}
           disabled={mappingLoading}
         >
-          {mappingLoading ? 'Computing Mapping...' : '⚡ Generate Attack Scenario'}
+          {mappingLoading ? 'Computing Mapping...' : 'Generate Attack Scenario'}
         </button>
 
         {mappedResult && (
@@ -199,7 +199,7 @@ export default function Scenarios() {
           </div>
         ) : scenarios.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">🛡</div>
+            <div className="empty-icon" aria-hidden="true" />
             <h3>No scenarios found</h3>
             <p>Run scenario mapping via CLI (`python scripts/run_scenario_mapping.py`) or use the mapper above.</p>
           </div>

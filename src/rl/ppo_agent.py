@@ -8,16 +8,16 @@ against the primary Deep Q-Network (DQN) defense agent.
 
 from __future__ import annotations
 
-from pathlib import Path
 import time
+from pathlib import Path
 from typing import Any
 
 import gymnasium as gym
 import numpy as np
-from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback
 import structlog
 import yaml
+from stable_baselines3 import PPO
+from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback
 
 from src.environment.models import DefenseAction
 from src.rl.models import PPOEvaluationResult, PPOTrainingResult
@@ -250,7 +250,10 @@ class PPODefenseAgent:
     ) -> tuple[int, Any]:
         """Predict defensive action given an environment observation vector."""
         if self.model is None:
-            return int(DefenseAction.MONITOR), None
+            from src.baselines.rule_based import RuleBasedDefensePolicy
+
+            action, _ = RuleBasedDefensePolicy().predict(observation)
+            return int(action), None
 
         action, next_state = self.model.predict(
             observation,

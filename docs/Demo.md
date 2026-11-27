@@ -1,6 +1,6 @@
 ## What the demo shows
 
-This demo walks through the working backend foundation, CIC-IDS2017 data preprocessing, and a small CTGAN synthetic-data generation run. Supply-chain attack simulation and RL defense are not implemented yet.
+The main workflow creates synthetic attack examples with CTGAN, maps them to a saved supply-chain incident, and opens that exact incident in the simulator. The simulator shows the affected stage, recommends a defensive action, and provides a plain-language response guide. The simulation is local and does not send traffic to real systems.
 
 The development CSV generated for this demo is synthetic sample data for pipeline development. It must not be described as the full CIC-IDS2017 dataset or as real attack observations.
 
@@ -56,15 +56,16 @@ In PowerShell window 1, from the repository root, activate the environment and s
 
 ```powershell
 & "$env:TEMP\asccd313\Scripts\Activate.ps1"
-python -m uvicorn src.api.main:app --reload --port 8001
+python -m uvicorn src.api.main:app --reload --port 8000
 ```
 
-Open Swagger at <http://127.0.0.1:8001/api/docs>. Expand each section and use **Try it out** on these endpoints:
+Open Swagger at <http://127.0.0.1:8000/api/docs>. Expand each section and use **Try it out** on these endpoints:
 
 | Endpoint | What to point out |
 | --- | --- |
 | `GET /api/health` | Confirms the API is running. |
 | `GET /api/health/ready` | Checks the API and local database. |
+| `POST /api/gan/generate` | Creates class-targeted synthetic examples and stores a simulator incident. |
 | `GET /api/project/status` | Returns the current project/module status. |
 | `GET /api/project/team` | Returns team roles and responsibilities. |
 
@@ -72,9 +73,28 @@ The `/api/docs` path is intentional; `/docs` returns Not Found because the app c
 
 The project status values returned by `/api/project/status` are currently hardcoded scaffold data and do not reflect the completed preprocessing stage. Use this endpoint to demonstrate the API response; use the pipeline run and validation report to demonstrate data-pipeline progress.
 
+### Show synthetic attack generation and prevention
+
+In PowerShell window 2, start the frontend from the repository root:
+
+```powershell
+Set-Location frontend
+npm install
+npm run dev
+```
+
+Open <http://127.0.0.1:5173>, then:
+
+1. Select **Generate Synthetic Attack**.
+2. Choose an attack type, target node (Supplier, Build, Registry, or Deployment), and how many examples to create. Then select **Generate synthetic attack**.
+3. When the examples are ready, select **Try to prevent it**. The simulator opens with that generated incident selected.
+4. Review the affected node, suggested action, and response playbook. Apply the suggested response or choose another defensive action.
+
+The UI only offers attack types supported by the available checkpoint. If the checkpoint is missing, train one with the command in step 6 below. Generated CSV samples are saved under `data\generated`; each run uses a new filename.
+
 ### 3. Inspect the input data
 
-In PowerShell window 2, activate the environment and inspect the raw CSV:
+In PowerShell window 3, activate the environment and inspect the raw CSV:
 
 ```powershell
 & "$env:TEMP\asccd313\Scripts\Activate.ps1"
@@ -113,10 +133,10 @@ The GAN is fitted only on `train.csv`; validation and test splits are not used. 
 ```powershell
 python scripts\train_ctgan_demo.py train --epochs 5
 python scripts\train_ctgan_demo.py generate --count 500
-python scripts\train_ctgan_demo.py validate --input data\processed\train.csv --output data\generated\ctgan_samples.csv
+python scripts\train_ctgan_demo.py validate --input data\processed\train.csv
 ```
 
-Training reads `data\processed\train.csv` only; validation and test splits are not used. The checkpoint is `artifacts\models\ctgan\model.pkl`, with run metadata in `artifacts\models\ctgan\model.metadata.json`. Generated rows are saved to `data\generated\ctgan_samples.csv` with a `data_origin=synthetic_ctgan` column. Validation reports are `data\generated\ctgan_validation.json` and `data\generated\ctgan_validation.md`.
+Training reads `data\processed\train.csv` only; validation and test splits are not used. The checkpoint is `artifacts\models\ctgan\model.pkl`, with run metadata in `artifacts\models\ctgan\model.metadata.json`. Each generation run creates a new file, starting with `data\generated\ctgan_samples.csv` and then using numbered names such as `ctgan_samples_2.csv`; existing samples are never overwritten. Rows include a `data_origin=synthetic_ctgan` column. Validation without `--output` automatically selects the most recently generated CTGAN sample and creates a correspondingly named validation report. Pass `--output <sample.csv>` to validate a specific sample.
 
 The report includes schema match, synthetic label proportions, duplicate ratio, non-finite numeric values, and per-feature Kolmogorov–Smirnov (KS) statistics. Lower KS values indicate closer marginal feature distributions. In the demo run on the 3,437-row development training split, 5 epochs and 500 generated rows, the observed mean KS statistic was about **0.258** and the maximum was **0.756**. Schema matched, with no duplicate rows or non-finite numeric values. This small prototype result shows some feature distributions still differ substantially; the checks do not establish downstream utility or improved RL defense. Runtime depends on hardware. Five epochs is the short demo setting; the configured research run uses more epochs.
 
@@ -128,5 +148,8 @@ python scripts\train_ctgan_demo.py generate --per-class '{"benign":250,"dos":250
 
 ## Suggested short explanation
 
-> “Our demo covers the backend API, CIC-IDS2017 preprocessing, and a prototype CTGAN workflow. We fit the generator on the training split, produce clearly marked synthetic rows, and inspect basic fidelity and validity metrics. The development input is generated sample data, so this demonstrates the pipeline rather than results on the full CIC-IDS2017 corpus. Supply-chain simulation and RL defense remain future implementation stages.”
+> “Our demo generates artificial network examples with CTGAN, maps an example to a supply-chain incident, and opens it in a local simulator. We can observe the affected stage, review the recommended countermeasures, and test a defensive response. The development input is generated sample data, so this demonstrates the pipeline rather than results on the full CIC-IDS2017 corpus.”
 
+Command to create synthetic datasets
+python scripts\train_ctgan_demo.py generate --count 500
+python scripts\train_ctgan_demo.py generate --count 500

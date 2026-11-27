@@ -1,6 +1,5 @@
 import { Routes, Route, NavLink } from 'react-router-dom'
 import Overview from './pages/Overview'
-import Review1Demo from './pages/Review1Demo'
 import Scenarios from './pages/Scenarios'
 import SupplyChain from './pages/SupplyChain'
 import GanLab from './pages/GanLab'
@@ -12,33 +11,32 @@ import Settings from './pages/Settings'
 
 const NAV_SECTIONS = [
   {
-    title: 'Evaluation & Demo',
+    title: 'Start here',
     items: [
-      { path: '/demo', label: 'Review 1 Live Demo', icon: '⭐' },
-      { path: '/', label: 'Overview', icon: '◉' },
+      { path: '/', label: 'Overview' },
     ],
   },
   {
-    title: 'Threat Modeling & GAN',
+    title: 'Create and explore attacks',
     items: [
-      { path: '/scenarios', label: 'Attack Scenarios', icon: '⚡' },
-      { path: '/gan-lab', label: 'GAN Threat Lab', icon: '🧬' },
+      { path: '/gan-lab', label: 'Generate Synthetic Attack' },
+      { path: '/scenarios', label: 'Prepared Attack Scenarios' },
     ],
   },
   {
-    title: 'Digital Twin & Defense',
+    title: 'Run a simulation',
     items: [
-      { path: '/supply-chain', label: 'Supply Chain Twin', icon: '⛓' },
-      { path: '/rl-defense', label: 'Adaptive Defense', icon: '🛡' },
+      { path: '/supply-chain', label: 'Supply Chain Simulator' },
+      { path: '/rl-defense', label: 'Defense Policies' },
     ],
   },
   {
-    title: 'Scientific Audit',
+    title: 'Review results',
     items: [
-      { path: '/experiments', label: 'Experiments', icon: '🔬' },
-      { path: '/evaluation', label: 'Evaluation Matrix', icon: '📊' },
-      { path: '/logs', label: 'Telemetry Logs', icon: '📋' },
-      { path: '/settings', label: 'Settings', icon: '⚙' },
+      { path: '/experiments', label: 'Experiments' },
+      { path: '/evaluation', label: 'Performance Results' },
+      { path: '/logs', label: 'System Status' },
+      { path: '/settings', label: 'Settings' },
     ],
   },
 ]
@@ -71,7 +69,6 @@ export default function App() {
                   }
                   end={item.path === '/'}
                 >
-                  <span className="nav-icon">{item.icon}</span>
                   <span>{item.label}</span>
                 </NavLink>
               ))}
@@ -97,7 +94,6 @@ export default function App() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Overview />} />
-          <Route path="/demo" element={<Review1Demo />} />
           <Route path="/scenarios" element={<Scenarios />} />
           <Route path="/supply-chain" element={<SupplyChain />} />
           <Route path="/gan-lab" element={<GanLab />} />

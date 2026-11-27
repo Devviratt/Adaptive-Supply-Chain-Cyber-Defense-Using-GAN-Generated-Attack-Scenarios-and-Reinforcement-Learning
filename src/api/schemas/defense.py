@@ -5,13 +5,16 @@ ASCCD Pydantic Schemas for Defense Policy Decisions and Models.
 from __future__ import annotations
 
 from typing import Any
+
 from pydantic import BaseModel, Field
 
 
 class PredictRequest(BaseModel):
     """Request schema for predicting an action from an observation vector."""
 
-    observation: list[float] = Field(min_length=12, max_length=12, description="12-dim environment observation vector")
+    observation: list[float] = Field(
+        min_length=12, max_length=12, description="12-dim environment observation vector"
+    )
     model_type: str = Field(default="dqn", description="'rule_based', 'dqn', or 'ppo'")
     deterministic: bool = Field(default=True)
 
@@ -33,3 +36,23 @@ class ModelInfoSchema(BaseModel):
     path: str
     size_bytes: int
     modified_at: str
+
+
+class CountermeasureRequest(BaseModel):
+    """Request for attack-specific countermeasures."""
+
+    attack_category: str = Field(default="benign")
+    affected_stage: str = Field(default="deployment")
+    severity: str = Field(default="medium")
+
+
+class CountermeasureResponse(BaseModel):
+    """Preventive and incident-response countermeasure plan."""
+
+    attack_category: str
+    affected_stage: str
+    severity: str
+    preventive: list[dict[str, Any]]
+    immediate: list[dict[str, Any]]
+    recovery: list[dict[str, Any]]
+    validation: list[dict[str, Any]]

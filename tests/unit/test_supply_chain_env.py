@@ -7,8 +7,7 @@ from __future__ import annotations
 import gymnasium as gym
 import numpy as np
 import pytest
-
-from src.environment import DefenseAction, StageState, SupplyChainEnv
+from src.environment import DefenseAction, SupplyChainEnv
 from src.scenarios.models import AttackScenario
 
 
@@ -49,6 +48,12 @@ class TestSupplyChainEnvironment:
         assert "attack_category" in info
         assert env.current_step == 0
         assert env.cumulative_reward == 0.0
+
+    def test_default_scenarios_always_simulate_an_attack(self, env: SupplyChainEnv) -> None:
+        """Default episodes should exercise defense, not randomly start benign."""
+        for seed in range(20):
+            _, info = env.reset(seed=seed)
+            assert info["attack_category"] != "benign"
 
     def test_step_returns_gymnasium_5_tuple(self, env: SupplyChainEnv) -> None:
         """Verify step returns (obs, reward, terminated, truncated, info)."""

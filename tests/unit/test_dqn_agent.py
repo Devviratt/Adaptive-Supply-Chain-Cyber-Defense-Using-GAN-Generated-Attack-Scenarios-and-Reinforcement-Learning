@@ -4,14 +4,12 @@ Unit tests for ASCCD DQN Defense Agent (Phase 7).
 
 from __future__ import annotations
 
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 import gymnasium as gym
 import numpy as np
 import pytest
-
-from src.environment import DefenseAction
 from src.rl import DQNDefenseAgent, DQNEvaluationResult, DQNTrainingResult
 
 

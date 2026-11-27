@@ -9,9 +9,7 @@ from __future__ import annotations
 
 import gymnasium as gym
 import pandas as pd
-import pytest
-
-from src.environment import DefenseAction, SupplyChainEnv
+from src.environment import DefenseAction
 from src.scenarios.mapper import ScenarioMapper
 
 
@@ -20,9 +18,24 @@ def test_supply_chain_env_with_mapped_scenarios() -> None:
     # 1. Create realistic dataset sample
     df = pd.DataFrame(
         [
-            {"Label": "dos", "Flow Duration": 15000.0, "Flow Bytes/s": 500000.0, "Total Fwd Packets": 100},
-            {"Label": "web_attack", "Flow Duration": 8000.0, "Flow Bytes/s": 1200.0, "Total Fwd Packets": 20},
-            {"Label": "botnet", "Flow Duration": 12000.0, "Flow Bytes/s": 3500.0, "Total Fwd Packets": 35},
+            {
+                "Label": "dos",
+                "Flow Duration": 15000.0,
+                "Flow Bytes/s": 500000.0,
+                "Total Fwd Packets": 100,
+            },
+            {
+                "Label": "web_attack",
+                "Flow Duration": 8000.0,
+                "Flow Bytes/s": 1200.0,
+                "Total Fwd Packets": 20,
+            },
+            {
+                "Label": "botnet",
+                "Flow Duration": 12000.0,
+                "Flow Bytes/s": 3500.0,
+                "Total Fwd Packets": 35,
+            },
         ]
     )
 

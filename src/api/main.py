@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 from src.api.routers import (
     defense,
     experiments,
+    gan,
     health,
     project,
     scenarios,
@@ -97,6 +98,7 @@ def create_app() -> FastAPI:
     app.include_router(scenarios.router, prefix="/api/scenarios", tags=["Scenarios"])
     app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
     app.include_router(defense.router, prefix="/api/defense", tags=["Defense"])
+    app.include_router(gan.router, prefix="/api/gan", tags=["Synthetic attacks"])
     app.include_router(experiments.router, prefix="/api/experiments", tags=["Experiments"])
 
     return app
