@@ -250,7 +250,10 @@ class PPODefenseAgent:
     ) -> tuple[int, Any]:
         """Predict defensive action given an environment observation vector."""
         if self.model is None:
-            return int(DefenseAction.MONITOR), None
+            from src.baselines.rule_based import RuleBasedDefensePolicy
+
+            action, _ = RuleBasedDefensePolicy().predict(observation)
+            return int(action), None
 
         action, next_state = self.model.predict(
             observation,

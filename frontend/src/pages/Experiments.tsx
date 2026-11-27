@@ -46,7 +46,7 @@ export default function Experiments() {
           onClick={handleRunExperiments}
           disabled={running}
         >
-          {running ? 'Executing Experiments...' : '🔬 Run Benchmark Suite'}
+          {running ? 'Executing Experiments...' : 'Run Benchmark Suite'}
         </button>
       </div>
 
@@ -127,7 +127,7 @@ export default function Experiments() {
           </div>
         ) : !summary || !summary.experiments ? (
           <div className="empty-state">
-            <div className="empty-icon">🔬</div>
+            <div className="empty-icon" aria-hidden="true" />
             <h3>No experiment results found</h3>
             <p>Click "Run Benchmark Suite" above or execute `python scripts/run_experiments.py` on the CLI.</p>
           </div>
@@ -182,7 +182,7 @@ export default function Experiments() {
       {/* Artifact Export Links Card */}
       <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-md)' }}>
         <div>
-          <h4>📄 Scientific Reports & Plot Exports</h4>
+          <h4>Scientific Reports & Plot Exports</h4>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.2rem' }}>
             Data and publication charts saved to `artifacts/reports/` and `artifacts/figures/`.
           </p>
@@ -195,7 +195,7 @@ export default function Experiments() {
             className="btn btn-secondary"
             style={{ textDecoration: 'none' }}
           >
-            📥 View JSON Summary
+            View JSON Summary
           </a>
         </div>
       </div>

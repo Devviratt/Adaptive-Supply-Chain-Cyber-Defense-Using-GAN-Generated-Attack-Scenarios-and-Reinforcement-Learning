@@ -273,6 +273,7 @@ class ScenarioMapper:
         record: dict[str, Any] | pd.Series,
         source: str = "real",
         scenario_id: str | None = None,
+        affected_stage: str | None = None,
     ) -> AttackScenario:
         """Map a single network flow record into a structured AttackScenario.
 
@@ -280,6 +281,7 @@ class ScenarioMapper:
             record: Dictionary or Series containing feature values and optional label.
             source: Data origin ("real" or "synthetic").
             scenario_id: Optional explicit scenario ID; generated if None.
+            affected_stage: Optional supply-chain stage override for the scenario.
 
         Returns:
             Structured AttackScenario object.
@@ -312,7 +314,7 @@ class ScenarioMapper:
             scenario_id=scenario_id,
             attack_category=label,
             severity=severity,
-            affected_stage=rule.get("affected_stage", "deployment"),
+            affected_stage=affected_stage or rule.get("affected_stage", "deployment"),
             propagation_risk=mod_prop,
             availability_impact=mod_avail,
             integrity_impact=float(rule.get("integrity_impact", 0.0)),

@@ -19,6 +19,7 @@ import structlog
 import yaml
 
 from src.environment.models import DefenseAction, StageState
+from src.defense.countermeasures import build_countermeasure_plan
 from src.scenarios.mapper import ScenarioMapper
 from src.scenarios.models import AttackScenario
 
@@ -228,7 +229,7 @@ class SupplyChainEnv(gym.Env):
             return copy.deepcopy(scen)
 
         # Default synthetic fallback scenario if none provided
-        sample_cats = ["dos", "ddos", "web_attack", "brute_force", "botnet", "portscan", "benign"]
+        sample_cats = ["dos", "ddos", "web_attack", "brute_force", "botnet", "portscan"]
         chosen_cat = self.np_random.choice(sample_cats)
         fake_rec = {
             "Label": chosen_cat,
@@ -281,6 +282,13 @@ class SupplyChainEnv(gym.Env):
             "affected_stage": self.active_scenario.affected_stage,
             "severity": self.active_scenario.severity,
             "duration_steps": self.active_scenario.duration_steps,
+            "source": self.active_scenario.source,
+            "active_scenario": self.active_scenario.to_dict(),
+            "countermeasures": build_countermeasure_plan(
+                self.active_scenario.attack_category,
+                self.active_scenario.affected_stage,
+                self.active_scenario.severity,
+            ).to_dict(),
         }
 
         if self.render_mode == "human":
@@ -477,6 +485,12 @@ class SupplyChainEnv(gym.Env):
             "step_reward": round(step_reward, 4),
             "cumulative_reward": round(self.cumulative_reward, 4),
             "stages": {name: s.to_dict() for name, s in self.stages.items()},
+            "active_scenario": self.active_scenario.to_dict() if self.active_scenario else None,
+            "countermeasures": build_countermeasure_plan(
+                self.active_scenario.attack_category,
+                self.active_scenario.affected_stage,
+                self.active_scenario.severity,
+            ).to_dict() if self.active_scenario else None,
         }
 
         if self.render_mode == "human":

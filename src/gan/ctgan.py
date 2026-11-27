@@ -84,7 +84,7 @@ def generate_ctgan(
     class_column: str = "Label",
     per_class: dict[str, int] | None = None,
 ) -> pd.DataFrame:
-    """Generate samples, optionally requesting counts for specific label values."""
+    """Generate samples and enforce exact counts for requested discrete labels."""
     from ctgan import CTGAN
 
     if count < 1:
@@ -94,9 +94,38 @@ def generate_ctgan(
     frames: list[pd.DataFrame] = []
     if per_class:
         for label, amount in per_class.items():
-            if int(amount) < 1:
+            requested_count = int(amount)
+            if requested_count < 1:
                 continue
-            frames.append(model.sample(int(amount), condition_column=class_column, condition_value=str(label)))
+            accepted: list[pd.DataFrame] = []
+            accepted_count = 0
+            batch_count = max(500, requested_count * 10)
+            for _ in range(10):
+                if accepted_count >= requested_count:
+                    break
+                candidates = model.sample(
+                    batch_count,
+                    condition_column=class_column,
+                    condition_value=str(label),
+                )
+                if class_column not in candidates.columns:
+                    raise ValueError(
+                        f"Generated samples do not contain the label column {class_column!r}"
+                    )
+                matching = candidates.loc[
+                    candidates[class_column].astype(str).str.strip().str.lower()
+                    == str(label).strip().lower()
+                ].head(requested_count - accepted_count)
+                if not matching.empty:
+                    accepted.append(matching)
+                    accepted_count += len(matching)
+            if accepted_count < requested_count:
+                raise ValueError(
+                    f"CTGAN produced {accepted_count} of {requested_count} requested "
+                    f"{label!r} examples. Retrain the model with more representative "
+                    "examples for this attack type."
+                )
+            frames.append(pd.concat(accepted, ignore_index=True))
         generated = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
     else:
         generated = model.sample(count)

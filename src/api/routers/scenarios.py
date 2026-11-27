@@ -55,7 +55,7 @@ def list_scenarios(
             confidentiality_impact=r.confidentiality_impact,
             source=r.source,
             duration_steps=r.duration_steps,
-            description=r.description or "",
+            description=getattr(r, "description", "") or "",
         )
         for r in records
     ]
@@ -85,7 +85,7 @@ def get_scenario(
         confidentiality_impact=r.confidentiality_impact,
         source=r.source,
         duration_steps=r.duration_steps,
-        description=r.description or "",
+        description=getattr(r, "description", "") or "",
     )
 
 

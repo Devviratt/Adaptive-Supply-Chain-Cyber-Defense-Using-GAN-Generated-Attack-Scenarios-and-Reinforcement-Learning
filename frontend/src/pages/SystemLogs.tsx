@@ -79,9 +79,9 @@ export default function SystemLogs() {
       {/* Structured Event Stream Table */}
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         <div style={{ padding: 'var(--space-md)', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, fontSize: '1rem' }}>📋 Operational Event Log Stream</h3>
+          <h3 style={{ margin: 0, fontSize: '1rem' }}>Operational Event Log Stream</h3>
           <button className="btn btn-secondary" onClick={fetchSystemStatus} style={{ padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}>
-            🔄 Refresh
+            Refresh
           </button>
         </div>
 

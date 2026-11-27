@@ -136,7 +136,7 @@ export default function RLDefense() {
 
       {/* Interactive Policy Decision Simulator */}
       <div className="card" style={{ marginBottom: 'var(--space-xl)' }}>
-        <h3 style={{ marginBottom: 'var(--space-sm)' }}>🎮 Interactive Defense Decision Simulator</h3>
+        <h3 style={{ marginBottom: 'var(--space-sm)' }}>Interactive Defense Decision Simulator</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: 'var(--space-md)' }}>
           Select an incident scenario state and query the defense agent to observe its autonomous tactical decision.
         </p>
@@ -180,18 +180,11 @@ export default function RLDefense() {
           onClick={handlePredict}
           disabled={predictLoading}
         >
-          {predictLoading ? 'Evaluating Q-Values...' : '🧠 Predict Autonomous Defense Action'}
+          {predictLoading ? 'Evaluating Q-Values...' : 'Predict Autonomous Defense Action'}
         </button>
 
         {prediction && (
           <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-md)', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid var(--border-accent)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 'var(--space-lg)' }}>
-            <div style={{ fontSize: '2.5rem' }}>
-              {prediction.action_name === 'Monitor' && '👁️'}
-              {prediction.action_name === 'Isolate' && '🔒'}
-              {prediction.action_name === 'Block' && '⛔'}
-              {prediction.action_name === 'Rebuild' && '🔄'}
-              {prediction.action_name === 'Recover' && '💚'}
-            </div>
             <div>
               <div style={{ fontSize: '0.75rem', color: 'var(--accent-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>
                 Selected Defensive Response ({prediction.model_type.toUpperCase()})
@@ -205,7 +198,7 @@ export default function RLDefense() {
       </div>
 
       {/* Model Checkpoint Artifacts */}
-      <h3 style={{ marginBottom: 'var(--space-md)' }}>💾 Saved Model Weights & Checkpoints</h3>
+      <h3 style={{ marginBottom: 'var(--space-md)' }}>Saved Model Weights & Checkpoints</h3>
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         {models.length === 0 ? (
           <div style={{ padding: 'var(--space-lg)', textAlign: 'center', color: 'var(--text-muted)' }}>

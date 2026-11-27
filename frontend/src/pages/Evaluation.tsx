@@ -51,7 +51,7 @@ export default function Evaluation() {
       {!expData ? (
         <div className="card">
           <div className="empty-state">
-            <div className="empty-icon">📊</div>
+            <div className="empty-icon" aria-hidden="true" />
             <h3>No evaluation metrics available</h3>
             <p>Run experiments on the Experiments page or CLI to populate evaluation telemetry.</p>
           </div>
@@ -104,7 +104,7 @@ export default function Evaluation() {
           {/* Action Distribution Breakdown */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
             <div className="card">
-              <h3 style={{ marginBottom: 'var(--space-md)' }}>🛡️ Defensive Action Allocation</h3>
+              <h3 style={{ marginBottom: 'var(--space-md)' }}>Defensive Action Allocation</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
                 {Object.entries(expData.decision_quality.action_distribution).map(([action, count]) => {
                   const total = Object.values(expData.decision_quality.action_distribution).reduce((a, b) => a + b, 0)
@@ -125,7 +125,7 @@ export default function Evaluation() {
             </div>
 
             <div className="card">
-              <h3 style={{ marginBottom: 'var(--space-md)' }}>⚖️ Operational Efficiency & Cost Quality</h3>
+              <h3 style={{ marginBottom: 'var(--space-md)' }}>Operational Efficiency & Cost Quality</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
@@ -167,7 +167,7 @@ export default function Evaluation() {
           {expData.performance_by_attack_class && Object.keys(expData.performance_by_attack_class).length > 0 && (
             <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
               <div style={{ padding: 'var(--space-md)', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
-                <h3 style={{ margin: 0, fontSize: '1rem' }}>🎯 Robustness Across Attack Classes</h3>
+                <h3 style={{ margin: 0, fontSize: '1rem' }}>Robustness Across Attack Classes</h3>
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
                 <thead>

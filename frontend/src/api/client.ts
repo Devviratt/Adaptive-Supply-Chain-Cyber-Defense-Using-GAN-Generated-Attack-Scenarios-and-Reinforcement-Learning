@@ -160,6 +160,29 @@ export async function mapFlowRecord(features: Record<string, any>, label: string
   })
 }
 
+export interface SyntheticAttackGenerateResponse {
+  attack_category: string
+  generated_count: number
+  scenario_id: string
+  affected_stage: string
+  severity: string
+}
+
+export async function generateSyntheticAttack(
+  attackCategory: string,
+  count: number,
+  affectedStage: string,
+) {
+  return apiFetch<SyntheticAttackGenerateResponse>('/gan/generate', {
+    method: 'POST',
+    body: JSON.stringify({
+      attack_category: attackCategory,
+      count,
+      affected_stage: affectedStage,
+    }),
+  })
+}
+
 // ============================================================
 // Supply Chain Simulation
 // ============================================================
@@ -244,6 +267,39 @@ export async function predictDefenseAction(
 
 export async function getDefenseModels() {
   return apiFetch<ModelInfo[]>('/defense/models')
+}
+
+export interface CountermeasureControl {
+  control: string
+  action: string
+  stage: string
+  priority: string
+  rationale: string
+}
+
+export interface CountermeasurePlan {
+  attack_category: string
+  affected_stage: string
+  severity: string
+  preventive: CountermeasureControl[]
+  immediate: CountermeasureControl[]
+  recovery: CountermeasureControl[]
+  validation: CountermeasureControl[]
+}
+
+export async function recommendCountermeasures(
+  attackCategory: string,
+  affectedStage: string,
+  severity: string
+) {
+  return apiFetch<CountermeasurePlan>('/defense/countermeasures', {
+    method: 'POST',
+    body: JSON.stringify({
+      attack_category: attackCategory,
+      affected_stage: affectedStage,
+      severity,
+    }),
+  })
 }
 
 // ============================================================

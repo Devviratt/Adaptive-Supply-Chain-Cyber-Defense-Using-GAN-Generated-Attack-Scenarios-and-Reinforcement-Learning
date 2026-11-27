@@ -25,6 +25,10 @@ MODULE_STATUS = {
     "ppo": {"status": "done", "description": "PPO comparison baseline"},
     "baseline": {"status": "done", "description": "Rule-based baseline policy"},
     "evaluation": {"status": "done", "description": "Evaluation engine & controlled experiments"},
+    "countermeasures": {
+        "status": "done",
+        "description": "Attack-specific prevention, containment, recovery, and validation controls",
+    },
     "backend": {"status": "done", "description": "FastAPI backend"},
     "frontend": {"status": "done", "description": "React dashboard"},
     "testing": {"status": "done", "description": "Test suite (143 passed)"},

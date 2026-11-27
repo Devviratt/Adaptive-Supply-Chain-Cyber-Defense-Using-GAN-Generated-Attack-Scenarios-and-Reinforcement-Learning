@@ -313,8 +313,11 @@ class DQNDefenseAgent:
             Tuple of (action_int, state).
         """
         if self.model is None:
-            # Fallback to passive monitoring if uninitialized
-            return int(DefenseAction.MONITOR), None
+            # Safe fallback until a trained DQN checkpoint is loaded.
+            from src.baselines.rule_based import RuleBasedDefensePolicy
+
+            action, _ = RuleBasedDefensePolicy().predict(observation)
+            return int(action), None
 
         action, next_state = self.model.predict(
             observation,

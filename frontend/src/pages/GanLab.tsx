@@ -1,148 +1,132 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { generateSyntheticAttack } from '../api/client'
+import type { SyntheticAttackGenerateResponse } from '../api/client'
 
 export default function GanLab() {
-  const [samplesToGenerate, setSamplesToGenerate] = useState(1000)
-  const [selectedClass, setSelectedClass] = useState('DDoS')
+  const [samplesToGenerate, setSamplesToGenerate] = useState(10)
+  const [selectedClass, setSelectedClass] = useState('ddos')
+  const [selectedStage, setSelectedStage] = useState('deployment')
   const [generating, setGenerating] = useState(false)
-  const [genSuccess, setGenSuccess] = useState<string | null>(null)
+  const [generatedAttack, setGeneratedAttack] = useState<SyntheticAttackGenerateResponse | null>(null)
+  const [error, setError] = useState('')
 
-  function handleTriggerGenerate() {
+  async function handleTriggerGenerate() {
     setGenerating(true)
-    setGenSuccess(null)
-    setTimeout(() => {
-      setGenerating(false)
-      setGenSuccess(`Successfully generated ${samplesToGenerate} synthetic '${selectedClass}' flow records into data/generated/synthetic_attacks.csv`)
-    }, 1200)
+    setGeneratedAttack(null)
+    setError('')
+    const result = await generateSyntheticAttack(selectedClass, samplesToGenerate, selectedStage)
+    setGenerating(false)
+    if (result.data) setGeneratedAttack(result.data)
+    else setError(result.error ?? 'Could not generate the synthetic attack.')
   }
-
-  const VALIDATION_METRICS = [
-    { label: 'Mean Wasserstein Distance (W1)', value: '0.1057', target: '< 0.1500', status: 'Passed' },
-    { label: 'Jensen-Shannon Divergence (D_JS)', value: '0.5117', target: '< 0.6000', status: 'Passed' },
-    { label: 'Pearson Correlation Similarity', value: '0.9869', target: '> 0.9000', status: 'Passed' },
-    { label: 'Frobenius Norm Correlation Diff', value: '0.1873', target: '< 0.2500', status: 'Passed' },
-    { label: 'Exact Duplicate Rate (Memorization)', value: '0.00%', target: '< 1.00%', status: 'Passed' },
-    { label: 'Feature Mode Collapse Rate', value: '0 / 71', target: '0 collapsed', status: 'Passed' },
-  ]
-
-  const DOWNSTREAM_UTILITY = [
-    { model: 'Model A (Real Only Baseline)', accuracy: '78.70%', f1: '78.12%', data: '3,437 Real records' },
-    { model: 'Model B (CTGAN Augmented)', accuracy: '80.19%', f1: '79.84%', data: '3,437 Real + 2,000 Synthetic' },
-  ]
 
   return (
     <div>
       <div className="page-header">
-        <h2>GAN Laboratory & Synthetic Data Hub</h2>
+        <h2>Create a synthetic attack</h2>
         <p>
-          Conditional Tabular GAN (CTGAN) generative modeling for rare cyber-attack scenario synthesis.
-          Solves high-dimensional supply-chain cyber threat sparsity without data leakage.
+          Choose an attack type and a supply-chain stage, create artificial examples, then open the
+          incident in the simulator and try to stop it. These examples do not target real systems.
         </p>
       </div>
 
-      {/* Downstream Utility Hero Banner */}
-      <div className="card" style={{ marginBottom: 'var(--space-xl)', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%)', border: '1px solid var(--border-accent)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-md)' }}>
-          <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--accent-secondary)', textTransform: 'uppercase', fontWeight: 700 }}>
-              Scientific Utility Verification (Phase 3 Downstream Experiment)
-            </div>
-            <h3 style={{ fontSize: '1.4rem', marginTop: '0.25rem' }}>
-              +1.49% Classification Accuracy Boost on Untouched Held-Out Test Partition
-            </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-              Evaluated on 737 untouched records from `data/processed/test.csv`. Proves synthetic diversity adds genuine statistical information.
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
-            {DOWNSTREAM_UTILITY.map((item, idx) => (
-              <div key={idx} style={{ textAlign: 'center', padding: '0.5rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)' }}>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{item.model}</div>
-                <div style={{ fontSize: '1.4rem', fontWeight: 700, color: idx === 1 ? 'var(--status-healthy)' : 'var(--text-secondary)' }}>
-                  {item.accuracy}
-                </div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>F1: {item.f1}</div>
-              </div>
-            ))}
-          </div>
+      <section className="card synthetic-generator-card">
+        <div className="synthetic-generator-intro">
+          <span className="overview-eyebrow">Create and test</span>
+          <h3>Make a practice attack</h3>
+          <p>
+            The generator creates artificial network examples, then maps them to the node you choose
+            and saves an incident that you can open in the simulator.
+          </p>
         </div>
-      </div>
 
-      {/* Statistical Rigor Table */}
-      <h3 style={{ marginBottom: 'var(--space-md)' }}>📊 Statistical Fidelity & Anti-Memorization Metrics</h3>
-      <div className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 'var(--space-xl)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
-          <thead>
-            <tr style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
-              <th style={{ padding: '0.75rem 1rem' }}>Fidelity Metric</th>
-              <th style={{ padding: '0.75rem 1rem' }}>Measured Score</th>
-              <th style={{ padding: '0.75rem 1rem' }}>Quality Acceptance Threshold</th>
-              <th style={{ padding: '0.75rem 1rem' }}>Audit Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {VALIDATION_METRICS.map((m, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 500 }}>{m.label}</td>
-                <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)', fontWeight: 600 }}>{m.value}</td>
-                <td style={{ padding: '0.75rem 1rem', color: 'var(--text-muted)' }}>{m.target}</td>
-                <td style={{ padding: '0.75rem 1rem' }}>
-                  <span className="badge" style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', color: 'var(--status-healthy)' }}>
-                    ✅ {m.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Interactive Synthetic Generation Panel */}
-      <div className="card">
-        <h3 style={{ marginBottom: 'var(--space-sm)' }}>🧬 Synthetic Attack Generator</h3>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: 'var(--space-md)' }}>
-          Sample conditional attack scenarios using the trained CTGAN generator (`artifacts/models/ctgan/ctgan_final.pkl`).
-        </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-md)' }}>
+        <div className="synthetic-generator-form">
           <div>
-            <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Conditioned Attack Class</label>
+            <label htmlFor="attack-type">Choose an attack type</label>
             <select
+              id="attack-type"
               value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
-              style={{ width: '100%', padding: '0.5rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
+              onChange={(event) => setSelectedClass(event.target.value)}
+              disabled={generating}
             >
-              <option value="DDoS">DDoS (Deployment Flooding)</option>
-              <option value="DoS">DoS (Registry Starvation)</option>
-              <option value="PortScan">PortScan (Supplier Reconnaissance)</option>
-              <option value="Botnet">Botnet (Build CI/CD Hijack)</option>
-              <option value="Brute Force">Brute Force (Credential Stuffing)</option>
-              <option value="Web Attack">Web Attack (Dependency Tampering)</option>
+              <option value="ddos">DDoS — overwhelm a service with traffic</option>
+              <option value="dos">DoS — make a service unavailable</option>
+              <option value="portscan">Port scan — search for exposed services</option>
+              <option value="botnet">Botnet — coordinate compromised devices</option>
+              <option value="brute_force">Password guessing — attempt account access</option>
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Number of Samples</label>
+            <label htmlFor="attack-stage">Where should the attack happen?</label>
+            <select
+              id="attack-stage"
+              value={selectedStage}
+              onChange={(event) => setSelectedStage(event.target.value)}
+              disabled={generating}
+            >
+              <option value="supplier">Supplier — component providers</option>
+              <option value="build">Build — CI/CD pipeline</option>
+              <option value="registry">Registry — package storage</option>
+              <option value="deployment">Deployment — software in use</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="sample-count">How many examples?</label>
             <input
+              id="sample-count"
               type="number"
+              min={1}
+              max={200}
               value={samplesToGenerate}
-              onChange={(e) => setSamplesToGenerate(Number(e.target.value))}
-              style={{ width: '100%', padding: '0.5rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: 'var(--radius-sm)' }}
+              onChange={(event) => setSamplesToGenerate(Number(event.target.value))}
+              disabled={generating}
             />
           </div>
         </div>
 
         <button
           className="btn btn-primary"
-          onClick={handleTriggerGenerate}
-          disabled={generating}
+          onClick={() => void handleTriggerGenerate()}
+          disabled={generating || samplesToGenerate < 1 || samplesToGenerate > 200}
         >
-          {generating ? 'Sampling from CTGAN Latent Space...' : '✨ Generate Synthetic Attack Batch'}
+          {generating ? 'Creating practice attack…' : 'Generate synthetic attack'}
         </button>
 
-        {genSuccess && (
-          <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-md)', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-md)', color: 'var(--status-healthy)', fontSize: '0.875rem' }}>
-            ✅ {genSuccess}
+        {error && <div role="alert" className="synthetic-result synthetic-result-error">{error}</div>}
+
+        {generatedAttack && (
+          <div className="synthetic-result" aria-live="polite">
+            <div>
+              <span className="countermeasure-eyebrow">Ready to explore</span>
+              <h4>Your practice attack is ready</h4>
+              <p>
+                {generatedAttack.generated_count} artificial{' '}
+                {generatedAttack.attack_category.replace(/_/g, ' ')} examples were created and added
+                as a {generatedAttack.severity} incident affecting the {generatedAttack.affected_stage} stage.
+              </p>
+              <p className="synthetic-result-note">
+                These are model-generated examples for this simulation, not real attacks.
+              </p>
+            </div>
+            <Link
+              className="btn btn-primary"
+              to={`/supply-chain?scenario_id=${encodeURIComponent(generatedAttack.scenario_id)}`}
+            >
+              Try to prevent it
+            </Link>
           </div>
         )}
-      </div>
+      </section>
+
+      <details className="overview-glossary synthetic-generator-details">
+        <summary>How does the generator work?</summary>
+        <p>
+          It learns patterns from prepared training data and produces new, artificial examples.
+          The simulator maps an example to a supply-chain stage and provides defensive choices.
+          This research prototype does not send traffic or test real systems.
+        </p>
+      </details>
     </div>
   )
 }

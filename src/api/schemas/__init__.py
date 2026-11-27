@@ -8,6 +8,10 @@ from src.api.schemas.experiments import (
     ExperimentMetricSchema,
     ExperimentRunRequest,
 )
+from src.api.schemas.gan import (
+    SyntheticAttackGenerateRequest,
+    SyntheticAttackGenerateResponse,
+)
 from src.api.schemas.scenarios import (
     ScenarioListResponse,
     ScenarioMapRequest,
@@ -27,6 +31,8 @@ __all__ = [
     "ModelInfoSchema",
     "PredictRequest",
     "PredictResponse",
+    "SyntheticAttackGenerateRequest",
+    "SyntheticAttackGenerateResponse",
     "ScenarioListResponse",
     "ScenarioMapRequest",
     "ScenarioResponse",

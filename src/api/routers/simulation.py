@@ -8,9 +8,10 @@ resetting the environment, and stepping through sequential defensive responses.
 from __future__ import annotations
 
 from typing import Any
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 import gymnasium as gym
 import numpy as np
+from sqlalchemy.orm import Session
 
 from src.api.schemas.simulation import (
     SimulationResetRequest,
@@ -20,6 +21,9 @@ from src.api.schemas.simulation import (
 )
 from src.environment.models import DefenseAction
 from src.environment.supply_chain_env import STAGE_NAMES, SupplyChainEnv
+from src.api.deps import get_db
+from src.common.models import Scenario
+from src.scenarios.models import AttackScenario
 
 router = APIRouter()
 
@@ -52,11 +56,24 @@ def _format_stages(env: SupplyChainEnv) -> dict[str, StageStatusSchema]:
 
 
 @router.post("/reset", response_model=SimulationStepResponse)
-def reset_simulation(payload: SimulationResetRequest | None = None) -> SimulationStepResponse:
+def reset_simulation(
+    payload: SimulationResetRequest | None = None,
+    db: Session = Depends(get_db),
+) -> SimulationStepResponse:
     """Reset the simulation environment to an initial attack state."""
     env = get_simulation_env()
     seed = payload.seed if payload else None
-    obs, info = env.reset(seed=seed)
+    scenario_id = payload.scenario_id if payload else None
+
+    options = None
+    if scenario_id:
+        record = db.query(Scenario).filter_by(scenario_id=scenario_id).first()
+        if record:
+            options = {"scenario": AttackScenario.from_orm(record)}
+        else:
+            raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found.")
+
+    obs, info = env.reset(seed=seed, options=options)
 
     return SimulationStepResponse(
         observation=[round(float(x), 4) for x in obs],

@@ -33,3 +33,23 @@ class ModelInfoSchema(BaseModel):
     path: str
     size_bytes: int
     modified_at: str
+
+
+class CountermeasureRequest(BaseModel):
+    """Request for attack-specific countermeasures."""
+
+    attack_category: str = Field(default="benign")
+    affected_stage: str = Field(default="deployment")
+    severity: str = Field(default="medium")
+
+
+class CountermeasureResponse(BaseModel):
+    """Preventive and incident-response countermeasure plan."""
+
+    attack_category: str
+    affected_stage: str
+    severity: str
+    preventive: list[dict[str, Any]]
+    immediate: list[dict[str, Any]]
+    recovery: list[dict[str, Any]]
+    validation: list[dict[str, Any]]

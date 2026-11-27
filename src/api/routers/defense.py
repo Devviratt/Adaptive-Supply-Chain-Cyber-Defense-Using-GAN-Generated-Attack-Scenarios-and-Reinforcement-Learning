@@ -14,8 +14,15 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 import numpy as np
 
-from src.api.schemas.defense import ModelInfoSchema, PredictRequest, PredictResponse
+from src.api.schemas.defense import (
+    CountermeasureRequest,
+    CountermeasureResponse,
+    ModelInfoSchema,
+    PredictRequest,
+    PredictResponse,
+)
 from src.baselines.rule_based import RuleBasedDefensePolicy
+from src.defense.countermeasures import build_countermeasure_plan
 from src.environment.models import DefenseAction
 from src.rl.dqn_agent import DQNDefenseAgent
 from src.rl.ppo_agent import PPODefenseAgent
@@ -110,3 +117,14 @@ def list_models() -> list[ModelInfoSchema]:
             )
 
     return sorted(models, key=lambda m: m.name)
+
+
+@router.post("/countermeasures", response_model=CountermeasureResponse)
+def recommend_countermeasures(payload: CountermeasureRequest) -> CountermeasureResponse:
+    """Return preventive, containment, recovery, and validation controls."""
+    plan = build_countermeasure_plan(
+        payload.attack_category,
+        payload.affected_stage,
+        payload.severity,
+    )
+    return CountermeasureResponse(**plan.to_dict())
