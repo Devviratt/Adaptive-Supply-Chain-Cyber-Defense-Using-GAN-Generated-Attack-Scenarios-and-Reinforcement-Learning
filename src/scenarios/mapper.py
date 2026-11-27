@@ -20,7 +20,7 @@ import pandas as pd
 import structlog
 import yaml
 
-from src.scenarios.models import AttackScenario, AttackSeverity, SupplyChainStage
+from src.scenarios.models import AttackScenario
 
 logger = structlog.get_logger(__name__)
 
@@ -178,7 +178,7 @@ class ScenarioMapper:
                     return raw_label
                 # 2. Substring match with longest categories first (e.g., 'ddos' before 'dos')
                 sorted_cats = sorted(
-                    [c for c in self.categories.keys() if c != "default"],
+                    [c for c in self.categories if c != "default"],
                     key=len,
                     reverse=True,
                 )
@@ -227,7 +227,11 @@ class ScenarioMapper:
         # Microseconds flow duration (e.g., 100 to 1e8)
         dur_factor = float(np.clip(np.log10(dur_val + 1.0) / 8.0, 0.0, 1.0)) if dur_val > 0 else 0.2
         # Volumetric factor
-        vol_factor = float(np.clip(np.log10(bytes_val + pkts_val + 1.0) / 8.0, 0.0, 1.0)) if (bytes_val + pkts_val) > 0 else 0.1
+        vol_factor = (
+            float(np.clip(np.log10(bytes_val + pkts_val + 1.0) / 8.0, 0.0, 1.0))
+            if (bytes_val + pkts_val) > 0
+            else 0.1
+        )
         # SYN flag anomaly factor
         syn_factor = float(np.clip(syn_val / 50.0, 0.0, 1.0)) if syn_val > 0 else 0.0
 
@@ -250,7 +254,9 @@ class ScenarioMapper:
         min_steps = int(self.modulation_cfg.get("min_duration_steps", 1))
         max_steps = int(self.modulation_cfg.get("max_duration_steps", 50))
         if base_dur_steps > 1:
-            scaled_dur = int(np.clip(round(base_dur_steps * (0.7 + 0.6 * dur_factor)), min_steps, max_steps))
+            scaled_dur = int(
+                np.clip(round(base_dur_steps * (0.7 + 0.6 * dur_factor)), min_steps, max_steps)
+            )
         else:
             scaled_dur = min_steps
 
@@ -287,7 +293,9 @@ class ScenarioMapper:
             Structured AttackScenario object.
         """
         label = self._extract_label(record)
-        rule = self.categories.get(label, self.categories.get("default", DEFAULT_CATEGORY_RULES["default"]))
+        rule = self.categories.get(
+            label, self.categories.get("default", DEFAULT_CATEGORY_RULES["default"])
+        )
 
         mod_avail, mod_prop, duration_steps, severity = self._compute_modulation(record, rule)
 
@@ -305,7 +313,9 @@ class ScenarioMapper:
         if not scenario_id:
             # Deterministic hash if feature vector exists, else uuid
             if feature_vector:
-                feat_hash = hashlib.md5(json.dumps(sorted(feature_vector.items())).encode()).hexdigest()[:8]
+                feat_hash = hashlib.md5(
+                    json.dumps(sorted(feature_vector.items())).encode()
+                ).hexdigest()[:8]
                 scenario_id = f"scen_{label}_{feat_hash}"
             else:
                 scenario_id = f"scen_{label}_{uuid.uuid4().hex[:8]}"

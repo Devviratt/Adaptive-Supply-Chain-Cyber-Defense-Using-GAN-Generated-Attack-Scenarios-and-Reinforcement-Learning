@@ -9,10 +9,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
-from fastapi import APIRouter, HTTPException
 import numpy as np
+from fastapi import APIRouter, HTTPException
 
 from src.api.schemas.defense import (
     CountermeasureRequest,
@@ -48,10 +47,7 @@ def get_dqn_agent() -> DQNDefenseAgent:
         model_path = Path("artifacts/models/dqn/dqn_augmented_final.zip")
         if not model_path.exists():
             model_path = Path("artifacts/models/dqn/dqn_default_final.zip")
-        if model_path.exists():
-            _dqn_agent = DQNDefenseAgent.load(model_path)
-        else:
-            _dqn_agent = DQNDefenseAgent()
+        _dqn_agent = DQNDefenseAgent.load(model_path) if model_path.exists() else DQNDefenseAgent()
     return _dqn_agent
 
 
@@ -59,10 +55,7 @@ def get_ppo_agent() -> PPODefenseAgent:
     global _ppo_agent
     if _ppo_agent is None:
         model_path = Path("artifacts/models/ppo/ppo_default_final.zip")
-        if model_path.exists():
-            _ppo_agent = PPODefenseAgent.load(model_path)
-        else:
-            _ppo_agent = PPODefenseAgent()
+        _ppo_agent = PPODefenseAgent.load(model_path) if model_path.exists() else PPODefenseAgent()
     return _ppo_agent
 
 
@@ -105,7 +98,11 @@ def list_models() -> list[ModelInfoSchema]:
     if base_dir.exists():
         for zip_file in base_dir.glob("**/*.zip"):
             st = zip_file.stat()
-            algo = "DQN" if "dqn" in zip_file.name.lower() else ("PPO" if "ppo" in zip_file.name.lower() else "CTGAN")
+            algo = (
+                "DQN"
+                if "dqn" in zip_file.name.lower()
+                else ("PPO" if "ppo" in zip_file.name.lower() else "CTGAN")
+            )
             models.append(
                 ModelInfoSchema(
                     name=zip_file.name,

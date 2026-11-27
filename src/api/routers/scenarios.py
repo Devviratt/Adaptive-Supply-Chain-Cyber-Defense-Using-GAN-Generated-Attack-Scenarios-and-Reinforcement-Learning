@@ -7,7 +7,8 @@ and dynamically generating supply chain attack scenarios from network flow recor
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
@@ -26,11 +27,11 @@ mapper = ScenarioMapper()
 
 @router.get("", response_model=ScenarioListResponse)
 def list_scenarios(
+    db: Annotated[Session, Depends(get_db)],
     category: str | None = Query(None, description="Filter by attack category"),
     source: str | None = Query(None, description="Filter by source (real / synthetic)"),
     limit: int = Query(50, ge=1, le=500),
     offset: int = Query(0, ge=0),
-    db: Session = Depends(get_db),
 ) -> ScenarioListResponse:
     """Retrieve paginated list of attack scenarios from the database."""
     query = db.query(Scenario)
@@ -66,7 +67,7 @@ def list_scenarios(
 @router.get("/{scenario_id}", response_model=ScenarioResponse)
 def get_scenario(
     scenario_id: str,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ) -> ScenarioResponse:
     """Retrieve detailed attributes of a specific attack scenario."""
     r = db.query(Scenario).filter_by(scenario_id=scenario_id).first()
@@ -102,7 +103,11 @@ def map_flow_record(
         scenario_id=scen.scenario_id,
         name=getattr(scen, "name", None),
         attack_category=scen.attack_category,
-        affected_stage=scen.affected_stage.value if hasattr(scen.affected_stage, "value") else str(scen.affected_stage),
+        affected_stage=(
+            scen.affected_stage.value
+            if hasattr(scen.affected_stage, "value")
+            else str(scen.affected_stage)
+        ),
         severity=scen.severity.value if hasattr(scen.severity, "value") else str(scen.severity),
         propagation_risk=scen.propagation_risk,
         availability_impact=scen.availability_impact,

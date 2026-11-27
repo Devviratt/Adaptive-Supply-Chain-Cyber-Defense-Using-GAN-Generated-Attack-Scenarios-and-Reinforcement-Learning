@@ -1,9 +1,8 @@
 """Tests for exact class counts in CTGAN-generated samples."""
 
+import ctgan
 import pandas as pd
 import pytest
-
-import ctgan
 from src.gan.ctgan import generate_ctgan
 
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import uuid
 from pathlib import Path
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -25,7 +26,7 @@ GENERATED_PATH = PROJECT_ROOT / "data" / "generated" / "ui_synthetic_attacks.csv
 @router.post("/generate", response_model=SyntheticAttackGenerateResponse)
 def generate_synthetic_attack(
     payload: SyntheticAttackGenerateRequest,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ) -> SyntheticAttackGenerateResponse:
     """Generate synthetic rows, map them to incidents, and save them for simulation."""
     if not MODEL_PATH.is_file():

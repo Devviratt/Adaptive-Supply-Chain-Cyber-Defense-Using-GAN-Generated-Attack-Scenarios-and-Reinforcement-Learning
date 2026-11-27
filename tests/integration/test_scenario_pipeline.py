@@ -9,11 +9,9 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import pytest
-
 from src.common.models import Scenario
 from src.scenarios.mapper import ScenarioMapper
-from src.scenarios.models import AttackScenario, SupplyChainStage
+from src.scenarios.models import SupplyChainStage
 
 
 def test_end_to_end_scenario_pipeline(tmp_path: Path, db_session) -> None:
@@ -22,12 +20,42 @@ def test_end_to_end_scenario_pipeline(tmp_path: Path, db_session) -> None:
     csv_file = tmp_path / "processed_test_sample.csv"
     data = [
         {"Label": "benign", "Flow Duration": 150.0, "Flow Bytes/s": 200.0, "Total Fwd Packets": 2},
-        {"Label": "dos", "Flow Duration": 8000.0, "Flow Bytes/s": 450000.0, "Total Fwd Packets": 120},
-        {"Label": "ddos", "Flow Duration": 12000.0, "Flow Packets/s": 60000.0, "Total Fwd Packets": 300},
-        {"Label": "web_attack", "Flow Duration": 2500.0, "Flow Bytes/s": 1200.0, "Total Fwd Packets": 15},
-        {"Label": "brute_force", "Flow Duration": 1800.0, "Flow Bytes/s": 900.0, "Total Fwd Packets": 8},
-        {"Label": "botnet", "Flow Duration": 5500.0, "Flow Bytes/s": 2500.0, "Total Fwd Packets": 25},
-        {"Label": "portscan", "Flow Duration": 300.0, "Flow Bytes/s": 150.0, "Total Fwd Packets": 4},
+        {
+            "Label": "dos",
+            "Flow Duration": 8000.0,
+            "Flow Bytes/s": 450000.0,
+            "Total Fwd Packets": 120,
+        },
+        {
+            "Label": "ddos",
+            "Flow Duration": 12000.0,
+            "Flow Packets/s": 60000.0,
+            "Total Fwd Packets": 300,
+        },
+        {
+            "Label": "web_attack",
+            "Flow Duration": 2500.0,
+            "Flow Bytes/s": 1200.0,
+            "Total Fwd Packets": 15,
+        },
+        {
+            "Label": "brute_force",
+            "Flow Duration": 1800.0,
+            "Flow Bytes/s": 900.0,
+            "Total Fwd Packets": 8,
+        },
+        {
+            "Label": "botnet",
+            "Flow Duration": 5500.0,
+            "Flow Bytes/s": 2500.0,
+            "Total Fwd Packets": 25,
+        },
+        {
+            "Label": "portscan",
+            "Flow Duration": 300.0,
+            "Flow Bytes/s": 150.0,
+            "Total Fwd Packets": 4,
+        },
     ]
     df = pd.DataFrame(data)
     df.to_csv(csv_file, index=False)

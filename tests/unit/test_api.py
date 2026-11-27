@@ -212,4 +212,3 @@ class TestExperimentsEndpoint:
         assert response.status_code == 200
         data = response.json()
         assert "experiments" in data
-

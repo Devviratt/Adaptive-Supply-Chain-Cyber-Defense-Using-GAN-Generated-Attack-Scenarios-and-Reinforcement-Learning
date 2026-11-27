@@ -72,7 +72,9 @@ def train_ctgan(
         "seed": seed,
         "epochs": int(ctgan_cfg.get("epochs", 50)),
     }
-    model_path.with_suffix(".metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    model_path.with_suffix(".metadata.json").write_text(
+        json.dumps(metadata, indent=2), encoding="utf-8"
+    )
     return metadata
 
 
@@ -159,7 +161,9 @@ def validate_synthetic(
             ks[column] = float(ks_2samp(lhs, rhs).statistic)
     label_distribution = {}
     if label_column in synthetic:
-        label_distribution = synthetic[label_column].astype(str).value_counts(normalize=True).round(6).to_dict()
+        label_distribution = (
+            synthetic[label_column].astype(str).value_counts(normalize=True).round(6).to_dict()
+        )
     report = {
         "real_rows": len(real),
         "synthetic_rows": len(synthetic),
@@ -170,7 +174,12 @@ def validate_synthetic(
         "mean_ks_statistic": float(np.mean(list(ks.values()))) if ks else None,
         "max_ks_statistic": max(ks.values()) if ks else None,
         "duplicate_ratio": float(synthetic.duplicated().mean()) if len(synthetic) else 0.0,
-        "non_finite_numeric_values": int(synthetic.select_dtypes(include=[np.number]).apply(lambda c: ~np.isfinite(c)).sum().sum()),
+        "non_finite_numeric_values": int(
+            synthetic.select_dtypes(include=[np.number])
+            .apply(lambda c: ~np.isfinite(c))
+            .sum()
+            .sum()
+        ),
         "synthetic_label_distribution": label_distribution,
         "ks_statistic_by_feature": ks,
         "note": "Descriptive fidelity checks only; passing does not establish downstream utility or improve RL defense.",
@@ -178,7 +187,18 @@ def validate_synthetic(
     report_path = Path(report_path)
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    markdown = ["# CTGAN Synthetic Data Validation", "", f"- Real rows: {report['real_rows']}", f"- Synthetic rows: {report['synthetic_rows']}", f"- Schema matches: {report['schema_matches']}", f"- Mean numeric KS statistic: {report['mean_ks_statistic']}", f"- Duplicate ratio: {report['duplicate_ratio']:.4f}", f"- Non-finite numeric values: {report['non_finite_numeric_values']}", "", "Synthetic label proportions:"]
+    markdown = [
+        "# CTGAN Synthetic Data Validation",
+        "",
+        f"- Real rows: {report['real_rows']}",
+        f"- Synthetic rows: {report['synthetic_rows']}",
+        f"- Schema matches: {report['schema_matches']}",
+        f"- Mean numeric KS statistic: {report['mean_ks_statistic']}",
+        f"- Duplicate ratio: {report['duplicate_ratio']:.4f}",
+        f"- Non-finite numeric values: {report['non_finite_numeric_values']}",
+        "",
+        "Synthetic label proportions:",
+    ]
     markdown += [f"- {label}: {share:.4f}" for label, share in label_distribution.items()]
     markdown += ["", report["note"]]
     report_path.with_suffix(".md").write_text("\n".join(markdown) + "\n", encoding="utf-8")

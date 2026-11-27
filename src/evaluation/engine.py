@@ -9,8 +9,8 @@ database persistence, and publication-ready visualization generation.
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -49,9 +49,7 @@ class EvaluationEngine:
         self.config = self._load_config(config, config_path)
         eval_cfg = self.config.get("evaluation", {})
 
-        self.experiments_cfg = {
-            exp["id"]: exp for exp in eval_cfg.get("experiments", [])
-        }
+        self.experiments_cfg = {exp["id"]: exp for exp in eval_cfg.get("experiments", [])}
         self.n_eval_episodes = int(eval_cfg.get("n_eval_episodes", 50))
         self.seeds = list(eval_cfg.get("seeds", [42, 123, 456, 789, 1024]))
         self.use_held_out = bool(eval_cfg.get("use_held_out_scenarios", True))
@@ -160,7 +158,9 @@ class EvaluationEngine:
             active_scen = getattr(unwrapped_env, "active_scenario", None)
             attack_class = active_scen.attack_category if active_scen else "unknown"
             if active_scen:
-                initial_target_stage = getattr(active_scen.affected_stage, "value", str(active_scen.affected_stage))
+                initial_target_stage = getattr(
+                    active_scen.affected_stage, "value", str(active_scen.affected_stage)
+                )
             else:
                 initial_target_stage = "supplier"
 
@@ -187,7 +187,10 @@ class EvaluationEngine:
 
                 # Check for unnecessary intervention (aggressive action when no risk is present)
                 risks = [obs[1], obs[3], obs[5], obs[7]] if len(obs) >= 8 else [0.0]
-                if action in [int(DefenseAction.BLOCK), int(DefenseAction.REBUILD)] and max(risks) == 0.0:
+                if (
+                    action in [int(DefenseAction.BLOCK), int(DefenseAction.REBUILD)]
+                    and max(risks) == 0.0
+                ):
                     unnecessary_actions += 1
 
                 obs, reward, terminated, truncated, step_info = env.step(action)
@@ -221,8 +224,7 @@ class EvaluationEngine:
             # Containment check: did compromise spread beyond initial target stage?
             stages = getattr(unwrapped_env, "stages", {})
             compromised_stages = [
-                s_name for s_name, s_state in stages.items()
-                if s_state.is_compromised
+                s_name for s_name, s_state in stages.items() if s_state.is_compromised
             ]
             if not compromised_stages or set(compromised_stages) == {initial_target_stage}:
                 contained_episodes += 1
@@ -244,7 +246,9 @@ class EvaluationEngine:
             formatted_class_perf[c_name] = {
                 "total_episodes": tot,
                 "mitigation_rate": round(c_data["mitigated"] / tot, 4) if tot > 0 else 0.0,
-                "mean_reward": round(float(np.mean(c_data["rewards"])), 2) if c_data["rewards"] else 0.0,
+                "mean_reward": (
+                    round(float(np.mean(c_data["rewards"])), 2) if c_data["rewards"] else 0.0
+                ),
             }
 
         return ExperimentResult(
@@ -307,10 +311,7 @@ class EvaluationEngine:
 
         # 1. Prepare evaluation environment with held-out test scenarios
         scenarios = self.get_held_out_scenarios()
-        if scenarios:
-            env = SupplyChainEnv(scenarios=scenarios)
-        else:
-            env = gym.make("asccd/SupplyChain-v0")
+        env = SupplyChainEnv(scenarios=scenarios) if scenarios else gym.make("asccd/SupplyChain-v0")
 
         # 2. Instantiate or load the appropriate policy
         if experiment_id == "A" or model_type == "rule_based":
@@ -540,21 +541,23 @@ class EvaluationEngine:
         csv_file = out_path / "experiments_comparison.csv"
         rows: list[dict[str, Any]] = []
         for exp_id, res in summary.experiments.items():
-            rows.append({
-                "Experiment": exp_id,
-                "Name": res.name,
-                "Model Type": res.model_type,
-                "Dataset": res.dataset,
-                "Episodes": res.n_episodes,
-                "Mitigation Rate (%)": round(res.mitigation_success_rate * 100.0, 2),
-                "Containment Rate (%)": round(res.containment_rate * 100.0, 2),
-                "Service Availability (%)": round(res.service_availability * 100.0, 2),
-                "Mean Reward": round(res.mean_reward, 2),
-                "Reward Std": round(res.std_reward, 2),
-                "Attack Impact Score": round(res.attack_impact_score, 4),
-                "Downtime Steps": res.total_downtime_steps,
-                "Avg Response Steps": round(res.avg_response_steps, 2),
-            })
+            rows.append(
+                {
+                    "Experiment": exp_id,
+                    "Name": res.name,
+                    "Model Type": res.model_type,
+                    "Dataset": res.dataset,
+                    "Episodes": res.n_episodes,
+                    "Mitigation Rate (%)": round(res.mitigation_success_rate * 100.0, 2),
+                    "Containment Rate (%)": round(res.containment_rate * 100.0, 2),
+                    "Service Availability (%)": round(res.service_availability * 100.0, 2),
+                    "Mean Reward": round(res.mean_reward, 2),
+                    "Reward Std": round(res.std_reward, 2),
+                    "Attack Impact Score": round(res.attack_impact_score, 4),
+                    "Downtime Steps": res.total_downtime_steps,
+                    "Avg Response Steps": round(res.avg_response_steps, 2),
+                }
+            )
         df_csv = pd.DataFrame(rows)
         df_csv.to_csv(csv_file, index=False)
 
@@ -565,37 +568,74 @@ class EvaluationEngine:
                 import matplotlib.pyplot as plt
 
                 exp_names = [f"Exp {k}: {v.name}" for k, v in summary.experiments.items()]
-                mitigations = [v.mitigation_success_rate * 100.0 for v in summary.experiments.values()]
-                availabilities = [v.service_availability * 100.0 for v in summary.experiments.values()]
+                mitigations = [
+                    v.mitigation_success_rate * 100.0 for v in summary.experiments.values()
+                ]
+                availabilities = [
+                    v.service_availability * 100.0 for v in summary.experiments.values()
+                ]
                 rewards = [v.mean_reward for v in summary.experiments.values()]
 
                 fig, axes = plt.subplots(1, 3, figsize=(15, 4.5))
 
                 # Chart 1: Mitigation Success Rate
-                bars1 = axes[0].bar(exp_names, mitigations, color=["#4B5563", "#3B82F6", "#10B981", "#8B5CF6"][:len(exp_names)])
+                bars1 = axes[0].bar(
+                    exp_names,
+                    mitigations,
+                    color=["#4B5563", "#3B82F6", "#10B981", "#8B5CF6"][: len(exp_names)],
+                )
                 axes[0].set_title("Mitigation Success Rate (%)", fontsize=11, fontweight="bold")
                 axes[0].set_ylim(0, 105)
                 axes[0].set_ylabel("Rate (%)")
                 for bar in bars1:
                     yval = bar.get_height()
-                    axes[0].text(bar.get_x() + bar.get_width() / 2, yval + 1.5, f"{yval:.1f}%", ha="center", va="bottom", fontsize=9)
+                    axes[0].text(
+                        bar.get_x() + bar.get_width() / 2,
+                        yval + 1.5,
+                        f"{yval:.1f}%",
+                        ha="center",
+                        va="bottom",
+                        fontsize=9,
+                    )
 
                 # Chart 2: Service Availability
-                bars2 = axes[1].bar(exp_names, availabilities, color=["#6B7280", "#60A5FA", "#34D399", "#A78BFA"][:len(exp_names)])
+                bars2 = axes[1].bar(
+                    exp_names,
+                    availabilities,
+                    color=["#6B7280", "#60A5FA", "#34D399", "#A78BFA"][: len(exp_names)],
+                )
                 axes[1].set_title("Mean Service Availability (%)", fontsize=11, fontweight="bold")
                 axes[1].set_ylim(80, 102)
                 axes[1].set_ylabel("Uptime (%)")
                 for bar in bars2:
                     yval = bar.get_height()
-                    axes[1].text(bar.get_x() + bar.get_width() / 2, yval + 0.3, f"{yval:.1f}%", ha="center", va="bottom", fontsize=9)
+                    axes[1].text(
+                        bar.get_x() + bar.get_width() / 2,
+                        yval + 0.3,
+                        f"{yval:.1f}%",
+                        ha="center",
+                        va="bottom",
+                        fontsize=9,
+                    )
 
                 # Chart 3: Mean Cumulative Reward
-                bars3 = axes[2].bar(exp_names, rewards, color=["#9CA3AF", "#93C5FD", "#6EE7B7", "#C4B5FD"][:len(exp_names)])
+                bars3 = axes[2].bar(
+                    exp_names,
+                    rewards,
+                    color=["#9CA3AF", "#93C5FD", "#6EE7B7", "#C4B5FD"][: len(exp_names)],
+                )
                 axes[2].set_title("Mean Cumulative Reward", fontsize=11, fontweight="bold")
                 axes[2].set_ylabel("Score")
                 for bar in bars3:
                     yval = bar.get_height()
-                    axes[2].text(bar.get_x() + bar.get_width() / 2, yval + 1.0, f"{yval:.1f}", ha="center", va="bottom", fontsize=9)
+                    axes[2].text(
+                        bar.get_x() + bar.get_width() / 2,
+                        yval + 1.0,
+                        f"{yval:.1f}",
+                        ha="center",
+                        va="bottom",
+                        fontsize=9,
+                    )
 
                 for ax in axes:
                     ax.set_xticks(range(len(exp_names)))

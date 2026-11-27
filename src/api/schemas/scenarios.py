@@ -5,6 +5,7 @@ ASCCD Pydantic Schemas for Attack Scenarios.
 from __future__ import annotations
 
 from typing import Any
+
 from pydantic import BaseModel, Field
 
 

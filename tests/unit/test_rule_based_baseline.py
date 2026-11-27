@@ -7,7 +7,6 @@ from __future__ import annotations
 import gymnasium as gym
 import numpy as np
 import pytest
-
 from src.baselines import BaselineEvaluationResult, RuleBasedDefensePolicy
 from src.environment import DefenseAction
 
@@ -47,7 +46,9 @@ class TestRuleBasedDefensePolicy:
         action, _ = policy.predict(recovery_obs)
         assert action == int(DefenseAction.RECOVER)
 
-    def test_predict_critical_compromise_selects_rebuild(self, policy: RuleBasedDefensePolicy) -> None:
+    def test_predict_critical_compromise_selects_rebuild(
+        self, policy: RuleBasedDefensePolicy
+    ) -> None:
         """When a stage is critically compromised (risk >= 0.70), policy should rebuild."""
         # Build stage risk is 0.85
         rebuild_obs = np.array(

@@ -7,22 +7,21 @@ resetting the environment, and stepping through sequential defensive responses.
 
 from __future__ import annotations
 
-from typing import Any
-from fastapi import APIRouter, HTTPException, Depends
-import gymnasium as gym
-import numpy as np
+from typing import Annotated, Any
+
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from src.api.deps import get_db
 from src.api.schemas.simulation import (
     SimulationResetRequest,
     SimulationStepRequest,
     SimulationStepResponse,
     StageStatusSchema,
 )
+from src.common.models import Scenario
 from src.environment.models import DefenseAction
 from src.environment.supply_chain_env import STAGE_NAMES, SupplyChainEnv
-from src.api.deps import get_db
-from src.common.models import Scenario
 from src.scenarios.models import AttackScenario
 
 router = APIRouter()
@@ -57,8 +56,8 @@ def _format_stages(env: SupplyChainEnv) -> dict[str, StageStatusSchema]:
 
 @router.post("/reset", response_model=SimulationStepResponse)
 def reset_simulation(
+    db: Annotated[Session, Depends(get_db)],
     payload: SimulationResetRequest | None = None,
-    db: Session = Depends(get_db),
 ) -> SimulationStepResponse:
     """Reset the simulation environment to an initial attack state."""
     env = get_simulation_env()
@@ -118,9 +117,29 @@ def get_stage_topology() -> dict[str, Any]:
         ],
         "actions": [
             {"id": 0, "name": "Monitor", "cost": 0.01, "description": "Passive telemetry logging"},
-            {"id": 1, "name": "Isolate", "cost": 0.15, "description": "Quarantine stage to prevent lateral spread"},
-            {"id": 2, "name": "Block", "cost": 0.25, "description": "Drop active attack traffic vectors"},
-            {"id": 3, "name": "Rebuild", "cost": 0.35, "description": "Clean reconstruction from verified state"},
-            {"id": 4, "name": "Recover", "cost": 0.20, "description": "Restore service availability and throughput"},
+            {
+                "id": 1,
+                "name": "Isolate",
+                "cost": 0.15,
+                "description": "Quarantine stage to prevent lateral spread",
+            },
+            {
+                "id": 2,
+                "name": "Block",
+                "cost": 0.25,
+                "description": "Drop active attack traffic vectors",
+            },
+            {
+                "id": 3,
+                "name": "Rebuild",
+                "cost": 0.35,
+                "description": "Clean reconstruction from verified state",
+            },
+            {
+                "id": 4,
+                "name": "Recover",
+                "cost": 0.20,
+                "description": "Restore service availability and throughput",
+            },
         ],
     }
